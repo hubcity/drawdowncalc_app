@@ -115,7 +115,7 @@ import {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleFormSubmit)}
-          className="space-y-8"
+          className="space-y-8 p-4"
         >
           <FormField
             control={form.control}
