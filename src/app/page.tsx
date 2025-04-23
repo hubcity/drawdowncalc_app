@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
 import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear } from "@/services/drawdown-plan";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -62,6 +62,17 @@ const formatPercentage = (value: number): string => {
     minimumFractionDigits: 1,
   }).format(value / 100);
 };
+
+const formatYAxis = (value: number) => {
+  if (value >= 1000000) {
+    return formatCurrency(value / 1000000) + 'M';
+  } else if (value >= 1000) {
+    return formatCurrency(value / 1000) + 'K';
+  } else {
+    return formatCurrency(value);
+  }
+};
+
 
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
@@ -130,7 +141,7 @@ export default function Home() {
                     <BarChart data={drawdownPlan}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="age" />
-                      <YAxis tickFormatter={(value) => formatCurrency(value as number)} />
+                      <YAxis tickFormatter={formatYAxis} />
                       <Tooltip formatter={(value) => formatCurrency(value as number)} />
                       <Legend />
                       <Bar dataKey="bal_brokerage" name="Brokerage Balance" fill={COLORS[0]} />
@@ -175,3 +186,4 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
