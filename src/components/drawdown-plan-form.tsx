@@ -26,12 +26,13 @@ import { Separator } from "@/components/ui/separator";
     FormMessage,
   } from "@/components/ui/form";
   import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
   
   const formSchema = z.object({
     about: z.object({
       age: z.number().min(18, { message: "Age must be greater than 18" }),
       end_of_plan_age: z.number(),
-      filing_status: z.string(),
+      filing_status: z.enum(["single", "married"]),
       state_of_residence: z.string(),
     }),
     social_security: z.object({
@@ -150,15 +151,23 @@ import { Separator } from "@/components/ui/separator";
             )}
           />
   
-          <FormField
+         <FormField
             control={form.control}
             name="about.filing_status"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Filing Status</FormLabel>
-                <FormControl>
-                  <Input placeholder="Filing Status" {...field} />
-                </FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a filing status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="single">Single</SelectItem>
+                    <SelectItem value="married">Married Filing Jointly</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
