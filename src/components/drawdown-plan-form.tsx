@@ -15,6 +15,7 @@ import {
   import * as z from "zod";
   
   import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
   import {
     Form,
     FormControl,
@@ -176,6 +177,8 @@ import {
               </FormItem>
             )}
           />
+
+            <Separator/>
   
           <FormField
             control={form.control}
@@ -212,6 +215,8 @@ import {
               </FormItem>
             )}
           />
+
+            <Separator/>
   
           <FormField
             control={form.control}
