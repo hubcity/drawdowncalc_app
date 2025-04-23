@@ -47,6 +47,15 @@ function downloadCsv(data: DrawdownPlanYear[] | null) {
   window.URL.revokeObjectURL(url);
 }
 
+// Utility function to format numbers as currency
+const formatCurrency = (value: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+  }).format(value);
+};
+
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -82,9 +91,7 @@ export default function Home() {
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <span>Settings</span>
-              </SidebarMenuButton>
+              <span>Settings</span>
             </SidebarMenuItem>
           </SidebarMenu>
           <SidebarSeparator />
@@ -116,8 +123,8 @@ export default function Home() {
                     <BarChart data={drawdownPlan}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="age" />
-                      <YAxis />
-                      <Tooltip />
+                      <YAxis tickFormatter={(value) => formatCurrency(value as number)} />
+                      <Tooltip formatter={(value) => formatCurrency(value as number)} />
                       <Legend />
                       <Bar dataKey="bal_brokerage" name="Brokerage Balance" fill={COLORS[0]} />
                       <Bar dataKey="bal_ira" name="IRA Balance" fill={COLORS[1]} />
@@ -141,12 +148,12 @@ export default function Home() {
                       {drawdownPlan.map((year) => (
                         <TableRow key={year.age}>
                           <TableCell>{year.age}</TableCell>
-                          <TableCell>{year.bal_brokerage}</TableCell>
-                          <TableCell>{year.bal_ira}</TableCell>
-                          <TableCell>{year.bal_roth}</TableCell>
-                          <TableCell>{year.social_security}</TableCell>
-                          <TableCell>{year.total_tax}</TableCell>
-                          <TableCell>{year.spend_goal}</TableCell>
+                          <TableCell>{formatCurrency(year.bal_brokerage)}</TableCell>
+                          <TableCell>{formatCurrency(year.bal_ira)}</TableCell>
+                          <TableCell>{formatCurrency(year.bal_roth)}</TableCell>
+                          <TableCell>{formatCurrency(year.social_security)}</TableCell>
+                          <TableCell>{formatCurrency(year.total_tax)}</TableCell>
+                          <TableCell>{formatCurrency(year.spend_goal)}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -161,4 +168,5 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
