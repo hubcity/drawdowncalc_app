@@ -54,6 +54,9 @@ export default function Home() {
   const handleSubmit = async (input: DrawdownPlanInput) => {
     setLoading(true);
     try {
+      // Simulate a 3-second delay
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
       const plan = await calculateDrawdownPlan(input);
       setDrawdownPlan(plan);
     } catch (error) {
@@ -158,3 +161,4 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
