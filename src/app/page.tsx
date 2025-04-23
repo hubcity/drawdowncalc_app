@@ -56,6 +56,13 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
+const formatPercentage = (value: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+  }).format(value / 100);
+};
+
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -168,5 +175,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-
