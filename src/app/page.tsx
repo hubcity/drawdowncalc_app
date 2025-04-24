@@ -170,7 +170,7 @@ export default function Home() {
                 .attr("class", "bar-brokerage")
                 .style("fill", COLORS[0])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_brokerage + d.bal_ira + d.bal_roth))
+                .attr("y", d => y(d.bal_ira + d.bal_roth + d.bal_brokerage))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.bal_brokerage));
 
@@ -181,7 +181,7 @@ export default function Home() {
                 .attr("class", "bar-ira")
                 .style("fill", COLORS[1])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_ira + d.bal_roth))
+                .attr("y", d => y(d.bal_roth + d.bal_ira))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.bal_ira) - (height - y(d.bal_brokerage)));
 
@@ -362,6 +362,7 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
 
