@@ -170,7 +170,7 @@ export default function Home() {
                 .attr("class", "bar-brokerage")
                 .style("fill", COLORS[0])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_ira + d.bal_roth + d.bal_brokerage))
+                .attr("y", d => y(d.bal_brokerage))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.bal_brokerage));
 
@@ -181,9 +181,9 @@ export default function Home() {
                 .attr("class", "bar-ira")
                 .style("fill", COLORS[1])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_roth + d.bal_ira))
+                .attr("y", d => y(d.bal_brokerage + d.bal_ira))
                 .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_ira) - (height - y(d.bal_brokerage)));
+                .attr("height", d => height - y(d.bal_ira));
 
             // Create bars for Roth Balance
             svg.selectAll(".bar-roth")
@@ -192,9 +192,9 @@ export default function Home() {
                 .attr("class", "bar-roth")
                 .style("fill", COLORS[2])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_roth))
+                .attr("y", d => y(d.bal_brokerage + d.bal_ira + d.bal_roth))
                 .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_roth) - (height - y(d.bal_brokerage)) - (height - y(d.bal_ira)));
+                .attr("height", d => height - y(d.bal_roth));
 
             // Add X axis
             svg.append("g")
