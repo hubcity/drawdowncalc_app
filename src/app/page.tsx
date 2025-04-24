@@ -159,7 +159,7 @@ export default function Home() {
                 .range([0, width])
                 .padding(0.1);
             const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => Math.max(d.bal_brokerage, d.bal_ira, d.bal_roth)) || 0])
+                .domain([0, d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0])
                 .nice()
                 .range([height, 0]);
 
@@ -170,7 +170,7 @@ export default function Home() {
                 .attr("class", "bar-brokerage")
                 .style("fill", COLORS[0])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_brokerage))
+                .attr("y", d => y(d.bal_brokerage + d.bal_ira + d.bal_roth))
                 .attr("width", x.bandwidth())
                 .attr("height", d => height - y(d.bal_brokerage));
 
@@ -181,9 +181,9 @@ export default function Home() {
                 .attr("class", "bar-ira")
                 .style("fill", COLORS[1])
                 .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_ira))
+                .attr("y", d => y(d.bal_ira + d.bal_roth))
                 .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_ira));
+                .attr("height", d => height - y(d.bal_ira) - (height - y(d.bal_brokerage)));
 
             // Create bars for Roth Balance
             svg.selectAll(".bar-roth")
@@ -194,7 +194,7 @@ export default function Home() {
                 .attr("x", d => x(d.age.toString()) || "0")
                 .attr("y", d => y(d.bal_roth))
                 .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_roth));
+                .attr("height", d => height - y(d.bal_roth) - (height - y(d.bal_brokerage)) - (height - y(d.bal_ira)));
 
             // Add X axis
             svg.append("g")
@@ -362,5 +362,6 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
