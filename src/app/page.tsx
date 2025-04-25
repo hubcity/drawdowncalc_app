@@ -289,7 +289,7 @@ export default function Home() {
                         <TableHead className="text-center">From Brokerage</TableHead>
                         <TableHead className="text-center">From IRA</TableHead>
                         <TableHead className="text-center">From Roth</TableHead>
-                        <TableHead className="text-center">IRA to Roth Conversion</TableHead>
+                        <TableHead className="text-center">Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
@@ -328,7 +328,7 @@ export default function Home() {
                         <TableHead className="text-center">From Brokerage</TableHead>
                         <TableHead className="text-center">From IRA</TableHead>
                         <TableHead className="text-center">From Roth</TableHead>
-                        <TableHead className="text-center">IRA to Roth Conversion</TableHead>
+                        <TableHead className="text-center">Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
