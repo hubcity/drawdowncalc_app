@@ -151,7 +151,7 @@ export default function Home() {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
-                .attr("transform", `translate(${margin.left},চিতের.top})`);
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
             // Define scales
             const x = d3.scaleBand()
@@ -283,7 +283,6 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <Table>
-                    <TableCaption>Drawdown Plan Details</TableCaption>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Age</TableHead>
@@ -309,7 +308,7 @@ export default function Home() {
                       </TableBody>
                     </Table>
                   </div>
-                  <div ref={chartRef}></div>
+                  <div className="mt-8" ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                 </CardContent>
               </Card>
@@ -323,7 +322,6 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <Table>
-                    <TableCaption>Example Drawdown Plan Details</TableCaption>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Age</TableHead>
@@ -360,6 +358,7 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
 
