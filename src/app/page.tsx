@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import * as d3 from "d3";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#800080'];
 
 const exampleData: DrawdownPlanYear[] = [
   { age: 55, bal_brokerage: 410000, wd_brokerage: 28488, cgd: 24379, bal_ira: 1246210, wd_ira: 0, bal_roth: 700000, wd_roth: 70447, ira_to_roth: 0, social_security: 24600, fed_tax: 0, state_tax: 1159, total_tax: 1159, spend_goal: 106776 },
@@ -135,12 +135,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
     const chartRef = useRef(null); // Ref for the account balance chart container
     const incomeChartRef = useRef(null);
+    const spendingChartRef = useRef(null);
 
     useEffect(() => {
-        if (drawdownPlan && chartRef.current && incomeChartRef.current) {
+        if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current) {
             // Clear previous charts
             d3.select(chartRef.current).select("svg").remove();
             d3.select(incomeChartRef.current).select("svg").remove();
+            d3.select(spendingChartRef.current).select("svg").remove();
 
             const data = drawdownPlan;
 
@@ -149,7 +151,7 @@ export default function Home() {
             const height = 400 - margin.top - margin.bottom;
 
             // Function to create the stacked bar chart
-            const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors) => {
+            const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors, yFormat = d3.formatPrefix(".1", 1e3)) => {
                 const svg = d3.select(ref)
                     .append("svg")
                     .attr("width", width + margin.left + margin.right)
@@ -190,7 +192,7 @@ export default function Home() {
                     .call(d3.axisBottom(x));
 
                 svg.append("g")
-                    .call(d3.axisLeft(y).tickFormat(d3.formatPrefix(".1", 1e6)));
+                    .call(d3.axisLeft(y).tickFormat(yFormat));
 
                 svg.append("text")
                     .attr("x", width / 2)
@@ -205,6 +207,28 @@ export default function Home() {
                     .attr("dy", "1em")
                     .style("text-anchor", "middle")
                     .text(yLabel);
+
+                const legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", `translate(${width - 100}, -10)`);
+
+                dataKeys.forEach((key, i) => {
+                    const legendItem = legend.append("g")
+                        .attr("transform", `translate(0, ${i * 20})`);
+
+                    legendItem.append("rect")
+                        .attr("x", 0)
+                        .attr("y", 0)
+                        .attr("width", 15)
+                        .attr("height", 15)
+                        .attr("fill", colors[i]);
+
+                    legendItem.append("text")
+                        .attr("x", 20)
+                        .attr("y", 12)
+                        .text(key)
+                        .style("font-size", "12px");
+                });
             };
 
             // Account Balances Chart
@@ -225,6 +249,17 @@ export default function Home() {
                 "Income Sources ($)",
                 ["wd_brokerage", "wd_ira", "wd_roth", "social_security", "cgd"],
                 COLORS
+            );
+
+            // Spending Categories Chart
+            const spendingCategoriesYMax = d3.max(data, d => d.spend_goal + d.fed_tax + d.state_tax) || 0;
+            createStackedBarChart(
+                spendingChartRef.current,
+                spendingCategoriesYMax,
+                "Spending Categories ($)",
+                ["spend_goal", "fed_tax", "state_tax"],
+                COLORS,
+                d3.formatPrefix(".1", 1e3)
             );
 
         }
@@ -290,7 +325,7 @@ export default function Home() {
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                 <div className="overflow-auto max-h-40">
+                  <div className="overflow-auto max-h-40">
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -315,6 +350,7 @@ export default function Home() {
                     </Table>
                   </div>
                     <div className="mt-8" ref={incomeChartRef}></div>
+                    <div className="mt-8" ref={spendingChartRef}></div>
                   <div className="mt-8" ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                 </CardContent>
@@ -365,4 +401,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
