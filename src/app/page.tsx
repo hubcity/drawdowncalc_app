@@ -325,7 +325,7 @@ export default function Home() {
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-auto max-h-40">
+                  
                     <Table>
                       <TableHeader>
                         <TableRow>
@@ -336,6 +336,28 @@ export default function Home() {
                           <TableHead className="w-32 text-center">Roth Conversion</TableHead>
                         </TableRow>
                       </TableHeader>
+                      
+                      
+                      
+                        
+                          
+                            
+                              
+                                
+                                  
+                                  
+                                  
+                                  
+                                  
+                                
+                              
+                            
+                          
+                        
+                      
+                    </Table>
+                    <div className="overflow-auto max-h-40">
+                    <Table>
                       <TableBody>
                         {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
@@ -349,8 +371,11 @@ export default function Home() {
                       </TableBody>
                     </Table>
                   </div>
+                  
                     <div className="mt-8" ref={incomeChartRef}></div>
+                    
                     <div className="mt-8" ref={spendingChartRef}></div>
+                  
                   <div className="mt-8" ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                 </CardContent>
