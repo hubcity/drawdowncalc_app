@@ -151,7 +151,7 @@ export default function Home() {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+                .attr("transform", `translate(${margin.left},চিতের.top})`);
 
             // Define scales
             const x = d3.scaleBand()
@@ -293,22 +293,11 @@ export default function Home() {
                         <TableHead>IRA to Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
-                      {drawdownPlan.slice(0, 5).map((year) => (
-                        <TableRow key={year.age}>
-                          <TableCell>{year.age}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
-                          <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
                   </Table>
                   <div className="overflow-auto max-h-40">
                     <Table>
                       <TableBody>
-                        {drawdownPlan.slice(5).map((year) => (
+                        {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
                             <TableCell>{year.age}</TableCell>
                             <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
@@ -344,22 +333,11 @@ export default function Home() {
                         <TableHead>IRA to Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
-                    <TableBody>
-                      {exampleData.slice(0, 5).map((year) => (
-                        <TableRow key={year.age}>
-                          <TableCell>{year.age}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
-                          <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
-                          <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
                   </Table>
                   <div className="overflow-auto max-h-40">
                     <Table>
                       <TableBody>
-                        {exampleData.slice(5).map((year) => (
+                        {exampleData.map((year) => (
                           <TableRow key={year.age}>
                             <TableCell>{year.age}</TableCell>
                             <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
@@ -382,5 +360,6 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
