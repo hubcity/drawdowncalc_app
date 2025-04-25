@@ -24,7 +24,7 @@ import * as d3 from "d3";
 import { exampleData } from "@/lib/example-data";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#800080'];
-const COLORS_SPENDING = ['#a8e6cf', '#dcedc1', '#ffd3b6'];
+const COLORS_SPENDING = ['#85BB65', '#A9A9A9', '#D3D3D3'];
 
 function toCsv(data: DrawdownPlanYear[] | null): string {
   if (!data || data.length === 0) {
