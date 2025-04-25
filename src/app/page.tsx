@@ -282,8 +282,6 @@ export default function Home() {
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                                        <div ref={chartRef}></div>
-
                   <Table>
                     <TableCaption>Drawdown Plan Details</TableCaption>
                     <TableHeader>
@@ -296,7 +294,7 @@ export default function Home() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {drawdownPlan.map((year) => (
+                      {drawdownPlan.slice(0, 5).map((year) => (
                         <TableRow key={year.age}>
                           <TableCell>{year.age}</TableCell>
                           <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
@@ -307,6 +305,22 @@ export default function Home() {
                       ))}
                     </TableBody>
                   </Table>
+                  <div className="overflow-auto max-h-40">
+                    <Table>
+                      <TableBody>
+                        {drawdownPlan.slice(5).map((year) => (
+                          <TableRow key={year.age}>
+                            <TableCell>{year.age}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
+                            <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                 </CardContent>
               </Card>
@@ -319,8 +333,6 @@ export default function Home() {
                   <CardDescription>An example summary of a drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                                        <div ref={chartRef}></div>
-
                   <Table>
                     <TableCaption>Example Drawdown Plan Details</TableCaption>
                     <TableHeader>
@@ -333,7 +345,7 @@ export default function Home() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {exampleData.map((year) => (
+                      {exampleData.slice(0, 5).map((year) => (
                         <TableRow key={year.age}>
                           <TableCell>{year.age}</TableCell>
                           <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
@@ -344,6 +356,22 @@ export default function Home() {
                       ))}
                     </TableBody>
                   </Table>
+                  <div className="overflow-auto max-h-40">
+                    <Table>
+                      <TableBody>
+                        {exampleData.slice(5).map((year) => (
+                          <TableRow key={year.age}>
+                            <TableCell>{year.age}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
+                            <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
+                            <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(exampleData)}>Download CSV</Button>
                 </CardContent>
               </Card>
@@ -354,4 +382,5 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
