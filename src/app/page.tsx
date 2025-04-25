@@ -289,24 +289,20 @@ export default function Home() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Age</TableHead>
-                        <TableHead>Brokerage Balance</TableHead>
-                        <TableHead>IRA Balance</TableHead>
-                        <TableHead>Roth Balance</TableHead>
-                        <TableHead>Social Security</TableHead>
-                        <TableHead>Total Tax</TableHead>
-                        <TableHead>Spend Goal</TableHead>
+                        <TableHead>From Brokerage</TableHead>
+                        <TableHead>From IRA</TableHead>
+                        <TableHead>From Roth</TableHead>
+                        <TableHead>IRA to Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {drawdownPlan.map((year) => (
                         <TableRow key={year.age}>
                           <TableCell>{year.age}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_brokerage)}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_ira)}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_roth)}</TableCell>
-                          <TableCell>{formatCurrency(year.social_security)}</TableCell>
-                          <TableCell>{formatCurrency(year.total_tax)}</TableCell>
-                          <TableCell>{formatCurrency(year.spend_goal)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
+                          <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -330,24 +326,20 @@ export default function Home() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Age</TableHead>
-                        <TableHead>Brokerage Balance</TableHead>
-                        <TableHead>IRA Balance</TableHead>
-                        <TableHead>Roth Balance</TableHead>
-                        <TableHead>Social Security</TableHead>
-                        <TableHead>Total Tax</TableHead>
-                        <TableHead>Spend Goal</TableHead>
+                        <TableHead>From Brokerage</TableHead>
+                        <TableHead>From IRA</TableHead>
+                        <TableHead>From Roth</TableHead>
+                        <TableHead>IRA to Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {exampleData.map((year) => (
                         <TableRow key={year.age}>
                           <TableCell>{year.age}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_brokerage)}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_ira)}</TableCell>
-                          <TableCell>{formatCurrency(year.bal_roth)}</TableCell>
-                          <TableCell>{formatCurrency(year.social_security)}</TableCell>
-                          <TableCell>{formatCurrency(year.total_tax)}</TableCell>
-                          <TableCell>{formatCurrency(year.spend_goal)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_brokerage)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_ira)}</TableCell>
+                          <TableCell>{formatCurrency(year.wd_roth)}</TableCell>
+                          <TableCell>{formatCurrency(year.ira_to_roth)}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -362,3 +354,4 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
