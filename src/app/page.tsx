@@ -282,27 +282,27 @@ export default function Home() {
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table>
+                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Age</TableHead>
-                        <TableHead className="text-center">From Brokerage</TableHead>
-                        <TableHead className="text-center">From IRA</TableHead>
-                        <TableHead className="text-center">From Roth</TableHead>
-                        <TableHead className="text-center">Roth Conversion</TableHead>
+                         <TableHead className="w-24">Age</TableHead>
+                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                        <TableHead className="w-32 text-center">From IRA</TableHead>
+                        <TableHead className="w-32 text-center">From Roth</TableHead>
+                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
-                  <div className="overflow-auto max-h-40">
+                   <div className="overflow-auto max-h-40">
                     <Table>
                       <TableBody>
                         {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
-                            <TableCell>{year.age}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_ira)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_roth)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
+                            <TableCell className="w-24">{year.age}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -324,11 +324,11 @@ export default function Home() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Age</TableHead>
-                        <TableHead className="text-center">From Brokerage</TableHead>
-                        <TableHead className="text-center">From IRA</TableHead>
-                        <TableHead className="text-center">From Roth</TableHead>
-                        <TableHead className="text-center">Roth Conversion</TableHead>
+                        <TableHead className="w-24">Age</TableHead>
+                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                        <TableHead className="w-32 text-center">From IRA</TableHead>
+                        <TableHead className="w-32 text-center">From Roth</TableHead>
+                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
                       </TableRow>
                     </TableHeader>
                   </Table>
@@ -337,11 +337,11 @@ export default function Home() {
                       <TableBody>
                         {exampleData.map((year) => (
                           <TableRow key={year.age}>
-                            <TableCell>{year.age}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_ira)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.wd_roth)}</TableCell>
-                            <TableCell className="text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
+                            <TableCell className="w-24">{year.age}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -358,6 +358,7 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
 
