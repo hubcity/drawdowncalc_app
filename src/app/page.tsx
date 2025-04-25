@@ -133,7 +133,8 @@ const formatYAxis = (value: number) => {
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [loading, setLoading] = useState(false);
-    const chartRef = useRef(null); // Ref for the chart container
+    const chartRef = useRef(null); // Ref for the account balance chart container
+    const withdrawalChartRef = useRef(null); // Ref for the withdrawal chart container
 
     useEffect(() => {
         if (drawdownPlan && chartRef.current) {
@@ -220,7 +221,103 @@ export default function Home() {
                 .style("text-anchor", "middle")
                 .text("Account Balance ($)");
         }
-    }, [drawdownPlan]);
+
+        if (drawdownPlan && withdrawalChartRef.current) {
+          // Clear previous chart, if any
+          d3.select(withdrawalChartRef.current).select("svg").remove();
+
+          const data = drawdownPlan;
+
+          const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+          const width = 800 - margin.left - margin.right;
+          const height = 400 - margin.top - margin.bottom;
+
+          const svg = d3.select(withdrawalChartRef.current)
+              .append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", `translate(${margin.left},${margin.top})`);
+
+          // Define scales
+          const x = d3.scaleBand()
+              .domain(data.map(d => d.age.toString()))
+              .range([0, width])
+              .padding(0.1);
+          const y = d3.scaleLinear()
+              .domain([0, d3.max(data, d => d.wd_brokerage + d.wd_ira + d.wd_roth + d.ira_to_roth) || 0])
+              .nice()
+              .range([height, 0]);
+
+          // Create bars for Brokerage Withdrawals
+          svg.selectAll(".bar-brokerage-wd")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar-brokerage-wd")
+              .style("fill", COLORS[0])
+              .attr("x", d => x(d.age.toString()) || "0")
+              .attr("y", d => y(d.wd_brokerage))
+              .attr("width", x.bandwidth())
+              .attr("height", d => height - y(d.wd_brokerage));
+
+          // Create bars for IRA Withdrawals
+          svg.selectAll(".bar-ira-wd")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar-ira-wd")
+              .style("fill", COLORS[1])
+              .attr("x", d => x(d.age.toString()) || "0")
+              .attr("y", d => y(d.wd_brokerage + d.wd_ira))
+              .attr("width", x.bandwidth())
+              .attr("height", d => height - y(d.wd_ira));
+
+          // Create bars for Roth Withdrawals
+          svg.selectAll(".bar-roth-wd")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar-roth-wd")
+              .style("fill", COLORS[2])
+              .attr("x", d => x(d.age.toString()) || "0")
+              .attr("y", d => y(d.wd_brokerage + d.wd_ira + d.wd_roth))
+              .attr("width", x.bandwidth())
+              .attr("height", d => height - y(d.wd_roth));
+
+              // Create bars for IRA to Roth Conversions
+              svg.selectAll(".bar-ira-to-roth")
+              .data(data)
+              .enter().append("rect")
+              .attr("class", "bar-ira-to-roth")
+              .style("fill", COLORS[3])
+              .attr("x", d => x(d.age.toString()) || "0")
+              .attr("y", d => y(d.wd_brokerage + d.wd_ira + d.wd_roth + d.ira_to_roth))
+              .attr("width", x.bandwidth())
+              .attr("height", d => height - y(d.ira_to_roth));
+
+          // Add X axis
+          svg.append("g")
+              .attr("transform", `translate(0,${height})`)
+              .call(d3.axisBottom(x));
+
+          // Add Y axis
+          svg.append("g")
+              .call(d3.axisLeft(y).tickFormat(d3.formatPrefix(".1", 1e6)));
+
+          // Add labels
+          svg.append("text")
+              .attr("x", width / 2)
+              .attr("y", height + margin.bottom - 5)
+              .style("text-anchor", "middle")
+              .text("Age");
+
+          svg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 0 - margin.left)
+              .attr("x", 0 - (height / 2))
+              .attr("dy", "1em")
+              .style("text-anchor", "middle")
+              .text("Withdrawals and Conversions ($)");
+      }
+  }, [drawdownPlan]);
 
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
@@ -283,6 +380,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                                         <div ref={chartRef}></div>
+                                        <div ref={withdrawalChartRef}></div>
 
                   <Table>
                     <TableCaption>Drawdown Plan Details</TableCaption>
@@ -324,6 +422,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                                         <div ref={chartRef}></div>
+                                        <div ref={withdrawalChartRef}></div>
 
                   <Table>
                     <TableCaption>Example Drawdown Plan Details</TableCaption>
@@ -362,7 +461,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-
-
-
