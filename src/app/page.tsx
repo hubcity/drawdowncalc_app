@@ -112,8 +112,9 @@ export default function Home() {
             const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors, yFormat = d3.formatPrefix(".1", 1e3)) => {
                 const svg = d3.select(ref)
                     .append("svg")
-                    .attr("width", width + margin.left + margin.right)
+                    .attr("width", '100%')
                     .attr("height", height + margin.top + margin.bottom)
+                    .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
                     .append("g")
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -283,7 +284,7 @@ export default function Home() {
                   <CardTitle>Drawdown Plan Results</CardTitle>
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
-                <CardContent>                  
+                <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -366,5 +367,6 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
 
 
