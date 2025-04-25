@@ -134,11 +134,13 @@ export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [loading, setLoading] = useState(false);
     const chartRef = useRef(null); // Ref for the account balance chart container
+    const incomeChartRef = useRef(null);
 
     useEffect(() => {
-        if (drawdownPlan && chartRef.current) {
-            // Clear previous chart, if any
+        if (drawdownPlan && chartRef.current && incomeChartRef.current) {
+            // Clear previous charts
             d3.select(chartRef.current).select("svg").remove();
+            d3.select(incomeChartRef.current).select("svg").remove();
 
             const data = drawdownPlan;
 
@@ -146,79 +148,85 @@ export default function Home() {
             const width = 800 - margin.left - margin.right;
             const height = 400 - margin.top - margin.bottom;
 
-            const svg = d3.select(chartRef.current)
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", `translate(${margin.left},${margin.top})`);
+            // Function to create the stacked bar chart
+            const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors) => {
+                const svg = d3.select(ref)
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // Define scales
-            const x = d3.scaleBand()
-                .domain(data.map(d => d.age.toString()))
-                .range([0, width])
-                .padding(0.1);
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0])
-                .nice()
-                .range([height, 0]);
+                const x = d3.scaleBand()
+                    .domain(data.map(d => d.age.toString()))
+                    .range([0, width])
+                    .padding(0.1);
 
-            // Create bars for Brokerage Balance
-            svg.selectAll(".bar-brokerage")
-                .data(data)
-                .enter().append("rect")
-                .attr("class", "bar-brokerage")
-                .style("fill", COLORS[0])
-                .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_brokerage))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_brokerage));
+                const y = d3.scaleLinear()
+                    .domain([0, yMax])
+                    .nice()
+                    .range([height, 0]);
 
-            // Create bars for IRA Balance
-            svg.selectAll(".bar-ira")
-                .data(data)
-                .enter().append("rect")
-                .attr("class", "bar-ira")
-                .style("fill", COLORS[1])
-                .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_brokerage + d.bal_ira))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_ira));
+                const stack = d3.stack()
+                    .keys(dataKeys);
 
-            // Create bars for Roth Balance
-            svg.selectAll(".bar-roth")
-                .data(data)
-                .enter().append("rect")
-                .attr("class", "bar-roth")
-                .style("fill", COLORS[2])
-                .attr("x", d => x(d.age.toString()) || "0")
-                .attr("y", d => y(d.bal_brokerage + d.bal_ira + d.bal_roth))
-                .attr("width", x.bandwidth())
-                .attr("height", d => height - y(d.bal_roth));
+                const stackedData = stack(data);
 
-            // Add X axis
-            svg.append("g")
-                .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(x));
+                svg.selectAll(".series")
+                    .data(stackedData)
+                    .enter().append("g")
+                    .attr("class", "series")
+                    .style("fill", (d, i) => colors[i])
+                    .selectAll("rect")
+                    .data(d => d)
+                    .enter().append("rect")
+                    .attr("x", d => x(d.data.age.toString()) || "0")
+                    .attr("y", d => y(d[1]))
+                    .attr("height", d => y(d[0]) - y(d[1]))
+                    .attr("width", x.bandwidth());
 
-            // Add Y axis
-            svg.append("g")
-                .call(d3.axisLeft(y).tickFormat(d3.formatPrefix(".1", 1e6)));
+                svg.append("g")
+                    .attr("transform", `translate(0,${height})`)
+                    .call(d3.axisBottom(x));
 
-            // Add labels
-            svg.append("text")
-                .attr("x", width / 2)
-                .attr("y", height + margin.bottom - 5)
-                .style("text-anchor", "middle")
-                .text("Age");
+                svg.append("g")
+                    .call(d3.axisLeft(y).tickFormat(d3.formatPrefix(".1", 1e6)));
 
-            svg.append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", 0 - (height / 2))
-                .attr("dy", "1em")
-                .style("text-anchor", "middle")
-                .text("Account Balance ($)");
+                svg.append("text")
+                    .attr("x", width / 2)
+                    .attr("y", height + margin.bottom - 5)
+                    .style("text-anchor", "middle")
+                    .text("Age");
+
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 0 - margin.left)
+                    .attr("x", 0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text(yLabel);
+            };
+
+            // Account Balances Chart
+            const accountBalanceYMax = d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0;
+            createStackedBarChart(
+                chartRef.current,
+                accountBalanceYMax,
+                "Account Balance ($)",
+                ["bal_brokerage", "bal_ira", "bal_roth"],
+                COLORS
+            );
+
+            // Income Sources Chart
+            const incomeSourcesYMax = d3.max(data, d => d.wd_brokerage + d.wd_ira + d.wd_roth + d.social_security + d.cgd) || 0;
+            createStackedBarChart(
+                incomeChartRef.current,
+                incomeSourcesYMax,
+                "Income Sources ($)",
+                ["wd_brokerage", "wd_ira", "wd_roth", "social_security", "cgd"],
+                COLORS
+            );
+
         }
   }, [drawdownPlan]);
 
@@ -282,23 +290,21 @@ export default function Home() {
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                   <Table>
-                    <TableHeader>
-                      <TableRow>
-                         <TableHead className="w-24">Age</TableHead>
-                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                        <TableHead className="w-32 text-center">From IRA</TableHead>
-                        <TableHead className="w-32 text-center">From Roth</TableHead>
-                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                  </Table>
-                   <div className="overflow-auto max-h-40">
+                 <div className="overflow-auto max-h-40">
                     <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-24 text-center">Age</TableHead>
+                          <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                          <TableHead className="w-32 text-center">From IRA</TableHead>
+                          <TableHead className="w-32 text-center">From Roth</TableHead>
+                          <TableHead className="w-32 text-center">Roth Conversion</TableHead>
+                        </TableRow>
+                      </TableHeader>
                       <TableBody>
                         {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
-                            <TableCell className="w-24">{year.age}</TableCell>
+                            <TableCell className="w-24 text-center">{year.age}</TableCell>
                             <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
                             <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
                             <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
@@ -308,6 +314,7 @@ export default function Home() {
                       </TableBody>
                     </Table>
                   </div>
+                    <div className="mt-8" ref={incomeChartRef}></div>
                   <div className="mt-8" ref={chartRef}></div>
                   <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                 </CardContent>
@@ -358,9 +365,4 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-
-
-
-
 
