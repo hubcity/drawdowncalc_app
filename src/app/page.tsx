@@ -283,58 +283,20 @@ export default function Home() {
                   <CardTitle>Drawdown Plan Results</CardTitle>
                   <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  
-                    
-                      
-                        
-                          
-                            
-                              
-                                
-                                  
-                                  
-                                  
-                                  
-                                  
-                                
-                              
-                            
-                          
-                        
-                      
-                    
-                    
-                      
-                        
-                          
-                            
-                              
-                                
-                                  
-                                  
-                                  
-                                  
-                                  
-                                
-                              
-                            
-                          
-                        
-                      
-                    
-                  
+                <CardContent>                  
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-24 text-center">Age</TableHead>
+                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                        <TableHead className="w-32 text-center">From IRA</TableHead>
+                        <TableHead className="w-32 text-center">From Roth</TableHead>
+                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                  </Table>
                   <div className="overflow-auto max-h-40">
                     <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-24 text-center">Age</TableHead>
-                          <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                          <TableHead className="w-32 text-center">From IRA</TableHead>
-                          <TableHead className="w-32 text-center">From Roth</TableHead>
-                          <TableHead className="w-32 text-center">Roth Conversion</TableHead>
-                        </TableRow>
-                      </TableHeader>
                       <TableBody>
                         {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
@@ -366,48 +328,6 @@ export default function Home() {
                   <CardDescription>An example summary of a drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  
-                  
-                  
-                    
-                      
-                        
-                          
-                            
-                              
-                                
-                                  
-                                  
-                                  
-                                  
-                                  
-                                
-                              
-                            
-                          
-                        
-                      
-                    
-                    
-                      
-                        
-                          
-                            
-                              
-                                
-                                  
-                                  
-                                  
-                                  
-                                  
-                                
-                              
-                            
-                          
-                        
-                      
-                    
-                  
                   <Table>
                     <TableHeader>
                       <TableRow>
