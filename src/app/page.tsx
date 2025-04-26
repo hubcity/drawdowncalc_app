@@ -296,7 +296,11 @@ export default function Home() {
       <SidebarInset>
           {!hasAcceptedTerms ? (
               <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
-                  <p>Welcome to RetirePath! Please fill out the form to get started.</p>
+                  <p>This website is not a substitute for professional advice.
+                    All financial decisions should be made in consultation with a qualified advisor who understands your specific
+                    circumstances.
+                  </p>
+                  
                   <Button onClick={handleAcceptTerms}>I Understand</Button>
               </div>
           ) : loading ? (
@@ -307,7 +311,7 @@ export default function Home() {
         ) : (
           !submitted ? (
             <div className="flex items-center justify-center h-full p-4 text-center">
-              <p>Welcome to RetirePath! Please fill out the form to get started.</p>
+              <p>Please fill out the form to get started.</p>
             </div>
           ) : drawdownPlan ? (
             <div className="flex flex-col gap-4 p-4">
