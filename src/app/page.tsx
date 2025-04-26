@@ -279,47 +279,48 @@ export default function Home() {
         ) : (
           drawdownPlan ? (
             <div className="flex flex-col gap-4 p-4">
-                  <Card>
-                <CardHeader>
-                  <CardTitle>Drawdown Plan Results</CardTitle>
-                  <CardDescription>A summary of your drawdown plan.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-24 text-center">Age</TableHead>
-                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                        <TableHead className="w-32 text-center">From IRA</TableHead>
-                        <TableHead className="w-32 text-center">From Roth</TableHead>
-                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                  </Table>
-                  <div className="overflow-auto max-h-40">
-                    <Table>
-                      <TableBody>
-                        {drawdownPlan.map((year) => (
-                          <TableRow key={year.age}>
-                            <TableCell className="w-24 text-center">{year.age}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  <div className="mt-8">
-                    <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
-                  </div>
-                </CardContent>
-              </Card>
-              <div className="mt-8" ref={incomeChartRef}></div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Drawdown Plan Results</CardTitle>
+                        <CardDescription>A summary of your drawdown plan.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-24 text-center">Age</TableHead>
+                                    <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                                    <TableHead className="w-32 text-center">From IRA</TableHead>
+                                    <TableHead className="w-32 text-center">From Roth</TableHead>
+                                    <TableHead className="w-32 text-center">Roth Conversion</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                        </Table>
+                        <div className="overflow-auto max-h-40">
+                            <Table>
+                                <TableBody>
+                                    {drawdownPlan.map((year) => (
+                                        <TableRow key={year.age}>
+                                            <TableCell className="w-24 text-center">{year.age}</TableCell>
+                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
+                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
+                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
+                                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <div className="mt-8">
+                            <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+                    <div className="mt-8" ref={incomeChartRef}></div>
                     
                     <div className="mt-8" ref={spendingChartRef}></div>
-              <div className="mt-8" ref={chartRef}></div>
+                    
+                    <div className="mt-8" ref={chartRef}></div>
             </div>
           ) : (
             <div className="flex flex-col gap-4 p-4">
@@ -367,6 +368,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-
-
