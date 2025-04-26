@@ -27,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
   } from "@/components/ui/form";
   import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertTriangle } from "lucide-react";
   
 const states = [
     { value: 'AL', label: 'Alabama' },
@@ -389,8 +390,11 @@ const states = [
             control={form.control}
             name="Roth.balance"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Roth Balance</FormLabel>
+              <FormItem className="flex items-center">
+                <FormLabel className="flex items-center gap-1">
+                  Roth Balance
+                  <AlertTriangle size={16} className="text-yellow-500" />
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Roth Balance" type="number" {...field} />
                 </FormControl>
@@ -450,3 +454,4 @@ const states = [
       </Form>
     );
   }
+
