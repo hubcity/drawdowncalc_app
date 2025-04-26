@@ -28,6 +28,8 @@ import { Separator } from "@/components/ui/separator";
   import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
   
 const states = [
     { value: 'AL', label: 'Alabama' },
@@ -390,11 +392,18 @@ const states = [
             control={form.control}
             name="Roth.balance"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
-                  Roth Balance
-                  <AlertTriangle size={16} className="text-yellow-500" />
-                </FormLabel>
+              <FormItem>
+                <div className="flex items-center gap-1">
+                    <FormLabel >
+                      Roth Balance
+                    </FormLabel>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger><AlertTriangle size={16} className="text-yellow-500" /></TooltipTrigger>
+                        <TooltipContent>Some Roth 5-year rules are not implemented!  After age 59.5 all Roth funds are considered available.</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                </div>
                 <FormControl>
                   <Input placeholder="Roth Balance" type="number" {...field} />
                 </FormControl>
