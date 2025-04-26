@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import { Menu } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +20,7 @@ import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear } from "@/se
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { cn } from '@/lib/utils';
 import { Loader2 } from "lucide-react";
 import * as d3 from "d3";
 import { exampleData } from "@/lib/example-data";
@@ -90,6 +92,9 @@ const formatYAxis = (value: number) => {
 
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
     const chartRef = useRef(null); // Ref for the account balance chart container
     const incomeChartRef = useRef(null);
@@ -234,6 +239,7 @@ export default function Home() {
 
       const plan = await calculateDrawdownPlan(input);
       setDrawdownPlan(plan);
+      setSubmitted(true);
     } catch (error) {
       console.error("Failed to calculate drawdown plan:", error);
       // Optionally set an error state to display to the user
@@ -242,6 +248,14 @@ export default function Home() {
     }
   };
 
+  const handleAcceptTerms = () => {
+    setHasAcceptedTerms(true);
+    setIsSidebarOpen(true);
+  };
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
   return (
     <SidebarProvider>
       <Sidebar>
@@ -249,7 +263,9 @@ export default function Home() {
           <SidebarTrigger className="md:hidden" />
           <h2 className="text-lg font-bold">RetirePath</h2>
         </SidebarHeader>
-        <SidebarContent>
+          <div className={cn("p-4 overflow-y-auto", {
+              "pointer-events-none opacity-50": !hasAcceptedTerms,
+          })}>        <SidebarContent >
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton>
@@ -262,22 +278,38 @@ export default function Home() {
           </SidebarMenu>
           <SidebarSeparator />
           <DrawdownPlanForm onSubmit={handleSubmit} />
-        </SidebarContent>
+              </SidebarContent>
+          </div>
         <SidebarFooter>
           <SidebarSeparator />
           <p className="text-center text-sm">
             &copy; {new Date().getFullYear()} My Company
           </p>
         </SidebarFooter>
-      </Sidebar>
+          </Sidebar>
+        <Button
+            onClick={toggleSidebar}
+            className="fixed top-4 left-4 z-50 md:hidden"
+        >
+            <Menu />
+        </Button>
       <SidebarInset>
-        {loading ? (
+          {!hasAcceptedTerms ? (
+              <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
+                  <p>Welcome to RetirePath! Please fill out the form to get started.</p>
+                  <Button onClick={handleAcceptTerms}>I Understand</Button>
+              </div>
+          ) : loading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
             Calculating Drawdown Plan...
           </div>
         ) : (
-          drawdownPlan ? (
+          !submitted ? (
+            <div className="flex items-center justify-center h-full p-4 text-center">
+              <p>Welcome to RetirePath! Please fill out the form to get started.</p>
+            </div>
+          ) : drawdownPlan ? (
             <div className="flex flex-col gap-4 p-4">
                 <Card>
                     <CardHeader>
@@ -364,7 +396,7 @@ export default function Home() {
             </div>
           )
         )}
-      </SidebarInset>
+          </SidebarInset>
     </SidebarProvider>
   );
 }
