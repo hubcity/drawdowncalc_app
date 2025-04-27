@@ -92,7 +92,6 @@ const formatYAxis = (value: number) => {
 
 export default function Home() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
@@ -250,11 +249,9 @@ export default function Home() {
 
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
-    setIsSidebarOpen(true);
   };
 
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
     };
   return (
     <SidebarProvider>
@@ -277,12 +274,6 @@ export default function Home() {
           </p>
         </SidebarFooter>
           </Sidebar>
-        <Button
-            onClick={toggleSidebar}
-            className="fixed top-4 left-4 z-50 md:hidden"
-        >
-            <Menu />
-        </Button>
       <SidebarInset>
           {!hasAcceptedTerms ? (
               <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
