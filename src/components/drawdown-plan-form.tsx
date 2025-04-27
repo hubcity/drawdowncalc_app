@@ -165,7 +165,7 @@ const months = [
           distributions: 6.0,
         },
         IRA: {
-          balance: 300000,
+          balance: 333333,
         },
         Roth: {
           balance: 200000,
@@ -186,7 +186,7 @@ const months = [
   
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = new Date().getFullYear();
-    const conversionYears = Array.from({ length: 5 }, (_, i) => currentYear - 5 + i);
+    const conversionYears = Array.from({ length: 5 }, (_, i) => currentYear - 1 - i);
   
     function handleFormSubmit(values: z.infer<typeof formSchema>) {
       setFormValues(values);
@@ -469,13 +469,39 @@ const months = [
             )}
           />
   
-        {form.getValues("about.age") <= 60 && (
+
+           {form.getValues("about.age") <= 60 && (
+            <>
+              {conversionYears.map((year) => (
+                <FormField
+                  key={year}
+                  control={form.control}
+                  name={`Roth.recent_conversions.${year - conversionYears[0]}.0`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{`${year} Conversion`}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={`${year} Conversion`}
+                          type="number"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </>
+          )}
+
+{form.getValues("about.age") <= 60 && (
           <FormField
             control={form.control}
             name="Roth.old_conversions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Roth Old Conversions</FormLabel>
+                <FormLabel>Older Conversions</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Roth Old Conversions"
@@ -489,37 +515,13 @@ const months = [
           />
         )}
 
-           {form.getValues("about.age") <= 60 && (
-            <>
-              {conversionYears.map((year) => (
-                <FormField
-                  key={year}
-                  control={form.control}
-                  name={`Roth.recent_conversions.${year - conversionYears[0]}.0`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{`Roth Conversion Amount for ${year}`}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={`Roth Conversion Amount for ${year}`}
-                          type="number"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </>
-          )}
 
           <FormField
             control={form.control}
             name="spending_preference"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Spending Preference</FormLabel>
+                <FormLabel>Goal</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
