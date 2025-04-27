@@ -171,13 +171,13 @@ const months = [
           balance: 200000,
           year_opened: 2020,
           old_conversions: 10000,
-          recent_conversions: [
-            [2020, 5000],
-            [2021, 6000],
-            [2022, 4000],
-            [2023, 4500],
-            [2024, 4000],
-          ],
+          recent_conversions: {
+            2020: 5000,
+            2021: 6000,
+            2022: 4000,
+            2023: 4500,
+            2024: 4000,
+          },
         },
         spending_preference: "maximize_spending",
         annual_spending: 0,
@@ -185,8 +185,8 @@ const months = [
     });
   
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
-    const currentYear = new Date().getFullYear();
-    const conversionYears = Array.from({ length: 5 }, (_, i) => currentYear - 1 - i);
+    const currentYear = 2025;
+    const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
   
     function handleFormSubmit(values: z.infer<typeof formSchema>) {
       setFormValues(values);
@@ -263,7 +263,7 @@ const months = [
             name="about.filing_status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Filing Status</FormLabel>
+                <FormLabel>Tax Filing Status</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -307,74 +307,36 @@ const months = [
             )}
           />
 
-            <Separator/>
+<Separator/>
   
-          <FormField
-            control={form.control}
-            name="social_security.amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Social Security Amount</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Social Security Amount"
-                    type="number"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-  
-          <FormField
-            control={form.control}
-            name="social_security.starts"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Social Security Starts</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Social Security Starts"
-                    type="number"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+  <FormField
+    control={form.control}
+    name="predictions.inflation"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Inflation Rate</FormLabel>
+        <FormControl>
+          <Input placeholder="Inflation Rate" type="number" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
 
-            <Separator/>
-  
-          <FormField
-            control={form.control}
-            name="predictions.inflation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Inflation Rate</FormLabel>
-                <FormControl>
-                  <Input placeholder="Inflation Rate" type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-  
-          <FormField
-            control={form.control}
-            name="predictions.returns"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Rate of Return</FormLabel>
-                <FormControl>
-                  <Input placeholder="Rate of Return" type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-  
+  <FormField
+    control={form.control}
+    name="predictions.returns"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Rate of Return</FormLabel>
+        <FormControl>
+          <Input placeholder="Rate of Return" type="number" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
             <Separator/>
 
           <FormField
@@ -400,7 +362,7 @@ const months = [
             name="brokerage.basis"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Brokerage Basis</FormLabel>
+                <FormLabel>Brokerage Cost Basis</FormLabel>
                 <FormControl>
                   <Input placeholder="Brokerage Basis" type="number" {...field} />
                 </FormControl>
@@ -476,7 +438,7 @@ const months = [
                 <FormField
                   key={year}
                   control={form.control}
-                  name={`Roth.recent_conversions.${year - conversionYears[0]}.0`}
+                  name={`Roth.recent_conversions.${year}`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{`${year} Conversion`}</FormLabel>
@@ -515,6 +477,45 @@ const months = [
           />
         )}
 
+<Separator/>
+  
+  <FormField
+    control={form.control}
+    name="social_security.starts"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Social Security Starts</FormLabel>
+        <FormControl>
+          <Input
+            placeholder="Social Security Starts"
+            type="number"
+            {...field}
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  <FormField
+    control={form.control}
+    name="social_security.amount"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Annual Benefit</FormLabel>
+        <FormControl>
+          <Input
+            placeholder="Social Security Amount"
+            type="number"
+            {...field}
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  <Separator/>
 
           <FormField
             control={form.control}
@@ -553,7 +554,7 @@ const months = [
               name="annual_spending"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Estimated Annual Spending</FormLabel>
+                  <FormLabel>Living Expenses</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Annual Spending"
