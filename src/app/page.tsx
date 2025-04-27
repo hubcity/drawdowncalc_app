@@ -100,6 +100,7 @@ function AppContent() {
   const chartRef = useRef(null);
   const incomeChartRef = useRef(null);
   const spendingChartRef = useRef(null);
+  const [showFieldDescriptions, setShowFieldDescriptions] = useState(false);
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
   useEffect(() => {
@@ -247,6 +248,7 @@ function AppContent() {
 
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
+    setShowFieldDescriptions(true); // Show field descriptions
     setOpen(true); // Use setOpen from the hook
   };
 
@@ -280,6 +282,24 @@ function AppContent() {
             </p>
             <Button onClick={handleAcceptTerms}>I Understand</Button>
             {/* Removed Toggle Button from here */}
+          </div>
+        ) : showFieldDescriptions ? (
+          <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+            <h2>Form Field Descriptions:</h2>
+            <p><b>Age:</b> Your current age.</p>
+            <p><b>End of Plan Age:</b> The age to which the drawdown plan should project.</p>
+            <p><b>Filing Status:</b> Your tax filing status (Single or Married Filing Jointly).</p>
+            <p><b>State of Residence:</b> The state where you currently reside.</p>
+            <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
+            <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
+            <p><b>Inflation Rate:</b> The assumed annual inflation rate, expressed as a percentage.</p>
+            <p><b>Rate of Return:</b> The assumed annual investment rate of return, expressed as a percentage.</p>
+            <p><b>Brokerage Balance:</b> The current balance of your taxable brokerage account.</p>
+            <p><b>Brokerage Basis:</b> The cost basis of the assets in your brokerage account.</p>
+            <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
+            <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
+            <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
+            <p><b>Roth Old Conversions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
           </div>
         ) : loading ? (
           <div className="flex items-center justify-center h-full">
@@ -363,3 +383,4 @@ export default function Home() {
     </SidebarProvider>
   );
 }
+
