@@ -163,7 +163,7 @@ const states = [
           ],
         },
         spending_preference: "maximize_spending",
-        annual_spending: undefined,
+        annual_spending: 0,
       },
     });
   
