@@ -112,7 +112,6 @@ const states = [
     Roth: z.object({
       balance: z.number(),
       year_opened: z.number(),
-      contributions: z.number(),
       old_conversions: z.number(),
       recent_conversions: z.array(z.array(z.number())),
     }),
@@ -151,7 +150,6 @@ const states = [
         Roth: {
           balance: 200000,
           year_opened: 2020,
-          contributions: 10000,
           old_conversions: 10000,
           recent_conversions: [
             [2020, 5000],
@@ -400,7 +398,7 @@ const states = [
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger><AlertTriangle size={16} className="text-yellow-500" /></TooltipTrigger>
-                        <TooltipContent>Some Roth 5-year rules are not implemented!  After age 59.5 all Roth funds are considered available.</TooltipContent>
+                        <TooltipContent>Roth 5-year rules are only partially implemented!  After age 59.5 all Roth funds are considered available.</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
                 </div>
@@ -412,33 +410,6 @@ const states = [
             )}
           />
   
-          <FormField
-            control={form.control}
-            name="Roth.year_opened"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Roth Year Opened</FormLabel>
-                <FormControl>
-                  <Input placeholder="Roth Year Opened" type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-  
-          <FormField
-            control={form.control}
-            name="Roth.contributions"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Roth Contributions</FormLabel>
-                <FormControl>
-                  <Input placeholder="Roth Contributions" type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
   
           <FormField
             control={form.control}

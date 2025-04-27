@@ -261,21 +261,11 @@ export default function Home() {
       <Sidebar>
         <SidebarHeader>
           <SidebarTrigger className="md:hidden" />
-          <h2 className="text-lg font-bold">RetirePath</h2>
+          <h2 className="text-lg font-bold">DrawdownCalc</h2>
         </SidebarHeader>
           <div className={cn("p-4 overflow-y-auto", {
               "pointer-events-none opacity-50": !hasAcceptedTerms,
           })}>        <SidebarContent >
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <span>Dashboard</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <span>Settings</span>
-            </SidebarMenuItem>
-          </SidebarMenu>
           <SidebarSeparator />
           <DrawdownPlanForm onSubmit={handleSubmit} />
               </SidebarContent>
