@@ -130,7 +130,7 @@ const months = [
       balance: z.number(),
       year_opened: z.number(),
       old_conversions: z.number(),
-      recent_conversions: z.array(z.array(z.number())),
+      recent_conversions: z.record(z.number()),
     }),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.number().optional(),
@@ -425,6 +425,24 @@ const months = [
                 </div>
                 <FormControl>
                   <Input placeholder="Roth Balance" type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+<FormField
+            control={form.control}
+            name="Roth.year_opened"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Year of First Roth Contribution or Conversion</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Year of First Roth Contribution"
+                    type="number"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
