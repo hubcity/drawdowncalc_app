@@ -291,29 +291,22 @@ function AppContent() {
             <p><b>End of Plan Age:</b> The age to which the drawdown plan should project.</p>
             <p><b>Tax Filing Status:</b> Your tax filing status (Single or Married Filing Jointly).</p>
             <p><b>State of Residence:</b> The state where you currently reside.</p>
-            <Separator className="w-full" />
             <p><b>Inflation Rate:</b> The assumed annual inflation rate, expressed as a percentage.</p>
             <p><b>Rate of Return:</b> The assumed annual investment rate of return, expressed as a percentage.</p>
-            <Separator className="w-full" />
             <p><b>Brokerage Balance:</b> The current balance of your taxable brokerage account.</p>
             <p><b>Brokerage Basis:</b> The cost basis of the assets in your brokerage account.</p>
             <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
-            <Separator className="w-full" />
             <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
-             <Separator className="w-full" />
             <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
             <p><b>Year of First Roth Contribution or Conversion:</b> The year you first contributed to or converted funds to a Roth IRA.</p>
             {/* {conversionYears.map((year) => ())} */}
             <p><b>Recent Conversions:</b> Roth conversions made in recent years.</p>
             <p><b>Older Conversions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
-            <Separator className="w-full" />
             <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
             <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
-            <Separator className="w-full" />
              <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
             <p><b>SLCSP Premium:</b> The premium amount for the Second Lowest Cost Silver Plan (SLCSP) ACA health insurance plan.</p>
             <p><b>Number of People Covered:</b> The number of individuals covered under the ACA health insurance plan.</p>
-            <Separator className="w-full" />
             <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>
