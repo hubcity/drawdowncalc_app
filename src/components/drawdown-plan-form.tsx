@@ -183,6 +183,8 @@ const months = [
           },
         },
         aca: {
+          full_premium: 0,
+          slcsp_premium: 0,
           people_covered: 1, // Default to 1
         },
         spending_preference: "maximize_spending",
@@ -661,4 +663,3 @@ const months = [
       </Form>
     );
   }
-
