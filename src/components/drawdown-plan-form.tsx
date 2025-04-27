@@ -1,5 +1,3 @@
-"use client";
-
 import {
     About,
     Brokerage,
@@ -184,6 +182,9 @@ const months = [
             2024: 4000,
           },
         },
+        aca: {
+          people_covered: 1, // Default to 1
+        },
         spending_preference: "maximize_spending",
         annual_spending: 0,
       },
@@ -192,6 +193,11 @@ const months = [
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2025;
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
+
+    // Update default value for people_covered based on filing status
+    form.watch("about.filing_status", (filingStatus) => {
+        form.setValue("aca.people_covered", filingStatus === "single" ? 1 : 2);
+    });
   
     function handleFormSubmit(values: z.infer<typeof formSchema>) {
       setFormValues(values);
@@ -583,7 +589,7 @@ const months = [
         name="aca.people_covered"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>People Covered</FormLabel>
+            <FormLabel>Number of People Covered</FormLabel>
             <FormControl>
               <Input
                 placeholder="People Covered"
@@ -597,6 +603,7 @@ const months = [
       />
     </>
   )}
+          <Separator />
 
           <FormField
             control={form.control}
@@ -654,3 +661,4 @@ const months = [
       </Form>
     );
   }
+
