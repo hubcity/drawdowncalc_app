@@ -322,6 +322,8 @@ const states = [
             )}
           />
   
+            <Separator/>
+
           <FormField
             control={form.control}
             name="brokerage.balance"
@@ -371,6 +373,8 @@ const states = [
               </FormItem>
             )}
           />
+
+            <Separator/>
   
           <FormField
             control={form.control}
@@ -385,6 +389,8 @@ const states = [
               </FormItem>
             )}
           />
+
+            <Separator/>
   
           <FormField
             control={form.control}
@@ -434,4 +440,5 @@ const states = [
       </Form>
     );
   }
+
 
