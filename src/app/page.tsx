@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
+  SidebarRail,
   useSidebar, // Import useSidebar
 } from "@/components/ui/sidebar";
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
@@ -251,30 +252,25 @@ function AppContent() {
 
   return (
     <> {/* Use Fragment to return multiple elements */}
-      <Sidebar> {/* defaultOpen controls initial state */}
+      <Sidebar collapsible="icon"> {/* defaultOpen controls initial state */}
         <div className="p-2"> {/* Add padding if needed */}
-              {(
-                <SidebarTrigger />
-              )}
+            {(
+              <SidebarTrigger />  
+            )}
         </div>
             <SidebarHeader>
-              {/* Conditionally render the trigger AFTER terms are accepted */}
-              <h2 className="text-lg font-bold ml-2">DrawdownCalc</h2> {/* Add margin if needed */}
-              {/* The custom button is removed */}
+            
             </SidebarHeader>
         <div className={cn("p-4 overflow-y-auto", {
-          "pointer-events-none opacity-50": !hasAcceptedTerms,
+             "pointer-events-none opacity-50": !hasAcceptedTerms,
+            "group-data-[state=collapsed]:overflow-y-hidden": true,
         })}>
-          <SidebarContent>
-            <SidebarSeparator />
+            <SidebarContent>
             <DrawdownPlanForm onSubmit={handleSubmit} />
           </SidebarContent>
         </div>
         <SidebarFooter>
           <SidebarSeparator />
-          <p className="text-center text-sm">
-            &copy; {new Date().getFullYear()} My Company
-          </p>
         </SidebarFooter>
       </Sidebar>
 
