@@ -34,6 +34,10 @@ export interface About {
      */
     age: number;
     /**
+     * The birth month of the user.
+     */
+    birth_month: string;
+    /**
      * The age at the end of the plan.
      */
     end_of_plan_age: number;

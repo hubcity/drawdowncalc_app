@@ -86,10 +86,25 @@ const states = [
     { value: 'WY', label: 'Wyoming' },
 ];
 
+const months = [
+    { value: '1', label: 'January' },
+    { value: '2', label: 'February' },
+    { value: '3', label: 'March' },
+    { value: '4', label: 'April' },
+    { value: '5', label: 'May' },
+    { value: '6', label: 'June' },
+    { value: '7', label: 'July' },
+    { value: '8', label: 'August' },
+    { value: '9', label: 'September' },
+    { value: '10', label: 'October' },
+    { value: '11', label: 'November' },
+    { value: '12', label: 'December' },
+];
   
   const formSchema = z.object({
     about: z.object({
       age: z.number().min(18, { message: "Age must be greater than 18" }),
+      birth_month: z.string(),
       end_of_plan_age: z.number(),
       filing_status: z.enum(["single", "married"]),
       state_of_residence: z.string(),
@@ -130,6 +145,7 @@ const states = [
       defaultValues: {
         about: {
           age: 55,
+          birth_month: "1",
           end_of_plan_age: 96,
           filing_status: "single",
           state_of_residence: "DC",
@@ -189,6 +205,31 @@ const states = [
                 <FormControl>
                   <Input placeholder="Age" type="number" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="about.birth_month"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Birth Month</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select birth month" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {months.map((month) => (
+                      <SelectItem key={month.value} value={month.value}>
+                        {month.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
