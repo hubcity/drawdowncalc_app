@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
+  useSidebar, // Import useSidebar
 } from "@/components/ui/sidebar";
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
 import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear } from "@/services/drawdown-plan";
@@ -89,159 +90,155 @@ const formatYAxis = (value: number) => {
   }
 };
 
-
-export default function Home() {
+// --- New AppContent Component ---
+function AppContent() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-    const chartRef = useRef(null); // Ref for the account balance chart container
-    const incomeChartRef = useRef(null);
-    const spendingChartRef = useRef(null);
+  const chartRef = useRef(null);
+  const incomeChartRef = useRef(null);
+  const spendingChartRef = useRef(null);
+  const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
-    useEffect(() => {
-        if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current) {
-            // Clear previous charts
-            d3.select(chartRef.current).select("svg").remove();
-            d3.select(incomeChartRef.current).select("svg").remove();
-            d3.select(spendingChartRef.current).select("svg").remove();
+  useEffect(() => {
+    if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current) {
+      // Clear previous charts
+      d3.select(chartRef.current).select("svg").remove();
+      d3.select(incomeChartRef.current).select("svg").remove();
+      d3.select(spendingChartRef.current).select("svg").remove();
 
-            const data = drawdownPlan;
+      const data = drawdownPlan;
+      const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+      const width = 800 - margin.left - margin.right;
+      const height = 400 - margin.top - margin.bottom;
 
-            const margin = { top: 20, right: 30, bottom: 30, left: 60 };
-            const width = 800 - margin.left - margin.right;
-            const height = 400 - margin.top - margin.bottom;
+      // Function to create the stacked bar chart
+      const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors, yFormat = d3.formatPrefix(".1", 1e3)) => {
+        const svg = d3.select(ref)
+          .append("svg")
+          .attr("width", '100%')
+          .attr("height", height + margin.top + margin.bottom)
+          .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
 
-            // Function to create the stacked bar chart
-            const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors, yFormat = d3.formatPrefix(".1", 1e3)) => {
-                const svg = d3.select(ref)
-                    .append("svg")
-                    .attr("width", '100%')
-                    .attr("height", height + margin.top + margin.bottom)
-                    .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-                    .append("g")
-                    .attr("transform", `translate(${margin.left},${margin.top})`);
+        const x = d3.scaleBand()
+          .domain(data.map(d => d.age.toString()))
+          .range([0, width])
+          .padding(0.1);
 
-                const x = d3.scaleBand()
-                    .domain(data.map(d => d.age.toString()))
-                    .range([0, width])
-                    .padding(0.1);
+        const y = d3.scaleLinear()
+          .domain([0, yMax])
+          .nice()
+          .range([height, 0]);
 
-                const y = d3.scaleLinear()
-                    .domain([0, yMax])
-                    .nice()
-                    .range([height, 0]);
+        const stack = d3.stack()
+          .keys(dataKeys);
 
-                const stack = d3.stack()
-                    .keys(dataKeys);
+        const stackedData = stack(data);
 
-                const stackedData = stack(data);
+        svg.selectAll(".series")
+          .data(stackedData)
+          .enter().append("g")
+          .attr("class", "series")
+          .style("fill", (d, i) => colors[i])
+          .selectAll("rect")
+          .data(d => d)
+          .enter().append("rect")
+          .attr("x", d => x(d.data.age.toString()) || "0")
+          .attr("y", d => y(d[1]))
+          .attr("height", d => y(d[0]) - y(d[1]))
+          .attr("width", x.bandwidth());
 
-                svg.selectAll(".series")
-                    .data(stackedData)
-                    .enter().append("g")
-                    .attr("class", "series")
-                    .style("fill", (d, i) => colors[i])
-                    .selectAll("rect")
-                    .data(d => d)
-                    .enter().append("rect")
-                    .attr("x", d => x(d.data.age.toString()) || "0")
-                    .attr("y", d => y(d[1]))
-                    .attr("height", d => y(d[0]) - y(d[1]))
-                    .attr("width", x.bandwidth());
+        svg.append("g")
+          .attr("transform", `translate(0,${height})`)
+          .call(d3.axisBottom(x).tickSize(0).tickPadding(10));
 
-                svg.append("g")
-                    .attr("transform", `translate(0,${height})`)
-                    .call(d3.axisBottom(x).tickSize(0).tickPadding(10));
+        svg.append("g")
+          .call(d3.axisLeft(y).tickFormat(yFormat));
 
-                svg.append("g")
-                    .call(d3.axisLeft(y).tickFormat(yFormat));
+        svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", height + margin.bottom - 5)
+          .style("text-anchor", "middle")
+          .text("");
 
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height + margin.bottom - 5)
-                    .style("text-anchor", "middle")
-                    .text("");
+        svg.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left)
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text(yLabel);
 
-                svg.append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 0 - margin.left)
-                    .attr("x", 0 - (height / 2))
-                    .attr("dy", "1em")
-                    .style("text-anchor", "middle")
-                    .text(yLabel);
+        const legend = svg.append("g")
+          .attr("class", "legend")
+          .attr("transform", `translate(${width - 100}, -10)`);
 
-                const legend = svg.append("g")
-                    .attr("class", "legend")
-                    .attr("transform", `translate(${width - 100}, -10)`);
+        dataKeys.forEach((key, i) => {
+          const legendItem = legend.append("g")
+            .attr("transform", `translate(0, ${i * 20})`);
 
-                dataKeys.forEach((key, i) => {
-                    const legendItem = legend.append("g")
-                        .attr("transform", `translate(0, ${i * 20})`);
+          legendItem.append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", 15)
+            .attr("height", 15)
+            .attr("fill", colors[i]);
 
-                    legendItem.append("rect")
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", 15)
-                        .attr("height", 15)
-                        .attr("fill", colors[i]);
+          legendItem.append("text")
+            .attr("x", 20)
+            .attr("y", 12)
+            .text(key)
+            .style("font-size", "12px");
+        });
+      };
 
-                    legendItem.append("text")
-                        .attr("x", 20)
-                        .attr("y", 12)
-                        .text(key)
-                        .style("font-size", "12px");
-                });
-            };
+      // Income Sources Chart
+      const incomeSourcesYMax = d3.max(data, d => d.wd_brokerage + d.wd_ira + d.wd_roth + d.social_security + d.cgd) || 0;
+      createStackedBarChart(
+        incomeChartRef.current,
+        incomeSourcesYMax,
+        "Income Sources ($)",
+        ["wd_brokerage", "wd_ira", "wd_roth", "social_security", "cgd"],
+        COLORS
+      );
 
-            // Income Sources Chart
-            const incomeSourcesYMax = d3.max(data, d => d.wd_brokerage + d.wd_ira + d.wd_roth + d.social_security + d.cgd) || 0;
-            createStackedBarChart(
-                incomeChartRef.current,
-                incomeSourcesYMax,
-                "Income Sources ($)",
-                ["wd_brokerage", "wd_ira", "wd_roth", "social_security", "cgd"],
-                COLORS
-            );
+      // Spending Categories Chart
+      const spendingCategoriesYMax = d3.max(data, d => d.spend_goal + d.fed_tax + d.state_tax) || 0;
+      createStackedBarChart(
+        spendingChartRef.current,
+        spendingCategoriesYMax,
+        "Spending Categories ($)",
+        ["spend_goal", "fed_tax", "state_tax"],
+        COLORS_SPENDING,
+        d3.formatPrefix(".1", 1e3)
+      );
 
-            // Spending Categories Chart
-            const spendingCategoriesYMax = d3.max(data, d => d.spend_goal + d.fed_tax + d.state_tax) || 0;
-            createStackedBarChart(
-                spendingChartRef.current,
-                spendingCategoriesYMax,
-                "Spending Categories ($)",
-                ["spend_goal", "fed_tax", "state_tax"],
-                COLORS_SPENDING,
-                d3.formatPrefix(".1", 1e3)
-            );
-
-            // Account Balances Chart
-            const accountBalanceYMax = d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0;
-            createStackedBarChart(
-                chartRef.current,
-                accountBalanceYMax,
-                "Account Balance ($)",
-                ["bal_brokerage", "bal_ira", "bal_roth"],
-                COLORS,
-                formatYAxis
-            );
-
-        }
+      // Account Balances Chart
+      const accountBalanceYMax = d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0;
+      createStackedBarChart(
+        chartRef.current,
+        accountBalanceYMax,
+        "Account Balance ($)",
+        ["bal_brokerage", "bal_ira", "bal_roth"],
+        COLORS,
+        formatYAxis
+      );
+    }
   }, [drawdownPlan]);
-
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
     setLoading(true);
     try {
       // Simulate a 3-second delay
       await new Promise(resolve => setTimeout(resolve, 3000));
-
       const plan = await calculateDrawdownPlan(input);
       setDrawdownPlan(plan);
       setSubmitted(true);
     } catch (error) {
       console.error("Failed to calculate drawdown plan:", error);
-      // Optionally set an error state to display to the user
     } finally {
       setLoading(false);
     }
@@ -249,42 +246,49 @@ export default function Home() {
 
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
+    setOpen(true); // Use setOpen from the hook
   };
 
-    const toggleSidebar = () => {
-    };
   return (
-    <SidebarProvider>
-      <Sidebar>
+    <> {/* Use Fragment to return multiple elements */}
+      <Sidebar defaultOpen={false}> {/* defaultOpen controls initial state */}
         <SidebarHeader>
           <SidebarTrigger className="md:hidden" />
           <h2 className="text-lg font-bold">DrawdownCalc</h2>
+          {/* Move Toggle button inside header or somewhere visible when collapsed */}
+          {hasAcceptedTerms && (
+             <Button onClick={toggleSidebar} className="ml-auto" variant="ghost" size="icon"> {/* Use toggleSidebar from hook */}
+                <Menu size={16}/>
+             </Button>
+          )}
         </SidebarHeader>
-          <div className={cn("p-4 overflow-y-auto", {
-              "pointer-events-none opacity-50": !hasAcceptedTerms,
-          })}>        <SidebarContent >
-          <SidebarSeparator />
-          <DrawdownPlanForm onSubmit={handleSubmit} />
-              </SidebarContent>
-          </div>
+        <div className={cn("p-4 overflow-y-auto", {
+          "pointer-events-none opacity-50": !hasAcceptedTerms,
+        })}>
+          <SidebarContent>
+            <SidebarSeparator />
+            <DrawdownPlanForm onSubmit={handleSubmit} />
+          </SidebarContent>
+        </div>
         <SidebarFooter>
           <SidebarSeparator />
           <p className="text-center text-sm">
             &copy; {new Date().getFullYear()} My Company
           </p>
         </SidebarFooter>
-          </Sidebar>
+      </Sidebar>
+
       <SidebarInset>
-          {!hasAcceptedTerms ? (
-              <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
-                  <p>This website is not a substitute for professional advice.
-                    All financial decisions should be made in consultation with a qualified advisor who understands your specific
-                    circumstances.
-                  </p>
-                  
-                  <Button onClick={handleAcceptTerms}>I Understand</Button>
-              </div>
-          ) : loading ? (
+        {!hasAcceptedTerms ? (
+          <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
+            <p>This website is not a substitute for professional advice.
+              All financial decisions should be made in consultation with a qualified advisor who understands your specific
+              circumstances.
+            </p>
+            <Button onClick={handleAcceptTerms}>I Understand</Button>
+            {/* Removed Toggle Button from here */}
+          </div>
+        ) : loading ? (
           <div className="flex items-center justify-center h-full">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
             Calculating Drawdown Plan...
@@ -292,59 +296,17 @@ export default function Home() {
         ) : (
           !submitted ? (
             <div className="flex items-center justify-center h-full p-4 text-center">
-              <p>Please fill out the form to get started.</p>
+               {/* Display limitations text after accepting */}
+               <p>
+                 This software is provided as a tool for financial planning and is not a substitute for professional advice. All financial decisions should be made in consultation with a qualified advisor who understands your specific circumstances. The software is for educational use only and is not intended for financial transactions.
+               </p>
             </div>
           ) : drawdownPlan ? (
             <div className="flex flex-col gap-4 p-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Drawdown Plan Results</CardTitle>
-                        <CardDescription>A summary of your drawdown plan.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-24 text-center">Age</TableHead>
-                                    <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                                    <TableHead className="w-32 text-center">From IRA</TableHead>
-                                    <TableHead className="w-32 text-center">From Roth</TableHead>
-                                    <TableHead className="w-32 text-center">Roth Conversion</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                        </Table>
-                        <div className="overflow-auto max-h-40">
-                            <Table>
-                                <TableBody>
-                                    {drawdownPlan.map((year) => (
-                                        <TableRow key={year.age}>
-                                            <TableCell className="w-24 text-center">{year.age}</TableCell>
-                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
-                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
-                                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
-                                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                        <div className="mt-8">
-                            <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
-                        </div>
-                    </CardContent>
-                </Card>
-                    <div className="mt-8" ref={incomeChartRef}></div>
-                    
-                    <div className="mt-8" ref={spendingChartRef}></div>
-                    
-                    <div className="mt-8" ref={chartRef}></div>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4 p-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Example Drawdown Plan Results</CardTitle>
-                  <CardDescription>An example summary of a drawdown plan.</CardDescription>
+                  <CardTitle>Drawdown Plan Results</CardTitle>
+                  <CardDescription>A summary of your drawdown plan.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -361,7 +323,7 @@ export default function Home() {
                   <div className="overflow-auto max-h-40">
                     <Table>
                       <TableBody>
-                        {exampleData.map((year) => (
+                        {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
                             <TableCell className="w-24 text-center">{year.age}</TableCell>
                             <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
@@ -374,14 +336,37 @@ export default function Home() {
                     </Table>
                   </div>
                   <div className="mt-8">
-                    <Button onClick={() => downloadCsv(exampleData)}>Download CSV</Button>
+                    <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
                   </div>
                 </CardContent>
               </Card>
+              <div className="mt-8" ref={incomeChartRef}></div>
+              <div className="mt-8" ref={spendingChartRef}></div>
+              <div className="mt-8" ref={chartRef}></div>
             </div>
+          ) : (
+             // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
+             // Or potentially keep the limitations text until the form is submitted?
+             // Let's keep the limitations text until submission for clarity
+             <div className="flex items-center justify-center h-full p-4 text-center">
+               <p>
+                 This software is provided as a tool for financial planning and is not a substitute for professional advice. All financial decisions should be made in consultation with a qualified advisor who understands your specific circumstances. The software is for educational use only and is not intended for financial transactions.
+               </p>
+             </div>
           )
         )}
-          </SidebarInset>
+      </SidebarInset>
+    </>
+  );
+}
+
+
+// --- Original Home Component ---
+export default function Home() {
+  return (
+    // SidebarProvider wraps the AppContent component
+    <SidebarProvider>
+      <AppContent />
     </SidebarProvider>
   );
 }
