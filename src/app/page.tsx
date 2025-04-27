@@ -258,10 +258,7 @@ function AppContent() {
               <SidebarTrigger />  
             )}
         </div>
-            <SidebarHeader>
-            
-            </SidebarHeader>
-        <div className={cn("p-4 overflow-y-auto", {
+        <div className={cn("pt-0 px-4 overflow-y-auto", {
              "pointer-events-none opacity-50": !hasAcceptedTerms,
             "group-data-[state=collapsed]:overflow-y-hidden": true,
         })}>
