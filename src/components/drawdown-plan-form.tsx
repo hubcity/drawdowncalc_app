@@ -30,6 +30,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
   
 const states = [
@@ -223,11 +224,13 @@ const months = [
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {months.map((month) => (
-                      <SelectItem key={month.value} value={month.value}>
-                        {month.label}
-                      </SelectItem>
-                    ))}
+                    <ScrollArea className="h-32">
+                        {months.map((month) => (
+                          <SelectItem key={month.value} value={month.value}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
+                    </ScrollArea>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -288,11 +291,13 @@ const months = [
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {states.map((state) => (
-                      <SelectItem key={state.value} value={state.value}>
-                        {state.label}
-                      </SelectItem>
-                    ))}
+                    <ScrollArea className="h-32">
+                        {states.map((state) => (
+                          <SelectItem key={state.value} value={state.value}>
+                            {state.label}
+                          </SelectItem>
+                        ))}
+                    </ScrollArea>
                   </SelectContent>
                 </Select>
                 <FormMessage />
