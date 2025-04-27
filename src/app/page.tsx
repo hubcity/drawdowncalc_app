@@ -252,16 +252,16 @@ function AppContent() {
   return (
     <> {/* Use Fragment to return multiple elements */}
       <Sidebar> {/* defaultOpen controls initial state */}
-        <SidebarHeader>
-          <SidebarTrigger className="md:hidden" />
-          <h2 className="text-lg font-bold">DrawdownCalc</h2>
-          {/* Move Toggle button inside header or somewhere visible when collapsed */}
-          {hasAcceptedTerms && (
-             <Button onClick={toggleSidebar} className="ml-auto" variant="ghost" size="icon"> {/* Use toggleSidebar from hook */}
-                <Menu size={16}/>
-             </Button>
-          )}
-        </SidebarHeader>
+        <div className="p-2"> {/* Add padding if needed */}
+              {(
+                <SidebarTrigger />
+              )}
+        </div>
+            <SidebarHeader>
+              {/* Conditionally render the trigger AFTER terms are accepted */}
+              <h2 className="text-lg font-bold ml-2">DrawdownCalc</h2> {/* Add margin if needed */}
+              {/* The custom button is removed */}
+            </SidebarHeader>
         <div className={cn("p-4 overflow-y-auto", {
           "pointer-events-none opacity-50": !hasAcceptedTerms,
         })}>
