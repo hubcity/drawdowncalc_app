@@ -251,7 +251,7 @@ function AppContent() {
 
   return (
     <> {/* Use Fragment to return multiple elements */}
-      <Sidebar defaultOpen={false}> {/* defaultOpen controls initial state */}
+      <Sidebar> {/* defaultOpen controls initial state */}
         <SidebarHeader>
           <SidebarTrigger className="md:hidden" />
           <h2 className="text-lg font-bold">DrawdownCalc</h2>
