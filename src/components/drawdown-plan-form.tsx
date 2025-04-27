@@ -29,6 +29,7 @@ import { AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
 
   
 const states = [
@@ -137,7 +138,11 @@ const months = [
     }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.number().optional(),
-  });
+    pessimistic: z.object({
+      taxes: z.boolean(),
+      healthcare_costs: z.boolean(),
+  }).optional(),
+});
   
   interface DrawdownPlanFormProps {
     onSubmit: (data: DrawdownPlanInput) => Promise<void>;
@@ -189,7 +194,11 @@ const months = [
         },
         spending_preference: "maximize_spending",
         annual_spending: 0,
-      },
+        pessimistic: {
+          taxes: true,
+          healthcare_costs: true,
+      }
+    },
     });
   
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
@@ -607,6 +616,38 @@ const months = [
   )}
           <Separator />
 
+          <div className="space-y-4">
+            <p className="text-sm font-medium">Pessimistic about:</p>
+            <div className="flex flex-col space-y-2">
+                <FormField
+                control={form.control}
+                name="pessimistic.taxes"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel className="font-normal">Taxes</FormLabel>
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="pessimistic.healthcare_costs"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel className="font-normal">Healthcare Costs</FormLabel>
+                    </FormItem>
+                )}
+                />
+            </div>
+            </div>
+
+            <Separator/>
+
           <FormField
             control={form.control}
             name="spending_preference"
@@ -641,6 +682,7 @@ const months = [
           {form.watch("spending_preference") === "maximize_assets" && (
             <FormField
               control={form.control}
+            
               name="annual_spending"
               render={({ field }) => (
                 <FormItem>
