@@ -132,6 +132,11 @@ const months = [
       old_conversions: z.number(),
       recent_conversions: z.record(z.number()),
     }),
+    aca: z.object({
+      full_premium: z.number().optional(),
+      slcsp_premium: z.number().optional(),
+      people_covered: z.number().optional(),
+    }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.number().optional(),
   });
@@ -534,6 +539,64 @@ const months = [
   />
 
   <Separator/>
+
+{form.getValues("about.age") <= 65 && (
+    <>
+    <FormField
+        control={form.control}
+        name="aca.full_premium"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Full ACA Premium</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Full ACA Premium"
+                type="number"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+<FormField
+        control={form.control}
+        name="aca.slcsp_premium"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>SLCSP Premium</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="SLCSP Premium"
+                type="number"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+<FormField
+        control={form.control}
+        name="aca.people_covered"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>People Covered</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="People Covered"
+                type="number"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
+  )}
 
           <FormField
             control={form.control}
