@@ -29,6 +29,7 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
   
 const states = [
@@ -115,6 +116,8 @@ const states = [
       old_conversions: z.number(),
       recent_conversions: z.array(z.array(z.number())),
     }),
+    spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
+    annual_spending: z.number().optional(),
   });
   
   interface DrawdownPlanFormProps {
@@ -159,6 +162,8 @@ const states = [
             [2024, 4000],
           ],
         },
+        spending_preference: "maximize_spending",
+        annual_spending: undefined,
       },
     });
   
@@ -434,11 +439,60 @@ const states = [
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="spending_preference"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Spending Preference</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="maximize_spending" id="spending" />
+                      </FormControl>
+                      <FormLabel htmlFor="spending">Maximize Spending</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="maximize_assets" id="assets" />
+                      </FormControl>
+                      <FormLabel htmlFor="assets">Maximize End-of-Plan Assets</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+  
+          {form.watch("spending_preference") === "maximize_assets" && (
+            <FormField
+              control={form.control}
+              name="annual_spending"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estimated Annual Spending</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Annual Spending"
+                      type="number"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
   
           <Button type="submit">Calculate Drawdown Plan</Button>
         </form>
       </Form>
     );
   }
-
-
