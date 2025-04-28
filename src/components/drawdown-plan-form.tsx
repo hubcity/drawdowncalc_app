@@ -129,6 +129,11 @@ const months = [
       balance: z.coerce.number(),
       year_opened: z.coerce.number(),
       old_conversions: z.coerce.number(),
+      conversion_year_minus_1: z.coerce.number(),
+      conversion_year_minus_2: z.coerce.number(),
+      conversion_year_minus_3: z.coerce.number(),
+      conversion_year_minus_4: z.coerce.number(),
+
     }),
     aca: z.object({
       full_premium: z.coerce.number().optional(),
@@ -178,6 +183,10 @@ const months = [
           balance: 200000,
           year_opened: 2020,
           old_conversions: 10000,
+          conversion_year_minus_1: 0,
+          conversion_year_minus_2: 0,
+          conversion_year_minus_3: 0,
+          conversion_year_minus_4: 0,
         },
         aca: {
           full_premium: 0,
@@ -459,7 +468,34 @@ const months = [
             )}
           />
   
+          {conversionYears.map((year, index) => (
+            <FormField
+              key={year}
+              control={form.control}
+              name={`Roth.conversion_year_minus_${index + 1}`}
+              render={({ field }) => {
+                const yearLabel = year;
 
+                
+                return (
+                  <FormItem>
+                    <FormLabel>
+                      {`Roth Conversions ${yearLabel}`}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={`Roth Conversions ${yearLabel}`}
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+          ))}
+  
 
 {form.getValues("about.age") <= 60 && (
           <FormField
@@ -501,23 +537,23 @@ const months = [
     )}
   />
 
-  <FormField
-    control={form.control}
+          <FormField
+            control={form.control}
     name="social_security.amount"
-    render={({ field }) => (
-      <FormItem>
+            render={({ field }) => (
+              <FormItem>
         <FormLabel>Annual Benefit</FormLabel>
-        <FormControl>
-          <Input
+                <FormControl>
+                  <Input
             placeholder="Social Security Amount"
-            type="number"
-            {...field}
+                    type="number"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
 
   <Separator/>
 
