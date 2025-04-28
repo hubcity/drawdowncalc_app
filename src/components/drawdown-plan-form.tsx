@@ -138,7 +138,7 @@ const months = [
     aca: z.object({
       full_premium: z.coerce.number().optional(),
       slcsp_premium: z.coerce.number().optional(),
-      people_covered: z.coerce.number().optional(),
+      people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.coerce.number().optional(),
