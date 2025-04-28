@@ -100,7 +100,6 @@ function AppContent() {
   const chartRef = useRef(null);
   const incomeChartRef = useRef(null);
   const spendingChartRef = useRef(null);
-  const [showFieldDescriptions, setShowFieldDescriptions] = useState(false);
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
   useEffect(() => {
@@ -248,7 +247,7 @@ function AppContent() {
 
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
-    setShowFieldDescriptions(true); // Show field descriptions
+    // setShowFieldDescriptions(true); // Show field descriptions
     setOpen(true); // Use setOpen from the hook
   };
 
@@ -283,8 +282,14 @@ function AppContent() {
             <Button onClick={handleAcceptTerms}>I Understand</Button>
             {/* Removed Toggle Button from here */}
           </div>
-        ) : showFieldDescriptions ? (
-          <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+        ) : loading ? (
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+            Calculating Drawdown Plan...
+          </div>
+        ) : (
+          !submitted ? (
+            <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
             <h2>Form Field Descriptions:</h2>
             <p><b>Age:</b> Your current age.</p>
             <p><b>Birth Month:</b> Your birth month.</p>
@@ -310,19 +315,6 @@ function AppContent() {
             <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>
-        ) : loading ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-            Calculating Drawdown Plan...
-          </div>
-        ) : (
-          !submitted ? (
-            <div className="flex items-center justify-center h-full p-4 text-center">
-               {/* Display limitations text after accepting */}
-               <p>
-                 This software is provided as a tool for financial planning and is not a substitute for professional advice. All financial decisions should be made in consultation with a qualified advisor who understands your specific circumstances. The software is for educational use only and is not intended for financial transactions.
-               </p>
-            </div>
           ) : drawdownPlan ? (
             <div className="flex flex-col gap-4 p-4">
               <Card>
@@ -370,11 +362,10 @@ function AppContent() {
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
              // Or potentially keep the limitations text until the form is submitted?
              // Let's keep the limitations text until submission for clarity
-             <div className="flex items-center justify-center h-full p-4 text-center">
-               <p>
-                 This software is provided as a tool for financial planning and is not a substitute for professional advice. All financial decisions should be made in consultation with a qualified advisor who understands your specific circumstances. The software is for educational use only and is not intended for financial transactions.
-               </p>
-             </div>
+             // <div className="flex items-center justify-center h-full p-4 text-center">
+          <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+            <h2>When is ths page shown?</h2>
+          </div>
           )
         )}
       </SidebarInset>
