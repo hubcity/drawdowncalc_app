@@ -103,40 +103,40 @@ const months = [
   
   const formSchema = z.object({
     about: z.object({
-      age: z.number().min(18, { message: "Age must be greater than 18" }),
+      age: z.coerce.number().min(18, { message: "Age must be greater than 18" }),
       birth_month: z.string(),
-      end_of_plan_age: z.number(),
+      end_of_plan_age: z.coerce.number(),
       filing_status: z.enum(["single", "married"]),
       state_of_residence: z.string(),
     }),
     social_security: z.object({
-      amount: z.number(),
-      starts: z.number(),
+      amount: z.coerce.number(),
+      starts: z.coerce.number(),
     }),
     predictions: z.object({
-      inflation: z.number(),
-      returns: z.number(),
+      inflation: z.coerce.number(),
+      returns: z.coerce.number(),
     }),
     brokerage: z.object({
-      balance: z.number(),
-      basis: z.number(),
-      distributions: z.number(),
+      balance: z.coerce.number(),
+      basis: z.coerce.number(),
+      distributions: z.coerce.number(),
     }),
     IRA: z.object({
-      balance: z.number(),
+      balance: z.coerce.number(),
     }),
     Roth: z.object({
-      balance: z.number(),
-      year_opened: z.number(),
-      old_conversions: z.number(),
+      balance: z.coerce.number(),
+      year_opened: z.coerce.number(),
+      old_conversions: z.coerce.number(),
     }),
     aca: z.object({
-      full_premium: z.number().optional(),
-      slcsp_premium: z.number().optional(),
-      people_covered: z.number().optional(),
+      full_premium: z.coerce.number().optional(),
+      slcsp_premium: z.coerce.number().optional(),
+      people_covered: z.coerce.number().optional(),
     }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
-    annual_spending: z.number().optional(),
+    annual_spending: z.coerce.number().optional(),
     pessimistic: z.object({
       taxes: z.boolean(),
       healthcare_costs: z.boolean(),
