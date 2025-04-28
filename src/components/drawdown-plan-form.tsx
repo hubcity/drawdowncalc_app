@@ -5,9 +5,9 @@ import {
     IRA,
     Predictions,
     Roth,
-    SocialSecurity,
   } from "@/services/drawdown-plan";
   import { zodResolver } from "@hookform/resolvers/zod";
+  import { useWatch } from "react-hook-form";
   import { useState } from "react";
   import { useForm } from "react-hook-form";
   import * as z from "zod";
@@ -103,7 +103,7 @@ const months = [
   
   const formSchema = z.object({
     about: z.object({
-      age: z.coerce.number().min(18, { message: "Age must be greater than 18" }),
+      age: z.coerce.number(),
       birth_month: z.string(),
       end_of_plan_age: z.coerce.number(),
       filing_status: z.enum(["single", "married"]),
@@ -136,16 +136,16 @@ const months = [
 
     }),
     aca: z.object({
-      full_premium: z.coerce.number().optional(),
-      slcsp_premium: z.coerce.number().optional(),
+      full_premium: z.coerce.number(),
+      slcsp_premium: z.coerce.number(),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
-    }).optional(),
+    }),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.coerce.number().optional(),
     pessimistic: z.object({
       taxes: z.boolean(),
       healthcare_costs: z.boolean(),
-  }).optional(),
+  }),
 });
   
   interface DrawdownPlanFormProps {
@@ -204,6 +204,8 @@ const months = [
   
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2025;
+    const currentAge = useWatch({control: form.control, name: "about.age"});
+    const socialSecurityStartAges = Array.from({ length: 71 - currentAge }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
 
   
@@ -526,11 +528,19 @@ const months = [
       <FormItem>
         <FormLabel>Social Security Starts</FormLabel>
         <FormControl>
-          <Input
-            placeholder="Social Security Starts"
-            type="number"
-            {...field}
-          />
+          <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+              <SelectTrigger>
+                <SelectValue placeholder="Social Security Starts" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="0">Already Started</SelectItem>
+                <ScrollArea className="h-32">
+                {socialSecurityStartAges.map((age) => (
+                  <SelectItem key={age} value={age.toString()}>{age}</SelectItem>
+                ))}
+                </ScrollArea>
+              </SelectContent>
+            </Select>
         </FormControl>
         <FormMessage />
       </FormItem>
