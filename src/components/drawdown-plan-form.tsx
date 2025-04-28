@@ -223,9 +223,9 @@ const months = [
             name="about.age"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Age</FormLabel>
+                <FormLabel>{`Age (start of ${currentYear})`}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Age" type="number" {...field} />
+                  <Input placeholder="`Start of ${currentYear}`" type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -237,11 +237,11 @@ const months = [
             name="about.birth_month"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Birth Month</FormLabel>
+                <FormLabel>Month of Birth</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select birth month" />
+                      <SelectValue placeholder="Select month of birth" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -286,7 +286,7 @@ const months = [
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a filing status" />
+                      <SelectValue placeholder="Select a tax filing status" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -347,7 +347,7 @@ const months = [
     name="predictions.returns"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>Rate of Return</FormLabel>
+        <FormLabel>Investment Rate of Return</FormLabel>
         <FormControl>
           <Input placeholder="Rate of Return" type="number" {...field} />
         </FormControl>
@@ -383,7 +383,7 @@ const months = [
               <FormItem>
                 <FormLabel>Brokerage Cost Basis</FormLabel>
                 <FormControl>
-                  <Input placeholder="Brokerage Basis" type="number" {...field} />
+                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -480,11 +480,11 @@ const months = [
                 return (
                   <FormItem>
                     <FormLabel>
-                      {`Roth Conversions ${yearLabel}`}
+                      {`${yearLabel} Roth Conversions`}
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={`Roth Conversions ${yearLabel}`}
+                        placeholder={`${yearLabel} Roth Conversion`}
                         type="number"
                         {...field}
                       />
@@ -506,7 +506,7 @@ const months = [
                 <FormLabel>Older Conversions</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Roth Old Conversions"
+                    placeholder="Older Conversions"
                     type="number"
                     {...field}
                   />
@@ -542,10 +542,10 @@ const months = [
     name="social_security.amount"
             render={({ field }) => (
               <FormItem>
-        <FormLabel>Annual Benefit</FormLabel>
+        <FormLabel>Monthly Benefit</FormLabel>
                 <FormControl>
                   <Input
-            placeholder="Social Security Amount"
+            placeholder="Monthly Benefit"
                     type="number"
                     {...field}
                   />
@@ -564,10 +564,10 @@ const months = [
         name="aca.full_premium"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Full ACA Premium</FormLabel>
+            <FormLabel>Full Monthly ACA Premium</FormLabel>
             <FormControl>
               <Input
-                placeholder="Full ACA Premium"
+                placeholder="Full Monthly ACA Premium"
                 type="number"
                 {...field}
               />
@@ -582,10 +582,10 @@ const months = [
         name="aca.slcsp_premium"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>SLCSP Premium</FormLabel>
+            <FormLabel>SLCSP Monthly Premium</FormLabel>
             <FormControl>
               <Input
-                placeholder="SLCSP Premium"
+                placeholder="SLCSP Monthly Premium"
                 type="number"
                 {...field}
               />
@@ -603,7 +603,7 @@ const months = [
             <FormLabel>Number of People Covered</FormLabel>
             <FormControl>
               <Input
-                placeholder="People Covered"
+                placeholder="Number of People Covered"
                 type="number"
                 {...field}
               />
@@ -617,7 +617,7 @@ const months = [
           <Separator />
 
           <div className="space-y-4">
-            <p className="text-sm font-medium">Pessimistic about:</p>
+            <p className="text-sm font-medium">Be Pessimistic about:</p>
             <div className="flex flex-col space-y-2">
                 <FormField
                 control={form.control}
@@ -686,7 +686,7 @@ const months = [
               name="annual_spending"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Living Expenses</FormLabel>
+                  <FormLabel>Annual Spending</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Annual Spending"
