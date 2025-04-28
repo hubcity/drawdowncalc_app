@@ -105,17 +105,9 @@ export interface Roth {
      */
     year_opened: number;
     /**
-     * The amount of contributions made to the Roth account.
-     */
-    contributions: number;
-    /**
      * The amount of conversions older than 5 years old.
      */
     old_conversions: number;
-    /**
-     * The conversion amount for each of the last 5 years.
-     */
-    recent_conversions: number[][];
 }
 
 /**

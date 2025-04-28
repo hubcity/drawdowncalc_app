@@ -129,7 +129,6 @@ const months = [
       balance: z.number(),
       year_opened: z.number(),
       old_conversions: z.number(),
-      recent_conversions: z.record(z.number()),
     }),
     aca: z.object({
       full_premium: z.number().optional(),
@@ -179,13 +178,6 @@ const months = [
           balance: 200000,
           year_opened: 2020,
           old_conversions: 10000,
-          recent_conversions: {
-            2020: 5000,
-            2021: 6000,
-            2022: 4000,
-            2023: 4500,
-            2024: 4000,
-          },
         },
         aca: {
           full_premium: 0,
@@ -205,10 +197,6 @@ const months = [
     const currentYear = 2025;
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
 
-    // Update default value for people_covered based on filing status
-    form.watch("about.filing_status", (filingStatus) => {
-        form.setValue("aca.people_covered", filingStatus === "single" ? 1 : 2);
-    });
   
     function handleFormSubmit(values: z.infer<typeof formSchema>) {
       setFormValues(values);
@@ -472,30 +460,6 @@ const months = [
           />
   
 
-           {form.getValues("about.age") <= 60 && (
-            <>
-              {conversionYears.map((year) => (
-                <FormField
-                  key={year}
-                  control={form.control}
-                  name={`Roth.recent_conversions.${year}`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{`${year} Conversion`}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={`${year} Conversion`}
-                          type="number"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </>
-          )}
 
 {form.getValues("about.age") <= 60 && (
           <FormField
