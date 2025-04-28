@@ -139,15 +139,20 @@ const months = [
       full_premium: z.coerce.number(),
       slcsp_premium: z.coerce.number(),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
-    }),
+    }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
     annual_spending: z.coerce.number().optional(),
     pessimistic: z.object({
       taxes: z.boolean(),
       healthcare_costs: z.boolean(),
-  }),
+    }),
+  }).refine((schema) => 
+    schema.social_security.starts >= schema.about.age ||
+    schema.social_security.starts === -1, { 
+    message: "Make a Social Security Starts selection",
+    path: ["social_security.starts"]
 });
-  
+
   interface DrawdownPlanFormProps {
     onSubmit: (data: DrawdownPlanInput) => Promise<void>;
   }
@@ -165,7 +170,7 @@ const months = [
         },
         social_security: {
           amount: 45240,
-          starts: 69,
+          starts: 70,
         },
         predictions: {
           inflation: 3.0,
@@ -205,7 +210,7 @@ const months = [
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2025;
     const currentAge = useWatch({control: form.control, name: "about.age"});
-    const socialSecurityStartAges = Array.from({ length: 71 - currentAge }, (_, i) => Number(currentAge) + i);
+    const socialSecurityStartAges = Array.from({ length: 71 - (currentAge) }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
 
   
@@ -227,7 +232,7 @@ const months = [
               <FormItem>
                 <FormLabel>{`Age (start of ${currentYear})`}</FormLabel>
                 <FormControl>
-                  <Input placeholder="`Start of ${currentYear}`" type="number" {...field} />
+                  <Input placeholder="Age" type="number" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -533,7 +538,7 @@ const months = [
                 <SelectValue placeholder="Social Security Starts" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0">Already Started</SelectItem>
+                <SelectItem value="-1">Already Started</SelectItem>
                 <ScrollArea className="h-32">
                 {socialSecurityStartAges.map((age) => (
                   <SelectItem key={age} value={age.toString()}>{age}</SelectItem>
