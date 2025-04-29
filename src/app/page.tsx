@@ -70,7 +70,8 @@ const formatPercentage = (value: number): string => {
   }).format(value / 100);
 };
 
-const formatYAxis = (value: number) => {
+const formatYAxis = (val: number | { valueOf(): number; }) => {
+  const value = typeof val === 'number' ? val : val.valueOf();
   if (value >= 1000000) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -116,7 +117,7 @@ function AppContent() {
       const height = 400 - margin.top - margin.bottom;
 
       // Function to create the stacked bar chart
-      const createStackedBarChart = (ref, yMax, yLabel, dataKeys, colors, yFormat = d3.formatPrefix(".1", 1e3)) => {
+      const createStackedBarChart = (ref: string, yMax: number, yLabel: string, dataKeys: string[], colors: string[], yFormat = d3.formatPrefix(".1", 1e3)) => {
         const svg = d3.select(ref)
           .append("svg")
           .attr("width", '100%')
