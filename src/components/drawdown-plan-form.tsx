@@ -155,9 +155,10 @@ const months = [
 
   interface DrawdownPlanFormProps {
     onSubmit: (data: DrawdownPlanInput) => Promise<void>;
+    onFormEdit: () => void; // Add the new prop
   }
   
-  export function DrawdownPlanForm({ onSubmit }: DrawdownPlanFormProps) {
+  export function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
@@ -213,6 +214,7 @@ const months = [
     const socialSecurityStartAges = Array.from({ length: 71 - (currentAge) }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
     const [hasErrors, setHasErrors] = useState(false);
+    const [isFormEdited, setIsFormEdited] = useState(false);
 
     const { setFocus } = form;
 
@@ -230,11 +232,13 @@ const months = [
       setHasErrors(true);
       console.log("Validation errors:", errors);
     };
-  
-//    function handleFormSubmit(values: z.infer<typeof formSchema>) {
-//      setFormValues(values);
-//      onSubmit(values);
-//    }
+
+    const handleInputChange = (fieldOnChange: (...event: any[]) => void) => (e: any) => {
+      fieldOnChange(e);
+      setIsFormEdited(true);
+      onFormEdit(); // Notify the parent component of the edit
+      console.log("Field changed:", e);
+    };
   
     return (
       <Form {...form}>
@@ -249,7 +253,7 @@ const months = [
               <FormItem>
                 <FormLabel>{`Age (start of ${currentYear})`}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Age" type="number" {...field} />
+                  <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -262,7 +266,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Month of Birth</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select month of birth" />
@@ -294,6 +298,7 @@ const months = [
                     placeholder="End of Plan Age"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -307,7 +312,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tax Filing Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a tax filing status" />
@@ -329,7 +334,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>State of Residence</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a state" />
@@ -359,7 +364,7 @@ const months = [
       <FormItem>
         <FormLabel>Inflation Rate</FormLabel>
         <FormControl>
-          <Input placeholder="Inflation Rate" type="number" {...field} />
+          <Input placeholder="Inflation Rate" type="number" {...field} onChange={handleInputChange(field.onChange)} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -373,7 +378,7 @@ const months = [
       <FormItem>
         <FormLabel>Investment Rate of Return</FormLabel>
         <FormControl>
-          <Input placeholder="Rate of Return" type="number" {...field} />
+          <Input placeholder="Rate of Return" type="number" {...field} onChange={handleInputChange(field.onChange)} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -393,6 +398,7 @@ const months = [
                     placeholder="Brokerage Balance"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -407,7 +413,7 @@ const months = [
               <FormItem>
                 <FormLabel>Brokerage Cost Basis</FormLabel>
                 <FormControl>
-                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} />
+                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -425,6 +431,7 @@ const months = [
                     placeholder="Brokerage Distributions"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -441,7 +448,7 @@ const months = [
               <FormItem>
                 <FormLabel>IRA Balance</FormLabel>
                 <FormControl>
-                  <Input placeholder="IRA Balance" type="number" {...field} />
+                  <Input placeholder="IRA Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -467,7 +474,7 @@ const months = [
                 </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Roth Balance" type="number" {...field} />
+                  <Input placeholder="Roth Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -485,6 +492,7 @@ const months = [
                     placeholder="Year of First Roth Contribution"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -511,6 +519,7 @@ const months = [
                         placeholder={`${yearLabel} Roth Conversion`}
                         type="number"
                         {...field}
+                        onChange={handleInputChange(field.onChange)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -533,6 +542,7 @@ const months = [
                     placeholder="Older Conversions"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -550,7 +560,7 @@ const months = [
       <FormItem>
         <FormLabel>Social Security Starts</FormLabel>
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+          <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value.toString()}>
               <SelectTrigger>
                 <SelectValue placeholder="Social Security Starts" />
               </SelectTrigger>
@@ -580,6 +590,7 @@ const months = [
             placeholder="Monthly Benefit"
                     type="number"
                     {...field}
+                    onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -602,6 +613,7 @@ const months = [
                 placeholder="Full Monthly ACA Premium"
                 type="number"
                 {...field}
+                onChange={handleInputChange(field.onChange)}
               />
             </FormControl>
             <FormMessage />
@@ -620,6 +632,7 @@ const months = [
                 placeholder="SLCSP Monthly Premium"
                 type="number"
                 {...field}
+                onChange={handleInputChange(field.onChange)}
               />
             </FormControl>
             <FormMessage />
@@ -638,6 +651,7 @@ const months = [
                 placeholder="Number of People Covered"
                 type="number"
                 {...field}
+                onChange={handleInputChange(field.onChange)}
               />
             </FormControl>
             <FormMessage />
@@ -657,7 +671,7 @@ const months = [
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        <Checkbox checked={field.value} onCheckedChange={handleInputChange(field.onChange)} />
                     </FormControl>
                     <FormLabel className="font-normal">Taxes</FormLabel>
                     </FormItem>
@@ -669,7 +683,7 @@ const months = [
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        <Checkbox checked={field.value} onCheckedChange={handleInputChange(field.onChange)} />
                     </FormControl>
                     <FormLabel className="font-normal">Healthcare Costs</FormLabel>
                     </FormItem>
@@ -688,7 +702,7 @@ const months = [
                 <FormLabel>Goal</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={field.onChange}
+                    onValueChange={handleInputChange(field.onChange)}
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
@@ -724,6 +738,7 @@ const months = [
                       placeholder="Annual Spending"
                       type="number"
                       {...field}
+                      onChange={handleInputChange(field.onChange)}
                     />
                   </FormControl>
                   <FormMessage />

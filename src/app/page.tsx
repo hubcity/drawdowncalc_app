@@ -99,6 +99,7 @@ function AppContent() {
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const [isFormEdited, setIsFormEdited] = useState(false);
   const chartRef = useRef(null);
   const incomeChartRef = useRef(null);
   const spendingChartRef = useRef(null);
@@ -240,6 +241,7 @@ function AppContent() {
       const plan = await calculateDrawdownPlan(input);
       setDrawdownPlan(plan);
       setSubmitted(true);
+      setIsFormEdited(false); // Reset isFormEdited to false on successful submission
     } catch (error) {
       console.error("Failed to calculate drawdown plan:", error);
     } finally {
@@ -266,7 +268,10 @@ function AppContent() {
             "group-data-[state=collapsed]:overflow-y-hidden": true,
         })}>
             <SidebarContent>
-            <DrawdownPlanForm onSubmit={handleSubmit} />
+            <DrawdownPlanForm
+              onSubmit={handleSubmit}
+              onFormEdit={() => setIsFormEdited(true)} // Pass the callback
+            />
           </SidebarContent>
         </div>
         <SidebarFooter>
@@ -318,7 +323,12 @@ function AppContent() {
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>
           ) : drawdownPlan ? (
-            <div className="flex flex-col gap-4 p-4">
+          <div className="flex flex-col gap-4 p-4">
+              { isFormEdited ? (
+              <div className="bg-yellow-100 text-yellow-800 p-4 rounded">
+                <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
+              </div>
+              ) : null }
               <Card>
                 <CardHeader>
                   <CardTitle>Drawdown Plan Results</CardTitle>
