@@ -212,17 +212,34 @@ const months = [
     const currentAge = useWatch({control: form.control, name: "about.age"});
     const socialSecurityStartAges = Array.from({ length: 71 - (currentAge) }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
+    const [hasErrors, setHasErrors] = useState(false);
 
+    const { setFocus } = form;
+
+    const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
+      try {
+        setHasErrors(false);
+        setFormValues(values);
+        await onSubmit(values);
+      } catch (error) {
+        console.error("Submission failed:", error);
+      }
+    };
   
-    function handleFormSubmit(values: z.infer<typeof formSchema>) {
-      setFormValues(values);
-      onSubmit(values);
-    }
+    const handleError = (errors: any) => {
+      setHasErrors(true);
+      console.log("Validation errors:", errors);
+    };
+  
+//    function handleFormSubmit(values: z.infer<typeof formSchema>) {
+//      setFormValues(values);
+//      onSubmit(values);
+//    }
   
     return (
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(handleFormSubmit)}
+          onSubmit={form.handleSubmit(handleFormSubmit, handleError)}
           className="space-y-8 p-4"
         >
           <FormField
@@ -715,7 +732,9 @@ const months = [
             />
           )}
   
-          <Button type="submit">Calculate Drawdown Plan</Button>
+          <Button type="submit"
+                  className={hasErrors ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}
+          >Calculate Drawdown Plan</Button>
         </form>
       </Form>
     );
