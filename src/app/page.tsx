@@ -324,11 +324,11 @@ function AppContent() {
           </div>
           ) : drawdownPlan ? (
           <div className="flex flex-col gap-4 p-4">
-              { isFormEdited ? (
-              <div className="bg-yellow-100 text-yellow-800 p-4 rounded">
-                <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
-              </div>
-              ) : null }
+              {drawdownPlan && isFormEdited && (
+                <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50">
+                  <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
+                </div>
+              )}
               <Card>
                 <CardHeader>
                   <CardTitle>Drawdown Plan Results</CardTitle>
