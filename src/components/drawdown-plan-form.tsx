@@ -237,7 +237,6 @@ const months = [
       fieldOnChange(e);
       setIsFormEdited(true);
       onFormEdit(); // Notify the parent component of the edit
-      console.log("Field changed:", e);
     };
   
     return (
