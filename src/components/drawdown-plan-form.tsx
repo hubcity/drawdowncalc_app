@@ -149,7 +149,7 @@ const months = [
   }).refine((schema) => 
     schema.social_security.starts >= schema.about.age ||
     schema.social_security.starts === -1, { 
-    message: "Make a Social Security Starts selection",
+    message: "Make a selection",
     path: ["social_security.starts"]
 });
 
@@ -733,7 +733,7 @@ const months = [
           )}
   
           <Button type="submit"
-                  className={hasErrors ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"}
+                  className={hasErrors ? "bg-red-500 hover:bg-red-600" : "bg-primary hover:bg-primary/90"}
           >Calculate Drawdown Plan</Button>
         </form>
       </Form>
