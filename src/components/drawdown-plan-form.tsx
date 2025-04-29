@@ -170,25 +170,25 @@ const months = [
           state_of_residence: "DC",
         },
         social_security: {
-          amount: 45240,
+          amount: 0,
           starts: 70,
         },
         predictions: {
           inflation: 3.0,
-          returns: 6.5,
+          returns: 6.0,
         },
         brokerage: {
-          balance: 300000,
-          basis: 150000,
+          balance: 0,
+          basis: 0,
           distributions: 6.0,
         },
         IRA: {
-          balance: 333333,
+          balance: 0,
         },
         Roth: {
-          balance: 200000,
-          year_opened: 2020,
-          old_conversions: 10000,
+          balance: 0,
+          year_opened: 2010,
+          old_conversions: 0,
           conversion_year_minus_1: 0,
           conversion_year_minus_2: 0,
           conversion_year_minus_3: 0,
