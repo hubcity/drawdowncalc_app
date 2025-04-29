@@ -380,18 +380,6 @@ function AppContent() {
           </div>
           )
         )}
-          <footer className="w-full mt-auto py-4 border-t border-border bg-background">
-          <div className="container mx-auto flex flex-wrap items-center justify-center gap-4">
-            <Link href="/overview" className="text-sm text-muted-foreground hover:text-foreground">
-              Overview
-            </Link>
-            <Link href="/mathematics" className="text-sm text-muted-foreground hover:text-foreground">Mathematics</Link>
-            <Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground">
-              Privacy
-            </Link>
-            <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground">Contact Us</Link>
-          </div>
-        </footer>
       </SidebarInset>
     </>
   );
