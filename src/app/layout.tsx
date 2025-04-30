@@ -115,14 +115,14 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
         <footer className="w-full mt-auto py-4 border-t border-border bg-background">
-          <div className="container mx-auto flex flex-wrap items-center justify-center gap-4">
+          <div className="container mx-auto flex flex-wrap items-center justify-center gap-10"> {/* Increased gap */}
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
                 setIsOverviewOpen(true);
               }}
-              className="text-blue-500 hover:underline"
+              className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Overview
             </a>
@@ -132,7 +132,7 @@ export default function RootLayout({
                 e.preventDefault();
                 setIsMathematicsOpen(true);
               }}
-              className="text-blue-500 hover:underline"
+              className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Mathematics
             </a>
@@ -142,7 +142,7 @@ export default function RootLayout({
                 e.preventDefault();
                 setIsPrivacyOpen(true);
               }}
-              className="text-blue-500 hover:underline"
+              className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Privacy
             </a>
@@ -152,7 +152,7 @@ export default function RootLayout({
                 e.preventDefault();
                 setIsContactUsOpen(true);
               }}
-              className="text-blue-500 hover:underline"
+              className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Contact Us
             </a>
