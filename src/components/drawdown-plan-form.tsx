@@ -211,7 +211,7 @@ const months = [
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2025;
     const currentAge = useWatch({control: form.control, name: "about.age"});
-    const socialSecurityStartAges = Array.from({ length: 71 - (currentAge+1) }, (_, i) => Number(currentAge+1) + i);
+    const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)+1) }, (_, i) => Number(currentAge)+ 1 + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
     const [hasErrors, setHasErrors] = useState(false);
     const [isFormEdited, setIsFormEdited] = useState(false);
