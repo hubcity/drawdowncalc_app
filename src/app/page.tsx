@@ -310,15 +310,13 @@ function AppContent() {
             <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
             <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
             <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
-            <p><b>Year of First Roth Contribution or Conversion:</b> The year you first contributed to or converted funds to a Roth IRA.</p>
             {/* {conversionYears.map((year) => ())} */}
-            <p><b>Recent Conversions:</b> Roth conversions made in recent years.</p>
-            <p><b>Older Conversions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
+            <p><b>Recent Additions:</b> Roth conversions made in recent years.</p>
+            <p><b>Older Additions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
             <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
             <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
-             <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
+            <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
             <p><b>SLCSP Premium:</b> The premium amount for the Second Lowest Cost Silver Plan (SLCSP) ACA health insurance plan.</p>
-            <p><b>Number of People Covered:</b> The number of individuals covered under the ACA health insurance plan.</p>
             <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>

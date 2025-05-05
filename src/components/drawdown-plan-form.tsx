@@ -110,12 +110,15 @@ const months = [
       state_of_residence: z.string(),
     }),
     social_security: z.object({
-      amount: z.coerce.number(),
+      amount: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
       starts: z.coerce.number(),
     }),
     predictions: z.object({
       inflation: z.coerce.number(),
       returns: z.coerce.number(),
+    }),
+    cash: z.object({
+      available: z.coerce.number(),
     }),
     brokerage: z.object({
       balance: z.coerce.number(),
@@ -127,7 +130,6 @@ const months = [
     }),
     Roth: z.object({
       balance: z.coerce.number(),
-      year_opened: z.coerce.number(),
       old_conversions: z.coerce.number(),
       conversion_year_minus_1: z.coerce.number(),
       conversion_year_minus_2: z.coerce.number(),
@@ -136,8 +138,8 @@ const months = [
 
     }),
     aca: z.object({
-      full_premium: z.coerce.number(),
-      slcsp_premium: z.coerce.number(),
+      full_premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
+      slcsp_premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
     spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
@@ -164,38 +166,40 @@ const months = [
       defaultValues: {
         about: {
           age: 55,
-          birth_month: "1",
+          birth_month: "5",
           end_of_plan_age: 96,
           filing_status: "single",
           state_of_residence: "DC",
         },
         social_security: {
-          amount: 0,
+          amount: 2500,
           starts: 70,
         },
         predictions: {
-          inflation: 3.0,
-          returns: 6.0,
+          inflation: 2.5,
+          returns: 5.5,
+        },
+        cash: {
+          available: 5000,
         },
         brokerage: {
-          balance: 0,
-          basis: 0,
-          distributions: 6.0,
+          balance: 200000,
+          basis: 150000,
+          distributions: 5.0,
         },
         IRA: {
-          balance: 0,
+          balance: 500000,
         },
         Roth: {
-          balance: 0,
-          year_opened: 2010,
+          balance: 40000,
           old_conversions: 0,
-          conversion_year_minus_1: 0,
-          conversion_year_minus_2: 0,
-          conversion_year_minus_3: 0,
+          conversion_year_minus_1: 10000,
+          conversion_year_minus_2: 10000,
+          conversion_year_minus_3: 10000,
           conversion_year_minus_4: 0,
         },
         aca: {
-          full_premium: 0,
+          full_premium: 800,
           slcsp_premium: 0,
           people_covered: 1, // Default to 1
         },
@@ -250,7 +254,7 @@ const months = [
             name="about.age"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{`Age (start of ${currentYear})`}</FormLabel>
+                <FormLabel>{`Age (end of ${currentYear})`}</FormLabel>
                 <FormControl>
                   <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
@@ -361,9 +365,9 @@ const months = [
     name="predictions.inflation"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>Inflation Rate</FormLabel>
+        <FormLabel>Inflation Rate (%)</FormLabel>
         <FormControl>
-          <Input placeholder="Inflation Rate" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+          <Input placeholder="Inflation Rate (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -375,14 +379,35 @@ const months = [
     name="predictions.returns"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>Investment Rate of Return</FormLabel>
+        <FormLabel>Investment Returns (%)</FormLabel>
         <FormControl>
-          <Input placeholder="Rate of Return" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+          <Input placeholder="Rate of Return (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} />
         </FormControl>
         <FormMessage />
       </FormItem>
     )}
   />
+
+            <Separator/>
+
+          <FormField
+            control={form.control}
+            name="cash.available"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cash</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Cash"
+                    type="number"
+                    {...field}
+                    onChange={handleInputChange(field.onChange)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
             <Separator/>
 
@@ -410,7 +435,19 @@ const months = [
             name="brokerage.basis"
             render={({ field }) => (
               <FormItem>
+                <div className="flex items-center gap-1">
                 <FormLabel>Brokerage Cost Basis</FormLabel>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger
+                          type="button"
+                          onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+/></TooltipTrigger>
+                      <TooltipContent className="max-w-xs break-words">The calculation of the amount of earnings subject to capital gains taxes is an approximation.</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                </div>
                 <FormControl>
                   <Input placeholder="Brokerage Cost Basis" type="number" {...field} onChange={handleInputChange(field.onChange)} />
                 </FormControl>
@@ -424,10 +461,10 @@ const months = [
             name="brokerage.distributions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Brokerage Distributions</FormLabel>
+                <FormLabel>Brokerage Distributions (%)</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Brokerage Distributions"
+                    placeholder="Brokerage Distributions (%)"
                     type="number"
                     {...field}
                     onChange={handleInputChange(field.onChange)}
@@ -467,8 +504,12 @@ const months = [
                     </FormLabel>
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger><AlertTriangle size={16} className="text-yellow-500" /></TooltipTrigger>
-                        <TooltipContent>Roth 5-year rules are only partially implemented!  After age 59.5 all Roth funds are considered available.</TooltipContent>
+                        <TooltipTrigger
+                          type="button"
+                          onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+/></TooltipTrigger>
+                      <TooltipContent className="max-w-xs break-words">DrawdownCalc uses withdrawal rules for Roth IRAs that differ from the IRS rules.  Please fill out all of the Roth fields.</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
                 </div>
@@ -480,24 +521,6 @@ const months = [
             )}
           />
 
-<FormField
-            control={form.control}
-            name="Roth.year_opened"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Year of First Roth Contribution or Conversion</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Year of First Roth Contribution"
-                    type="number"
-                    {...field}
-                    onChange={handleInputChange(field.onChange)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
   
           {conversionYears.map((year, index) => (
             <FormField
@@ -511,11 +534,11 @@ const months = [
                 return (
                   <FormItem>
                     <FormLabel>
-                      {`${yearLabel} Roth Conversions`}
+                      {`${yearLabel} Roth Additions`}
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={`${yearLabel} Roth Conversion`}
+                        placeholder={`${yearLabel} Roth Additions`}
                         type="number"
                         {...field}
                         onChange={handleInputChange(field.onChange)}
@@ -529,16 +552,15 @@ const months = [
           ))}
   
 
-{form.getValues("about.age") <= 60 && (
           <FormField
             control={form.control}
             name="Roth.old_conversions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Older Conversions</FormLabel>
+                <FormLabel>Older Roth Additions</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Older Conversions"
+                    placeholder="Older Roth Additions"
                     type="number"
                     {...field}
                     onChange={handleInputChange(field.onChange)}
@@ -548,7 +570,6 @@ const months = [
               </FormItem>
             )}
           />
-        )}
 
 <Separator/>
   
@@ -625,29 +646,22 @@ const months = [
         name="aca.slcsp_premium"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>SLCSP Monthly Premium</FormLabel>
+            <div className="flex items-center gap-1">
+            <FormLabel>SLCSP Monthly</FormLabel>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger
+                  type="button"
+                  onClick={(e) => e.stopPropagation()} // Prevent form submission
+                ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                  /></TooltipTrigger>
+                  <TooltipContent className="max-w-xs break-words">Entering the SLCSP will enable a very experimental feature that calculates (and currently underestimates) ACA subsidies.  Enter 0 to disable this feature.</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            </div>
             <FormControl>
               <Input
                 placeholder="SLCSP Monthly Premium"
-                type="number"
-                {...field}
-                onChange={handleInputChange(field.onChange)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-<FormField
-        control={form.control}
-        name="aca.people_covered"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Number of People Covered</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Number of People Covered"
                 type="number"
                 {...field}
                 onChange={handleInputChange(field.onChange)}
