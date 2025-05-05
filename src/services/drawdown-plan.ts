@@ -119,57 +119,85 @@ export interface DrawdownPlanYear {
    */
   age: number;
   /**
+   * The amount withdrawn from cash reserves.
+   */
+  Cash_Withdraw: number;
+  /**
    * The brokerage account balance.
    */
-  bal_brokerage: number;
+  Brokerage_Balance: number;
   /**
    * The amount withdrawn from the brokerage account.
    */
-  wd_brokerage: number;
-  /**
-   * The capital gains distribution.
-   */
-  cgd: number;
+  Brokerage_Withdraw: number;
   /**
    * The IRA balance.
    */
-  bal_ira: number;
+  IRA_Balance: number;
   /**
    * The amount withdrawn from the IRA.
    */
-  wd_ira: number;
+  IRA_Withdraw: number;
   /**
    * The Roth account balance.
    */
-  bal_roth: number;
+  Roth_Balance: number;
   /**
    * The amount withdrawn from the Roth account.
    */
-  wd_roth: number;
+  Roth_Withdraw: number;
   /**
    * The amount converted from IRA to Roth.
    */
-  ira_to_roth: number;
+  IRA_to_Roth: number;
+  /**
+   * The spendable amount from capital gains distributions.
+   */
+  CGD_Spendable: number;
+  /**
+   * The total capital gains distribution amount.
+   */
+  Capital_Gains_Distribution: number;
+  /**
+   * The total capital gains realized.
+   */
+  Total_Capital_Gains: number;
+  /**
+   * The ordinary income amount.
+   */
+  Ordinary_Income: number;
+  /**
+   * The Federal Adjusted Gross Income.
+   */
+  Fed_AGI: number;
   /**
    * The social security income.
    */
-  social_security: number;
+  Social_Security: number;
   /**
    * The federal tax amount.
    */
-  fed_tax: number;
+  Fed_Tax: number;
   /**
    * The state tax amount.
    */
-  state_tax: number;
+  State_Tax: number;
   /**
    * The total tax amount.
    */
-  total_tax: number;
+  Total_Tax: number;
   /**
-   * The spending goal for the year.
+   * The ACA healthcare payment amount.
    */
-  spend_goal: number;
+  ACA_HC_Payment: number;
+  /**
+   * The ACA help/subsidy amount.
+   */
+  ACA_Help: number;
+  /**
+   * The actual spending amount for the year.
+   */
+  True_Spending: number;
 }
 
 /**
@@ -183,47 +211,48 @@ export async function calculateDrawdownPlan(
 ): Promise<DrawdownPlanYear[]> {
   // TODO: Implement this by calling an external API.
 
+  // Replace the placeholder data below with the actual data from the API call
   return [
-    { age: 55, bal_brokerage: 410000, wd_brokerage: 28488, cgd: 24379, bal_ira: 1246210, wd_ira: 0, bal_roth: 700000, wd_roth: 70447, ira_to_roth: 0, social_security: 24600, fed_tax: 0, state_tax: 1159, total_tax: 1159, spend_goal: 106776 },
-    { age: 56, bal_brokerage: 381931, wd_brokerage: 35526, cgd: 22135, bal_ira: 1327214, wd_ira: 0, bal_roth: 670474, wd_roth: 57449, ira_to_roth: 0, social_security: 9888, fed_tax: 0, state_tax: 1194, total_tax: 1194, spend_goal: 109979 },
-    { age: 57, bal_brokerage: 346787, wd_brokerage: 43666, cgd: 19369, bal_ira: 1413482, wd_ira: 0, bal_roth: 652872, wd_roth: 55072, ira_to_roth: 0, social_security: 10185, fed_tax: 0, state_tax: 1230, total_tax: 1230, spend_goal: 113279 },
-    { age: 58, bal_brokerage: 303454, wd_brokerage: 53065, cgd: 16000, bal_ira: 1505359, wd_ira: 0, bal_roth: 636657, wd_roth: 52066, ira_to_roth: 0, social_security: 10490, fed_tax: 0, state_tax: 1266, total_tax: 1266, spend_goal: 116677 },
-    { age: 59, bal_brokerage: 250665, wd_brokerage: 63897, cgd: 11934, bal_ira: 1603207, wd_ira: 0, bal_roth: 622589, wd_roth: 48338, ira_to_roth: 0, social_security: 10805, fed_tax: 0, state_tax: 1304, total_tax: 1304, spend_goal: 120177 },
-    { age: 60, bal_brokerage: 186973, wd_brokerage: 34473, cgd: 9745, bal_ira: 1707416, wd_ira: 17389, bal_roth: 611578, wd_roth: 68286, ira_to_roth: 0, social_security: 11129, fed_tax: 0, state_tax: 1344, total_tax: 1344, spend_goal: 123783 },
-    { age: 61, bal_brokerage: 152668, wd_brokerage: 41393, cgd: 7110, bal_ira: 1799878, wd_ira: 17911, bal_roth: 578607, wd_roth: 66996, ira_to_roth: 0, social_security: 11463, fed_tax: 0, state_tax: 1384, total_tax: 1384, spend_goal: 127496 },
-    { age: 62, bal_brokerage: 111398, wd_brokerage: 49344, cgd: 3965, bal_ira: 1897795, wd_ira: 18448, bal_roth: 544865, wd_roth: 65223, ira_to_roth: 0, social_security: 11807, fed_tax: 0, state_tax: 1425, total_tax: 1425, spend_goal: 131321 },
-    { age: 63, bal_brokerage: 62122, wd_brokerage: 58467, cgd: 234, bal_ira: 2001505, wd_ira: 19002, bal_roth: 510819, wd_roth: 62895, ira_to_roth: 0, social_security: 12161, fed_tax: 0, state_tax: 1468, total_tax: 1468, spend_goal: 135261 },
-    { age: 64, bal_brokerage: 3658, wd_brokerage: 3658, cgd: 0, bal_ira: 2111366, wd_ira: 47335, bal_roth: 477039, wd_roth: 100453, ira_to_roth: 0, social_security: 12526, fed_tax: 3020, state_tax: 1512, total_tax: 4533, spend_goal: 139318 },
-    { age: 65, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2198194, wd_ira: 138505, bal_roth: 401064, wd_roth: 40166, ira_to_roth: 0, social_security: 0, fed_tax: 19201, state_tax: 7909, total_tax: 27110, spend_goal: 143498 },
-    { age: 66, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2193568, wd_ira: 163824, bal_roth: 384356, wd_roth: 26663, ira_to_roth: 0, social_security: 0, fed_tax: 24433, state_tax: 9945, total_tax: 34378, spend_goal: 147803 },
-    { age: 67, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2161677, wd_ira: 168739, bal_roth: 380943, wd_roth: 27463, ira_to_roth: 0, social_security: 0, fed_tax: 25166, state_tax: 10244, total_tax: 35410, spend_goal: 152237 },
-    { age: 68, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2122479, wd_ira: 173801, bal_roth: 376457, wd_roth: 28287, ira_to_roth: 0, social_security: 0, fed_tax: 25921, state_tax: 10551, total_tax: 36472, spend_goal: 156804 },
-    { age: 69, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2075342, wd_ira: 124900, bal_roth: 370801, wd_roth: 13656, ira_to_roth: 0, social_security: 68430, fed_tax: 30134, state_tax: 6268, total_tax: 36402, spend_goal: 161508 },
-    { age: 70, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2077221, wd_ira: 124957, bal_roth: 380359, wd_roth: 16557, ira_to_roth: 0, social_security: 70482, fed_tax: 30153, state_tax: 6142, total_tax: 36295, spend_goal: 166354 },
-    { age: 71, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2079162, wd_ira: 124905, bal_roth: 387450, wd_roth: 19619, ira_to_roth: 0, social_security: 72597, fed_tax: 30145, state_tax: 6003, total_tax: 36148, spend_goal: 171344 },
-    { age: 72, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2081283, wd_ira: 124737, bal_roth: 391740, wd_roth: 22850, ira_to_roth: 0, social_security: 74775, fed_tax: 30110, state_tax: 5851, total_tax: 35961, spend_goal: 176484 },
-    { age: 73, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2083721, wd_ira: 127682, bal_roth: 392868, wd_roth: 24073, ira_to_roth: 0, social_security: 77018, fed_tax: 30822, state_tax: 5959, total_tax: 36780, spend_goal: 181779 },
-    { age: 74, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2083181, wd_ira: 131513, bal_roth: 392766, wd_roth: 24796, ira_to_roth: 0, social_security: 79329, fed_tax: 31747, state_tax: 6137, total_tax: 37884, spend_goal: 187232 },
-    { age: 75, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2078527, wd_ira: 135458, bal_roth: 391888, wd_roth: 25539, ira_to_roth: 0, social_security: 81708, fed_tax: 32699, state_tax: 6321, total_tax: 39020, spend_goal: 192849 },
-    { age: 76, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2069368, wd_ira: 139522, bal_roth: 390161, wd_roth: 26306, ira_to_roth: 0, social_security: 84160, fed_tax: 33680, state_tax: 6511, total_tax: 40191, spend_goal: 198635 },
-    { age: 77, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2055286, wd_ira: 143708, bal_roth: 387506, wd_roth: 27095, ira_to_roth: 0, social_security: 86685, fed_tax: 34690, state_tax: 6706, total_tax: 41397, spend_goal: 204594 },
-    { age: 78, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2035830, wd_ira: 148019, bal_roth: 383838, wd_roth: 27908, ira_to_roth: 0, social_security: 89285, fed_tax: 35731, state_tax: 6908, total_tax: 42639, spend_goal: 210732 },
-    { age: 79, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 2010519, wd_ira: 152460, bal_roth: 379066, wd_roth: 28745, ira_to_roth: 0, social_security: 91964, fed_tax: 36803, state_tax: 7115, total_tax: 43918, spend_goal: 217054 },
-    { age: 80, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1978834, wd_ira: 157033, bal_roth: 373092, wd_roth: 29607, ira_to_roth: 0, social_security: 94723, fed_tax: 37907, state_tax: 7328, total_tax: 45235, spend_goal: 223565 },
-    { age: 81, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1940217, wd_ira: 161744, bal_roth: 365811, wd_roth: 30495, ira_to_roth: 0, social_security: 97564, fed_tax: 39044, state_tax: 7548, total_tax: 46592, spend_goal: 230272 },
-    { age: 82, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1894074, wd_ira: 166597, bal_roth: 357111, wd_roth: 31410, ira_to_roth: 0, social_security: 100491, fed_tax: 40216, state_tax: 7775, total_tax: 47990, spend_goal: 237180 },
-    { age: 83, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1839763, wd_ira: 171595, bal_roth: 346871, wd_roth: 32353, ira_to_roth: 0, social_security: 103506, fed_tax: 41422, state_tax: 8008, total_tax: 49430, spend_goal: 244296 },
-    { age: 84, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1776599, wd_ira: 176742, bal_roth: 334962, wd_roth: 33323, ira_to_roth: 0, social_security: 106611, fed_tax: 42665, state_tax: 8248, total_tax: 50913, spend_goal: 251625 },
-    { age: 85, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1703848, wd_ira: 182045, bal_roth: 321246, wd_roth: 34323, ira_to_roth: 0, social_security: 109809, fed_tax: 43945, state_tax: 8495, total_tax: 52440, spend_goal: 259173 },
-    { age: 86, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1620720, wd_ira: 187506, bal_roth: 305573, wd_roth: 35353, ira_to_roth: 0, social_security: 113104, fed_tax: 45263, state_tax: 8750, total_tax: 54013, spend_goal: 266949 },
-    { age: 87, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1526373, wd_ira: 193131, bal_roth: 287784, wd_roth: 36413, ira_to_roth: 0, social_security: 116497, fed_tax: 46621, state_tax: 9013, total_tax: 55634, spend_goal: 274957 },
-    { age: 88, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1419902, wd_ira: 198925, bal_roth: 267710, wd_roth: 37506, ira_to_roth: 0, social_security: 119992, fed_tax: 48019, state_tax: 9283, total_tax: 57303, spend_goal: 283206 },
-    { age: 89, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1300341, wd_ira: 204893, bal_roth: 245168, wd_roth: 38631, ira_to_roth: 0, social_security: 123591, fed_tax: 49460, state_tax: 9562, total_tax: 59022, spend_goal: 291702 },
-    { age: 90, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1166652, wd_ira: 211040, bal_roth: 219962, wd_roth: 39790, ira_to_roth: 0, social_security: 127299, fed_tax: 50944, state_tax: 9849, total_tax: 60792, spend_goal: 300453 },
-    { age: 91, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 1017727, wd_ira: 217371, bal_roth: 191884, wd_roth: 40983, ira_to_roth: 0, social_security: 131118, fed_tax: 52472, state_tax: 10144, total_tax: 62616, spend_goal: 309467 },
-    { age: 92, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 852380, wd_ira: 223892, bal_roth: 160709, wd_roth: 42213, ira_to_roth: 0, social_security: 135052, fed_tax: 54046, state_tax: 10448, total_tax: 64495, spend_goal: 318751 },
-    { age: 93, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 669339, wd_ira: 230609, bal_roth: 126198, wd_roth: 43479, ira_to_roth: 0, social_security: 139103, fed_tax: 55668, state_tax: 10762, total_tax: 66429, spend_goal: 328313 },
-    { age: 94, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 467248, wd_ira: 237527, bal_roth: 88096, wd_roth: 44784, ira_to_roth: 0, social_security: 143276, fed_tax: 57338, state_tax: 11085, total_tax: 68422, spend_goal: 338162 },
-    { age: 95, bal_brokerage: 0, wd_brokerage: 0, cgd: 0, bal_ira: 244653, wd_ira: 244653, bal_roth: 46127, wd_roth: 46127, ira_to_roth: 0, social_security: 147575, fed_tax: 59058, state_tax: 11417, total_tax: 70475, spend_goal: 348307 }
+    { age: 55, Cash_Withdraw: 15000, Brokerage_Balance: 400000, Brokerage_Withdraw: 105823, IRA_Balance: 1158000, IRA_Withdraw: 0, Roth_Balance: 772000, Roth_Withdraw: 0, IRA_to_Roth: 14931, CGD_Spendable: 0, Capital_Gains_Distribution: 18798, Total_Capital_Gains: 60069, Ordinary_Income: 14931, Fed_AGI: 75000, Fed_Tax: 1748, State_Tax: 3500, Total_Tax: 5248, ACA_HC_Payment: 3975, ACA_Help: 469, Social_Security: 0, True_Spending: 111600 },
+    { age: 56, Cash_Withdraw: 0, Brokerage_Balance: 285923, Brokerage_Withdraw: 89963, IRA_Balance: 1181911, IRA_Withdraw: 0, Roth_Balance: 813672, Roth_Withdraw: 9012, IRA_to_Roth: 14854, CGD_Spendable: 18250, Capital_Gains_Distribution: 12522, Total_Capital_Gains: 47881, Ordinary_Income: 14854, Fed_AGI: 62735, Fed_Tax: 0, State_Tax: 2716, Total_Tax: 2716, ACA_HC_Payment: 2909, ACA_Help: 565, Social_Security: 0, True_Spending: 111600 },
+    { age: 57, Cash_Withdraw: 0, Brokerage_Balance: 190462, Brokerage_Withdraw: 105003, IRA_Balance: 1206714, IRA_Withdraw: 0, Roth_Balance: 847362, Roth_Withdraw: 0, IRA_to_Roth: 15078, CGD_Spendable: 12157, Capital_Gains_Distribution: 5461, Total_Capital_Gains: 47048, Ordinary_Income: 15078, Fed_AGI: 62126, Fed_Tax: 37, State_Tax: 2690, Total_Tax: 2727, ACA_HC_Payment: 2834, ACA_Help: 579, Social_Security: 0, True_Spending: 111600 },
+    { age: 58, Cash_Withdraw: 0, Brokerage_Balance: 83060, Brokerage_Withdraw: 83060, IRA_Balance: 1232128, IRA_Withdraw: 0, Roth_Balance: 891746, Roth_Withdraw: 30086, IRA_to_Roth: 28377, CGD_Spendable: 5302, Capital_Gains_Distribution: 0, Total_Capital_Gains: 33146, Ordinary_Income: 28377, Fed_AGI: 61523, Fed_Tax: 1426, State_Tax: 2664, Total_Tax: 4089, ACA_HC_Payment: 2759, ACA_Help: 594, Social_Security: 0, True_Spending: 111600 },
+    { age: 59, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1244656, IRA_Withdraw: 0, Roth_Balance: 920281, Roth_Withdraw: 122305, IRA_to_Roth: 61046, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 61046, Fed_AGI: 61046, Fed_Tax: 5365, State_Tax: 2646, Total_Tax: 8011, ACA_HC_Payment: 2694, ACA_Help: 607, Social_Security: 0, True_Spending: 111600 },
+    { age: 60, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1223830, IRA_Withdraw: 60453, Roth_Balance: 888211, Roth_Withdraw: 61700, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 60453, Fed_AGI: 60453, Fed_Tax: 5313, State_Tax: 2620, Total_Tax: 7933, ACA_HC_Payment: 2620, ACA_Help: 621, Social_Security: 0, True_Spending: 111600 },
+    { age: 61, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1202909, IRA_Withdraw: 59866, Roth_Balance: 854597, Roth_Withdraw: 62135, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 59866, Fed_AGI: 59866, Fed_Tax: 5261, State_Tax: 2594, Total_Tax: 7856, ACA_HC_Payment: 2545, ACA_Help: 636, Social_Security: 0, True_Spending: 111600 },
+    { age: 62, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1181884, IRA_Withdraw: 59285, Roth_Balance: 819390, Roth_Withdraw: 62566, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 59285, Fed_AGI: 59285, Fed_Tax: 5210, State_Tax: 2569, Total_Tax: 7780, ACA_HC_Payment: 2471, ACA_Help: 650, Social_Security: 0, True_Spending: 111600 },
+    { age: 63, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1160746, IRA_Withdraw: 58709, Roth_Balance: 782541, Roth_Withdraw: 62992, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 58709, Fed_AGI: 58709, Fed_Tax: 5160, State_Tax: 2544, Total_Tax: 7704, ACA_HC_Payment: 2397, ACA_Help: 665, Social_Security: 0, True_Spending: 111600 },
+    { age: 64, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1139485, IRA_Withdraw: 58139, Roth_Balance: 744000, Roth_Withdraw: 63414, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 58139, Fed_AGI: 58139, Fed_Tax: 5110, State_Tax: 2520, Total_Tax: 7629, ACA_HC_Payment: 2324, ACA_Help: 679, Social_Security: 0, True_Spending: 111600 },
+    { age: 65, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1118090, IRA_Withdraw: 57575, Roth_Balance: 703712, Roth_Withdraw: 62706, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 57575, Fed_AGI: 57575, Fed_Tax: 5060, State_Tax: 2495, Total_Tax: 7555, ACA_HC_Payment: 1125, ACA_Help: 694, Social_Security: 0, True_Spending: 111600 },
+    { age: 66, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1096553, IRA_Withdraw: 67368, Roth_Balance: 662788, Roth_Withdraw: 54664, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 67368, Fed_AGI: 67368, Fed_Tax: 7288, State_Tax: 3144, Total_Tax: 10432, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 0, True_Spending: 111600 },
+    { age: 67, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1064157, IRA_Withdraw: 66714, Roth_Balance: 628789, Roth_Withdraw: 55217, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 66714, Fed_AGI: 66714, Fed_Tax: 7218, State_Tax: 3113, Total_Tax: 10331, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 0, True_Spending: 111600 },
+    { age: 68, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 1031337, IRA_Withdraw: 66066, Roth_Balance: 593062, Roth_Withdraw: 55764, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 66066, Fed_AGI: 66066, Fed_Tax: 7147, State_Tax: 3083, Total_Tax: 10231, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 0, True_Spending: 111600 },
+    { age: 69, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 998071, IRA_Withdraw: 65425, Roth_Balance: 555555, Roth_Withdraw: 56307, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 65425, Fed_AGI: 65425, Fed_Tax: 7078, State_Tax: 3053, Total_Tax: 10131, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 0, True_Spending: 111600 },
+    { age: 70, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 964338, IRA_Withdraw: 64790, Roth_Balance: 516213, Roth_Withdraw: 38453, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 84017, Fed_AGI: 84017, Fed_Tax: 11239, State_Tax: 3024, Total_Tax: 14263, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 22620, True_Spending: 111600 },
+    { age: 71, Cash_Withdraw: 0, Brokerage_Balance: -0, Brokerage_Withdraw: -0, IRA_Balance: 930115, IRA_Withdraw: 62791, Roth_Balance: 493994, Roth_Withdraw: 21574, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 101245, Fed_AGI: 101245, Fed_Tax: 15100, State_Tax: 2905, Total_Tax: 18005, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 72, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 896796, IRA_Withdraw: 61808, Roth_Balance: 488474, Roth_Withdraw: 22358, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 100262, Fed_AGI: 100262, Fed_Tax: 14953, State_Tax: 2853, Total_Tax: 17806, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 73, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 863361, IRA_Withdraw: 60835, Roth_Balance: 481955, Roth_Withdraw: 23134, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 99289, Fed_AGI: 99289, Fed_Tax: 14808, State_Tax: 2801, Total_Tax: 17609, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 74, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 829796, IRA_Withdraw: 59877, Roth_Balance: 474412, Roth_Withdraw: 23898, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 98331, Fed_AGI: 98331, Fed_Tax: 14666, State_Tax: 2750, Total_Tax: 17416, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 75, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: -0, IRA_Balance: 796081, IRA_Withdraw: 58923, Roth_Balance: 465822, Roth_Withdraw: 24660, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: -0, Ordinary_Income: 97377, Fed_AGI: 97377, Fed_Tax: 14524, State_Tax: 2699, Total_Tax: 17222, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 76, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 762208, IRA_Withdraw: 57971, Roth_Balance: 456153, Roth_Withdraw: 25418, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 96425, Fed_AGI: 96425, Fed_Tax: 14381, State_Tax: 2648, Total_Tax: 17029, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 77, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 728167, IRA_Withdraw: 57038, Roth_Balance: 445372, Roth_Withdraw: 26162, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 95492, Fed_AGI: 95492, Fed_Tax: 14242, State_Tax: 2598, Total_Tax: 16840, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 78, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 693934, IRA_Withdraw: 56108, Roth_Balance: 433454, Roth_Withdraw: 26904, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 94562, Fed_AGI: 94562, Fed_Tax: 14103, State_Tax: 2548, Total_Tax: 16652, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 79, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 659500, IRA_Withdraw: 55196, Roth_Balance: 420365, Roth_Withdraw: 27632, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 93650, Fed_AGI: 93650, Fed_Tax: 13968, State_Tax: 2500, Total_Tax: 16467, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 80, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 624839, IRA_Withdraw: 54287, Roth_Balance: 406079, Roth_Withdraw: 28357, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 92741, Fed_AGI: 92741, Fed_Tax: 13832, State_Tax: 2451, Total_Tax: 16283, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 81, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 589940, IRA_Withdraw: 53380, Roth_Balance: 390557, Roth_Withdraw: 29079, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 91834, Fed_AGI: 91834, Fed_Tax: 13696, State_Tax: 2403, Total_Tax: 16099, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 82, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 554793, IRA_Withdraw: 52492, Roth_Balance: 373761, Roth_Withdraw: 29788, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 90946, Fed_AGI: 90946, Fed_Tax: 13564, State_Tax: 2355, Total_Tax: 15919, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 83, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: -0, IRA_Balance: 519370, IRA_Withdraw: 51606, Roth_Balance: 355662, Roth_Withdraw: 30494, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: -0, Ordinary_Income: 90060, Fed_AGI: 90060, Fed_Tax: 13432, State_Tax: 2308, Total_Tax: 15740, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 84, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 483659, IRA_Withdraw: 50734, Roth_Balance: 336217, Roth_Withdraw: 31189, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 89188, Fed_AGI: 89188, Fed_Tax: 13302, State_Tax: 2262, Total_Tax: 15564, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 85, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 447636, IRA_Withdraw: 49866, Roth_Balance: 315392, Roth_Withdraw: 31882, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 88320, Fed_AGI: 88320, Fed_Tax: 13172, State_Tax: 2215, Total_Tax: 15387, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 86, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 411287, IRA_Withdraw: 49008, Roth_Balance: 293144, Roth_Withdraw: 32566, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 87462, Fed_AGI: 87462, Fed_Tax: 13044, State_Tax: 2169, Total_Tax: 15214, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 87, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 374589, IRA_Withdraw: 48159, Roth_Balance: 269433, Roth_Withdraw: 33243, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 86613, Fed_AGI: 86613, Fed_Tax: 12918, State_Tax: 2124, Total_Tax: 15042, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 88, Cash_Withdraw: 0, Brokerage_Balance: -0, Brokerage_Withdraw: -0, IRA_Balance: 337522, IRA_Withdraw: 54355, Roth_Balance: 244216, Roth_Withdraw: 29023, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: -0, Ordinary_Income: 92809, Fed_AGI: 92809, Fed_Tax: 14481, State_Tax: 2537, Total_Tax: 17018, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 89, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 292790, IRA_Withdraw: 46485, Roth_Balance: 222506, Roth_Withdraw: 34578, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 84939, Fed_AGI: 84939, Fed_Tax: 12668, State_Tax: 2035, Total_Tax: 14703, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 90, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 254674, IRA_Withdraw: 45661, Roth_Balance: 194314, Roth_Withdraw: 35235, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 84115, Fed_AGI: 84115, Fed_Tax: 12545, State_Tax: 1991, Total_Tax: 14536, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 91, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: -0, IRA_Balance: 216116, IRA_Withdraw: 47617, Roth_Balance: 164484, Roth_Withdraw: 33959, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: -0, Ordinary_Income: 86071, Fed_AGI: 86071, Fed_Tax: 13089, State_Tax: 2127, Total_Tax: 15216, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 92, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 174224, IRA_Withdraw: 45889, Roth_Balance: 134961, Roth_Withdraw: 35243, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 84343, Fed_AGI: 84343, Fed_Tax: 12748, State_Tax: 2024, Total_Tax: 14772, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 93, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: -0, IRA_Balance: 132695, IRA_Withdraw: 44164, Roth_Balance: 103106, Roth_Withdraw: 36524, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: -0, Ordinary_Income: 82618, Fed_AGI: 82618, Fed_Tax: 12406, State_Tax: 1922, Total_Tax: 14328, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 94, Cash_Withdraw: 0, Brokerage_Balance: 0, Brokerage_Withdraw: 0, IRA_Balance: 91540, IRA_Withdraw: 42441, Roth_Balance: 68845, Roth_Withdraw: 37803, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 80895, Fed_AGI: 80895, Fed_Tax: 12065, State_Tax: 1819, Total_Tax: 13884, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
+    { age: 95, Cash_Withdraw: 0, Brokerage_Balance: -0, Brokerage_Withdraw: 0, IRA_Balance: 50767, IRA_Withdraw: 50767, Roth_Balance: 32097, Roth_Withdraw: 32097, IRA_to_Roth: 0, CGD_Spendable: 0, Capital_Gains_Distribution: 0, Total_Capital_Gains: 0, Ordinary_Income: 89221, Fed_AGI: 89221, Fed_Tax: 14134, State_Tax: 2369, Total_Tax: 16503, ACA_HC_Payment: 0, ACA_Help: 0, Social_Security: 45240, True_Spending: 111600 },
   ];
 }

@@ -26,10 +26,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
 import { Loader2 } from "lucide-react";
 import * as d3 from "d3";
-import { exampleData } from "@/lib/example-data";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#800080'];
-const COLORS_SPENDING = ['#85BB65', '#A9A9A9', '#D3D3D3'];
+
+// const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#800080'];
+const COLORS = ['#4E8BAF', '#76C0C0', '#8FBC8F', '#A9A9A9', '#5F9EA0', '#696969'];
+//const COLORS_SPENDING = ['#85BB65', '#A9A9A9', '#D3D3D3'];
+const COLORS_SPENDING = ['#D98B5F', '#E0B550', '#8F8F4C', '#708090', '#B38CB4'];
 
 function toCsv(data: DrawdownPlanYear[] | null): string {
   if (!data || data.length === 0) {
@@ -100,17 +102,20 @@ function AppContent() {
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [isFormEdited, setIsFormEdited] = useState(false);
+  const withdrawChartRef = useRef(null);
   const chartRef = useRef(null);
   const incomeChartRef = useRef(null);
   const spendingChartRef = useRef(null);
-  const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
+  const incomeTypeChartRef = useRef(null); // <-- Add ref for the new chart
+   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
   useEffect(() => {
-    if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current) {
+    if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current && incomeTypeChartRef.current) {
       // Clear previous charts
       d3.select(chartRef.current).select("svg").remove();
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
+      d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
 
       const data = drawdownPlan;
       const margin = { top: 20, right: 30, bottom: 30, left: 60 };
@@ -180,55 +185,48 @@ function AppContent() {
           .attr("class", "legend")
           .attr("transform", `translate(${width - 100}, -10)`);
 
-        dataKeys.forEach((key, i) => {
-          const legendItem = legend.append("g")
-            .attr("transform", `translate(0, ${i * 20})`);
-
-          legendItem.append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", 15)
-            .attr("height", 15)
-            .attr("fill", colors[i]);
-
-          legendItem.append("text")
-            .attr("x", 20)
-            .attr("y", 12)
-            .text(key)
-            .style("font-size", "12px");
-        });
       };
 
       // Income Sources Chart
-      const incomeSourcesYMax = d3.max(data, d => d.wd_brokerage + d.wd_ira + d.wd_roth + d.social_security + d.cgd) || 0;
+      const incomeSourcesYMax = d3.max(data, d => d.Brokerage_Withdraw + d.IRA_Withdraw + d.Roth_Withdraw + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw) || 0;
       createStackedBarChart(
         incomeChartRef.current,
         incomeSourcesYMax,
         "Income Sources ($)",
-        ["wd_brokerage", "wd_ira", "wd_roth", "social_security", "cgd"],
+        ["Brokerage_Withdraw", "IRA_Withdraw", "Roth_Withdraw", "Social_Security", "CGD_Spendable", "Cash_Withdraw"],
         COLORS
       );
 
       // Spending Categories Chart
-      const spendingCategoriesYMax = d3.max(data, d => d.spend_goal + d.fed_tax + d.state_tax) || 0;
+      const spendingCategoriesYMax = d3.max(data, d => d.Fed_Tax + d.State_Tax + d.ACA_HC_Payment) || 0;
       createStackedBarChart(
         spendingChartRef.current,
         spendingCategoriesYMax,
-        "Spending Categories ($)",
-        ["spend_goal", "fed_tax", "state_tax"],
+        "Taxes & Healthcare ($)",
+        ["Fed_Tax", "State_Tax", "ACA_HC_Payment"],
         COLORS_SPENDING,
         d3.formatPrefix(".1", 1e3)
       );
 
       // Account Balances Chart
-      const accountBalanceYMax = d3.max(data, d => d.bal_brokerage + d.bal_ira + d.bal_roth) || 0;
+      const accountBalanceYMax = d3.max(data, d => d.Brokerage_Balance + d.IRA_Balance + d.Roth_Balance) || 0;
       createStackedBarChart(
         chartRef.current,
         accountBalanceYMax,
         "Account Balance ($)",
-        ["bal_brokerage", "bal_ira", "bal_roth"],
+        ["Brokerage_Balance", "IRA_Balance", "Roth_Balance"],
         COLORS,
         formatYAxis
+      );
+
+      // Income Type Chart (Ordinary vs Capital Gains)
+      const incomeTypeYMax = d3.max(data, d => d.Ordinary_Income + d.Total_Capital_Gains) || 0;
+      createStackedBarChart(
+        incomeTypeChartRef.current,
+        incomeTypeYMax,
+        "AGI ($)",
+        ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
+        ['#483D8B', '#B8860B'] // <-- Example colors, adjust as needed
       );
     }
   }, [drawdownPlan]);
@@ -310,7 +308,6 @@ function AppContent() {
             <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
             <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
             <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
-            {/* {conversionYears.map((year) => ())} */}
             <p><b>Recent Additions:</b> Roth conversions made in recent years.</p>
             <p><b>Older Additions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
             <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
@@ -350,10 +347,10 @@ function AppContent() {
                         {drawdownPlan.map((year) => (
                           <TableRow key={year.age}>
                             <TableCell className="w-24 text-center">{year.age}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_brokerage)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_ira)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.wd_roth)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.ira_to_roth)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.Brokerage_Withdraw)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.IRA_Withdraw)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.Roth_Withdraw)}</TableCell>
+                            <TableCell className="w-32 text-center">{formatCurrency(year.IRA_to_Roth)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -367,6 +364,7 @@ function AppContent() {
               <div className="mt-8" ref={incomeChartRef}></div>
               <div className="mt-8" ref={spendingChartRef}></div>
               <div className="mt-8" ref={chartRef}></div>
+              <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
             </div>
           ) : (
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
