@@ -109,6 +109,8 @@ function AppContent() {
   const spendingChartRef = useRef(null);
   const incomeTypeChartRef = useRef(null); // <-- Add ref for the new chart
   const rothConversionChartRef = useRef(null); // <-- Ref for Roth Conversion chart
+  const pageRef = useRef(null);
+
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
   useEffect(() => {
@@ -280,20 +282,18 @@ function AppContent() {
   }, [drawdownPlan]);
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
-    // Construct the objective for the arguments
-    let objectivePayload: { type: string; spending?: number } = { type: input.objective_type };
-//    if (input.objective_type === 'max_assets' || input.objective_type === 'min_taxes') {
-//      objectivePayload.spending = ;
-//    }
-
+    console.log(input);
     const apiPayload = {
       arguments: {
-        objective: objectivePayload,
-        pessimistic_taxes: input.pessimistic_taxes,
-        pessimistic_healthcare: input.pessimistic_healthcare,
+        pessimistic_taxes: input.pessimistic.taxes,
+        pessimistic_healthcare: input.pessimistic.healthcare,
+        objective: {
+          type: input.spending_preference,
+          value: input.annual_spending,
+        }
       },
       startage: input.about.age,
-      birthmonth: input.about.birth_month,
+      birthmonth: Number(input.about.birth_month),
       endage: input.about.end_of_plan_age,
       inflation: input.predictions.inflation,
       returns: input.predictions.returns,
@@ -302,10 +302,13 @@ function AppContent() {
         state: input.about.state_of_residence,
       },
       income: {
-        social_security: { amount: input.social_security.amount, age: `${input.social_security.starts}-` },
-        cash: { amount: parseInt(input.cashAmount), age: input.startAge.toString(), tax: false } // Assuming cash is for startAge and not taxable by default
+        social_security: {
+          amount: input.social_security.amount * 12.0,
+          age: input.social_security.starts === -1 ? `${input.about.age - 1}-` : `${input.social_security.starts}-`
+        },
+        cash: { amount: input.cash.amount, age: `${input.about.age}`, tax: false } // Assuming cash is for startAge and not taxable by default
       },
-      aca: { premium: parseInt(input.acaFullPremium), slcsp: parseInt(input.acaSlcspPremium) },
+      aca: { premium: input.ACA.premium, slcsp: input.ACA.slcsp },
       aftertax: {
         bal: input.brokerage.balance,
         basis: input.brokerage.basis,
@@ -313,17 +316,28 @@ function AppContent() {
       },
       IRA: { bal: input.IRA.balance },
       roth: {
-        bal: input.Roth.balance,
-        contributions: input.rothContributions.map(c => [parseInt(c.age), parseInt(c.amount)])
+        bal: input.Roth.balance, // Assuming input.Roth.balance is a number
+        contributions: [
+          // Older conversions (age at conversion would be current age - 5 or more)
+          // We'll use current age - 5 as a representative age for "older"
+          ...(input.Roth.old_conversions > 0 ? [[input.about.age - 5, input.Roth.old_conversions]] : []),
+          // Recent conversions, mapping year offset to age at conversion
+          ...(input.Roth.conversion_year_minus_4 > 0 ? [[input.about.age - 4, input.Roth.conversion_year_minus_4]] : []),
+          ...(input.Roth.conversion_year_minus_3 > 0 ? [[input.about.age - 3, input.Roth.conversion_year_minus_3]] : []),
+          ...(input.Roth.conversion_year_minus_2 > 0 ? [[input.about.age - 2, input.Roth.conversion_year_minus_2]] : []),
+          ...(input.Roth.conversion_year_minus_1 > 0 ? [[input.about.age - 1, input.Roth.conversion_year_minus_1]] : []),
+        ].sort((a, b) => a[0] - b[0]) // Sort by age at conversion, ascending
+        // contributions: input.rothContributions.map(c => [parseInt(c.age), parseInt(c.amount)])
       }
     };
 
     console.log("Submitting payload:", apiPayload); // For debugging
+    if (pageRef.current) {
+      pageRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
 
     setLoading(true);
     try {
-      // Simulate a 3-second delay
-      await new Promise(resolve => setTimeout(resolve, 3000));
       // The 'input' to calculateDrawdownPlan should now be the apiPayload
       const plan = await calculateDrawdownPlan(apiPayload as any); // Using 'as any' for now, ideally update DrawdownPlanInput type
       setDrawdownPlan(plan);
@@ -414,7 +428,7 @@ function AppContent() {
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>
           ) : drawdownPlan ? (
-          <div className="flex flex-col gap-4 p-4">
+            <div ref={pageRef} className="flex flex-col gap-4 p-4">
               {drawdownPlan && isFormEdited && (
                 <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.

@@ -106,7 +106,7 @@ const months = [
       age: z.coerce.number(),
       birth_month: z.string(),
       end_of_plan_age: z.coerce.number(),
-      filing_status: z.enum(["single", "married"]),
+      filing_status: z.enum(["Single", "MFJ"]),
       state_of_residence: z.string(),
     }),
     social_security: z.object({
@@ -118,7 +118,7 @@ const months = [
       returns: z.coerce.number(),
     }),
     cash: z.object({
-      available: z.coerce.number(),
+      amount: z.coerce.number(),
     }),
     brokerage: z.object({
       balance: z.coerce.number(),
@@ -137,16 +137,16 @@ const months = [
       conversion_year_minus_4: z.coerce.number(),
 
     }),
-    aca: z.object({
-      full_premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
-      slcsp_premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
+    ACA: z.object({
+      premium: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
+      slcsp: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
-    spending_preference: z.enum(["maximize_spending", "maximize_assets"]),
+    spending_preference: z.enum(["max_spend", "max_assets"]),
     annual_spending: z.coerce.number().optional(),
     pessimistic: z.object({
       taxes: z.boolean(),
-      healthcare_costs: z.boolean(),
+      healthcare: z.boolean(),
     }),
   }).refine((schema) => 
     schema.social_security.starts > schema.about.age ||
@@ -168,7 +168,7 @@ const months = [
           age: 55,
           birth_month: "5",
           end_of_plan_age: 96,
-          filing_status: "single",
+          filing_status: "Single",
           state_of_residence: "DC",
         },
         social_security: {
@@ -180,7 +180,7 @@ const months = [
           returns: 5.5,
         },
         cash: {
-          available: 5000,
+          amount: 5000,
         },
         brokerage: {
           balance: 200000,
@@ -198,16 +198,16 @@ const months = [
           conversion_year_minus_3: 10000,
           conversion_year_minus_4: 0,
         },
-        aca: {
-          full_premium: 800,
-          slcsp_premium: 0,
+        ACA: {
+          premium: 800,
+          slcsp: 0,
           people_covered: 1, // Default to 1
         },
-        spending_preference: "maximize_spending",
+        spending_preference: "max_spend",
         annual_spending: 0,
         pessimistic: {
-          taxes: true,
-          healthcare_costs: true,
+          taxes: false,
+          healthcare: false,
       }
     },
     });
@@ -322,8 +322,8 @@ const months = [
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="single">Single</SelectItem>
-                    <SelectItem value="married">Married Filing Jointly</SelectItem>
+                    <SelectItem value="Single">Single</SelectItem>
+                    <SelectItem value="MFJ">Married Filing Jointly</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -392,7 +392,7 @@ const months = [
 
           <FormField
             control={form.control}
-            name="cash.available"
+            name="cash.amount"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Cash</FormLabel>
@@ -624,7 +624,7 @@ const months = [
     <>
     <FormField
         control={form.control}
-        name="aca.full_premium"
+        name="ACA.premium"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Full Monthly ACA Premium</FormLabel>
@@ -643,7 +643,7 @@ const months = [
 
 <FormField
         control={form.control}
-        name="aca.slcsp_premium"
+        name="ACA.slcsp"
         render={({ field }) => (
           <FormItem>
             <div className="flex items-center gap-1">
@@ -675,7 +675,7 @@ const months = [
   )}
           <Separator />
 
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <p className="text-sm font-medium">Be Pessimistic about:</p>
             <div className="flex flex-col space-y-2">
                 <FormField
@@ -692,7 +692,7 @@ const months = [
                 />
                 <FormField
                 control={form.control}
-                name="pessimistic.healthcare_costs"
+                name="pessimistic.healthcare"
                 render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                     <FormControl>
@@ -705,7 +705,7 @@ const months = [
             </div>
             </div>
 
-            <Separator/>
+            <Separator/> */}
 
           <FormField
             control={form.control}
@@ -721,13 +721,13 @@ const months = [
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value="maximize_spending" id="spending" />
+                        <RadioGroupItem value="max_spend" id="spending" />
                       </FormControl>
                       <FormLabel htmlFor="spending">Maximize Spending</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value="maximize_assets" id="assets" />
+                        <RadioGroupItem value="max_assets" id="assets" />
                       </FormControl>
                       <FormLabel htmlFor="assets">Maximize End-of-Plan Assets</FormLabel>
                     </FormItem>
@@ -738,7 +738,7 @@ const months = [
             )}
           />
   
-          {form.watch("spending_preference") === "maximize_assets" && (
+          {form.watch("spending_preference") === "max_assets" && (
             <FormField
               control={form.control}
             
