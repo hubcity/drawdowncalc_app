@@ -207,7 +207,7 @@ const months = [
         annual_spending: 0,
         pessimistic: {
           taxes: false,
-          healthcare: false,
+          healthcare: true,
       }
     },
     });
@@ -675,10 +675,10 @@ const months = [
   )}
           <Separator />
 
-          {/* <div className="space-y-4">
+          <div className="space-y-4">
             <p className="text-sm font-medium">Be Pessimistic about:</p>
             <div className="flex flex-col space-y-2">
-                <FormField
+                {/* <FormField
                 control={form.control}
                 name="pessimistic.taxes"
                 render={({ field }) => (
@@ -689,7 +689,7 @@ const months = [
                     <FormLabel className="font-normal">Taxes</FormLabel>
                     </FormItem>
                 )}
-                />
+                /> */}
                 <FormField
                 control={form.control}
                 name="pessimistic.healthcare"
@@ -705,7 +705,7 @@ const months = [
             </div>
             </div>
 
-            <Separator/> */}
+            <Separator/>
 
           <FormField
             control={form.control}

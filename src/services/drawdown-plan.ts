@@ -224,6 +224,8 @@ export interface DrawdownPlanYear {
    * The actual spending amount for the year.
    */
   True_Spending: number;
+
+  Required_RMD: number;
 }
 
 /**
@@ -277,6 +279,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanY
         Brokerage_Withdraw: yearData.Brokerage_Withdraw,
         IRA_Balance: yearData.IRA_Balance,
         IRA_Withdraw: yearData.IRA_Withdraw,
+        Required_RMD: yearData.Required_RMD,
         Roth_Balance: yearData.Roth_Balance,
         Roth_Withdraw: yearData.Roth_Withdraw,
         IRA_to_Roth: yearData.IRA_to_Roth,

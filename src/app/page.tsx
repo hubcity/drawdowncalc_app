@@ -104,11 +104,12 @@ function AppContent() {
   const [loading, setLoading] = useState(false);
   const [isFormEdited, setIsFormEdited] = useState(false);
   const withdrawChartRef = useRef(null);
-  const chartRef = useRef(null);
-  const incomeChartRef = useRef(null);
-  const spendingChartRef = useRef(null);
-  const incomeTypeChartRef = useRef(null); // <-- Add ref for the new chart
-  const rothConversionChartRef = useRef(null); // <-- Ref for Roth Conversion chart
+  const chartRef = useRef<HTMLDivElement>(null);
+  const incomeChartRef = useRef<HTMLDivElement>(null);
+  const spendingChartRef = useRef<HTMLDivElement>(null);
+  const incomeTypeChartRef = useRef<HTMLDivElement>(null); // <-- Add ref for the new chart
+  const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
+  const automaticIncomeChartRef = useRef<HTMLDivElement>(null); // Ref for the new automatic income chart
   const pageRef = useRef(null);
 
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
@@ -116,14 +117,14 @@ function AppContent() {
   useEffect(() => {
     if (drawdownPlan && chartRef.current && incomeChartRef.current
       && spendingChartRef.current && incomeTypeChartRef.current
-      && rothConversionChartRef.current) {
+      && rothConversionChartRef.current && automaticIncomeChartRef.current) {
       // Clear previous charts
       d3.select(chartRef.current).select("svg").remove();
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
       d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
       d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
-
+      d3.select(automaticIncomeChartRef.current).select("svg").remove(); // <-- Clear)
       const data = drawdownPlan;
       const margin = { top: 20, right: 30, bottom: 30, left: 60 };
       const width = 800 - margin.left - margin.right;
@@ -232,7 +233,7 @@ function AppContent() {
       createStackedBarChart(
         incomeChartRef, // Pass ref object
         incomeSourcesYMax,
-        "Income Sources ($)",
+        "Income Sources",
         ["Brokerage_Withdraw", "IRA_Withdraw", "Roth_Withdraw", "Social_Security", "CGD_Spendable", "Cash_Withdraw"],
         COLORS
       );
@@ -242,7 +243,7 @@ function AppContent() {
       createStackedBarChart(
         spendingChartRef, // Pass ref object
         spendingCategoriesYMax,
-        "Taxes & Healthcare ($)",
+        "Mandatory Expenses",
         ["Fed_Tax", "State_Tax", "ACA_HC_Payment"],
         COLORS_SPENDING,
         d3.formatPrefix(".1", 1e3)
@@ -253,7 +254,7 @@ function AppContent() {
       createStackedBarChart(
         chartRef, // Pass ref object
         accountBalanceYMax,
-        "Account Balance ($)",
+        "Account Balance",
         ["Brokerage_Balance", "IRA_Balance", "Roth_Balance"],
         COLORS,
         formatYAxis
@@ -264,9 +265,23 @@ function AppContent() {
       createStackedBarChart(
         incomeTypeChartRef, // Pass ref object
         incomeTypeYMax,
-        "AGI ($)",
+        "AGI",
         ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
         COLORS_OTHER // <-- Example colors, adjust as needed
+      );
+
+      // Automatic Income Chart
+      // Assuming RMDs are part of IRA_Withdraw for ages >= RMD age, and CGD_Spendable is separate.
+      // If RMD is a separate field in DrawdownPlanYear, use that.
+      // For now, let's assume 'IRA_Withdraw' for RMDs (this might need adjustment based on your data structure)
+      // and 'Ordinary_Income' for other non-SS, non-CGD income.
+      const automaticIncomeYMax = d3.max(data, d => (d.Required_RMD + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw)) || 0;
+      createStackedBarChart(
+        automaticIncomeChartRef,
+        automaticIncomeYMax,
+        "Automatic Income",
+        ["Required_RMD", "Social_Security", "CGD_Spendable", "Cash_Withdraw"], // Adjust IRA_Withdraw if RMD is separate
+        [COLORS[1], COLORS[3], COLORS[4], COLORS[5]] // Example colors
       );
 
       // Roth Conversion Chart
@@ -274,7 +289,7 @@ function AppContent() {
       createStackedBarChart(
         rothConversionChartRef, // Pass ref object
         rothConversionYMax,
-        "IRA to Roth Conv. ($)",
+        "Roth Conversions",
         ["IRA_to_Roth"], // Data key
         [COLORS_OTHER[5]] // Example color (purple)
       );
@@ -471,11 +486,12 @@ function AppContent() {
                   </div>
                 </CardContent>
               </Card>
+              <div className="mt-8" ref={chartRef}></div>
               <div className="mt-8" ref={incomeChartRef}></div>
               <div className="mt-8" ref={spendingChartRef}></div>
-              <div className="mt-8" ref={chartRef}></div>
-              <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
+              <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
               <div className="mt-8" ref={rothConversionChartRef}></div> {/* <-- Add container for Roth Conversion chart */}
+              <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
              </div>
           ) : (
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
