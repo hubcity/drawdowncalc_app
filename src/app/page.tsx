@@ -127,9 +127,18 @@ function AppContent() {
       const width = 800 - margin.left - margin.right;
       const height = 400 - margin.top - margin.bottom;
 
+      // --- Tooltip Setup ---
+      // Select the tooltip div (we'll add this div in the JSX later)
+      const tooltip = d3.select("#chart-tooltip");
+
+      // Function to format keys for display
+      const formatKey = (key: string) => {
+        return key.replace(/_/g, ' '); // Replace underscores with spaces
+      };
+
       // Function to create the stacked bar chart
-      const createStackedBarChart = (ref: string, yMax: number, yLabel: string, dataKeys: string[], colors: string[], yFormat = d3.formatPrefix(".1", 1e3)) => {
-        const svg = d3.select(ref)
+      const createStackedBarChart = (ref: React.RefObject<HTMLDivElement> | null, yMax: number, yLabel: string, dataKeys: string[], colors: string[], yFormat = d3.formatPrefix(".1", 1e3)) => {
+        const svg = d3.select(ref?.current) // Use ref.current here
           .append("svg")
           .attr("width", '100%')
           .attr("height", height + margin.top + margin.bottom)
@@ -161,9 +170,33 @@ function AppContent() {
           .data(d => d)
           .enter().append("rect")
           .attr("x", d => x(d.data.age.toString()) || "0")
-          .attr("y", d => y(d[1]))
-          .attr("height", d => y(d[0]) - y(d[1]))
-          .attr("width", x.bandwidth());
+          .attr("y", d => y(d[1])) // Use the top value of the segment
+          .attr("height", d => Math.max(0, y(d[0]) - y(d[1]))) // Ensure height is not negative
+          .attr("width", x.bandwidth())
+          .on("mouseover", function(event, d) { // `function` syntax to access `this` if needed, or arrow for lexical scope
+            // console.log("Mouseover fired!", { event, d }); // <-- Add console log
+            tooltip.transition()
+                   .duration(200)
+                   .style("opacity", .9);
+            const segmentValue = d[1] - d[0];
+            // Find the key corresponding to this segment
+            // The `d` object in the stack layout doesn't directly contain the key easily.
+            // We need to find which key's stack produced this segment.
+            // A slightly roundabout way: find the index of the series this rect belongs to.
+            const seriesIndex = stackedData.findIndex(series => series.some(segment => segment === d));
+            const segmentKey = dataKeys[seriesIndex] || "Unknown";
+            // console.log("Tooltip Data:", { age: d.data.age, key: segmentKey, value: segmentValue }); // <-- Log tooltip content
+
+            tooltip.html(`<strong>Age:</strong> ${d.data.age}<br/><strong>${formatKey(segmentKey)}:</strong> ${formatCurrency(segmentValue)}`)
+                   .style("left", (event.pageX + 15) + "px") // Position tooltip near cursor
+                   .style("top", (event.pageY - 28) + "px");
+          })
+          .on("mouseout", function(d) {
+            // console.log("Mouseout fired!"); // <-- Add console log
+            tooltip.transition()
+                   .duration(500)
+                   .style("opacity", 0);
+          });
 
         svg.append("g")
           .attr("transform", `translate(0,${height})`)
@@ -195,7 +228,7 @@ function AppContent() {
       // Income Sources Chart
       const incomeSourcesYMax = d3.max(data, d => d.Brokerage_Withdraw + d.IRA_Withdraw + d.Roth_Withdraw + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw) || 0;
       createStackedBarChart(
-        incomeChartRef.current,
+        incomeChartRef, // Pass ref object
         incomeSourcesYMax,
         "Income Sources ($)",
         ["Brokerage_Withdraw", "IRA_Withdraw", "Roth_Withdraw", "Social_Security", "CGD_Spendable", "Cash_Withdraw"],
@@ -205,7 +238,7 @@ function AppContent() {
       // Spending Categories Chart
       const spendingCategoriesYMax = d3.max(data, d => d.Fed_Tax + d.State_Tax + d.ACA_HC_Payment) || 0;
       createStackedBarChart(
-        spendingChartRef.current,
+        spendingChartRef, // Pass ref object
         spendingCategoriesYMax,
         "Taxes & Healthcare ($)",
         ["Fed_Tax", "State_Tax", "ACA_HC_Payment"],
@@ -216,7 +249,7 @@ function AppContent() {
       // Account Balances Chart
       const accountBalanceYMax = d3.max(data, d => d.Brokerage_Balance + d.IRA_Balance + d.Roth_Balance) || 0;
       createStackedBarChart(
-        chartRef.current,
+        chartRef, // Pass ref object
         accountBalanceYMax,
         "Account Balance ($)",
         ["Brokerage_Balance", "IRA_Balance", "Roth_Balance"],
@@ -227,7 +260,7 @@ function AppContent() {
       // Income Type Chart (Ordinary vs Capital Gains)
       const incomeTypeYMax = d3.max(data, d => d.Ordinary_Income + d.Total_Capital_Gains) || 0;
       createStackedBarChart(
-        incomeTypeChartRef.current,
+        incomeTypeChartRef, // Pass ref object
         incomeTypeYMax,
         "AGI ($)",
         ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
@@ -237,7 +270,7 @@ function AppContent() {
       // Roth Conversion Chart
       const rothConversionYMax = d3.max(data, d => d.IRA_to_Roth) || 0;
       createStackedBarChart(
-        rothConversionChartRef.current,
+        rothConversionChartRef, // Pass ref object
         rothConversionYMax,
         "IRA to Roth Conv. ($)",
         ["IRA_to_Roth"], // Data key
@@ -247,11 +280,52 @@ function AppContent() {
   }, [drawdownPlan]);
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
+    // Construct the objective for the arguments
+    let objectivePayload: { type: string; spending?: number } = { type: input.objective_type };
+//    if (input.objective_type === 'max_assets' || input.objective_type === 'min_taxes') {
+//      objectivePayload.spending = ;
+//    }
+
+    const apiPayload = {
+      arguments: {
+        objective: objectivePayload,
+        pessimistic_taxes: input.pessimistic_taxes,
+        pessimistic_healthcare: input.pessimistic_healthcare,
+      },
+      startage: input.about.age,
+      birthmonth: input.about.birth_month,
+      endage: input.about.end_of_plan_age,
+      inflation: input.predictions.inflation,
+      returns: input.predictions.returns,
+      taxes: {
+        filing_status: input.about.filing_status,
+        state: input.about.state_of_residence,
+      },
+      income: {
+        social_security: { amount: input.social_security.amount, age: `${input.social_security.starts}-` },
+        cash: { amount: parseInt(input.cashAmount), age: input.startAge.toString(), tax: false } // Assuming cash is for startAge and not taxable by default
+      },
+      aca: { premium: parseInt(input.acaFullPremium), slcsp: parseInt(input.acaSlcspPremium) },
+      aftertax: {
+        bal: input.brokerage.balance,
+        basis: input.brokerage.basis,
+        distributions: input.brokerage.distributions
+      },
+      IRA: { bal: input.IRA.balance },
+      roth: {
+        bal: input.Roth.balance,
+        contributions: input.rothContributions.map(c => [parseInt(c.age), parseInt(c.amount)])
+      }
+    };
+
+    console.log("Submitting payload:", apiPayload); // For debugging
+
     setLoading(true);
     try {
       // Simulate a 3-second delay
       await new Promise(resolve => setTimeout(resolve, 3000));
-      const plan = await calculateDrawdownPlan(input);
+      // The 'input' to calculateDrawdownPlan should now be the apiPayload
+      const plan = await calculateDrawdownPlan(apiPayload as any); // Using 'as any' for now, ideally update DrawdownPlanInput type
       setDrawdownPlan(plan);
       setSubmitted(true);
       setIsFormEdited(false); // Reset isFormEdited to false on successful submission
@@ -270,6 +344,13 @@ function AppContent() {
 
   return (
     <> {/* Use Fragment to return multiple elements */}
+      {/* --- Tooltip Div --- */}
+      <div id="chart-tooltip" style={{
+        position: 'absolute', opacity: 0, pointerEvents: 'none',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', padding: '5px', borderRadius: '3px',
+        fontSize: '12px', whiteSpace: 'nowrap',
+        zIndex: 9999 // Add a high z-index
+      }}></div>
       <Sidebar collapsible="icon"> {/* defaultOpen controls initial state */}
         <div className="p-2"> {/* Add padding if needed */}
             {(
@@ -406,5 +487,3 @@ export default function Home() {
     </SidebarProvider>
   );
 }
-
-

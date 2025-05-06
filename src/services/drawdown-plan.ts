@@ -26,6 +26,12 @@ export interface DrawdownPlanInput {
    * Roth account details.
    */
   Roth: Roth;
+
+  ACA: ACA;
+
+  cash: Cash;
+
+  objective: Objective;
 }
 
 export interface About {
@@ -95,6 +101,21 @@ export interface IRA {
     balance: number;
 }
 
+export interface ACA {
+    premium: number;
+    slcsp: number;
+}
+
+export interface Cash {
+    amount: number;
+}
+
+export interface Objective {
+    type: string;
+    target_spending?: number;
+    pessimistic_taxes: boolean;
+    pessimistic_healthcare: boolean;
+}
 export interface Roth {
     /**
      * The balance in the Roth account.
