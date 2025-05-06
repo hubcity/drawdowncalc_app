@@ -29,9 +29,10 @@ import * as d3 from "d3";
 
 
 // const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#800080'];
-const COLORS = ['#4E8BAF', '#76C0C0', '#8FBC8F', '#A9A9A9', '#5F9EA0', '#696969'];
+const COLORS_SPENDING = ['#4E8BAF', '#76C0C0', '#8FBC8F', '#A9A9A9', '#5F9EA0', '#696969'];
 //const COLORS_SPENDING = ['#85BB65', '#A9A9A9', '#D3D3D3'];
-const COLORS_SPENDING = ['#D98B5F', '#E0B550', '#8F8F4C', '#708090', '#B38CB4'];
+const COLORS = ['#D98B5F', '#E0B550', '#8F8F4C', '#708090', '#B38CB4', '#9370DB'];
+const COLORS_OTHER = ['#191970', '#006400', '#8B0000', '#483D8B', '#B8860B', '#595959'];
 
 function toCsv(data: DrawdownPlanYear[] | null): string {
   if (!data || data.length === 0) {
@@ -107,15 +108,19 @@ function AppContent() {
   const incomeChartRef = useRef(null);
   const spendingChartRef = useRef(null);
   const incomeTypeChartRef = useRef(null); // <-- Add ref for the new chart
-   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
+  const rothConversionChartRef = useRef(null); // <-- Ref for Roth Conversion chart
+  const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
   useEffect(() => {
-    if (drawdownPlan && chartRef.current && incomeChartRef.current && spendingChartRef.current && incomeTypeChartRef.current) {
+    if (drawdownPlan && chartRef.current && incomeChartRef.current
+      && spendingChartRef.current && incomeTypeChartRef.current
+      && rothConversionChartRef.current) {
       // Clear previous charts
       d3.select(chartRef.current).select("svg").remove();
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
       d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
+      d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
 
       const data = drawdownPlan;
       const margin = { top: 20, right: 30, bottom: 30, left: 60 };
@@ -226,7 +231,17 @@ function AppContent() {
         incomeTypeYMax,
         "AGI ($)",
         ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
-        ['#483D8B', '#B8860B'] // <-- Example colors, adjust as needed
+        COLORS_OTHER // <-- Example colors, adjust as needed
+      );
+
+      // Roth Conversion Chart
+      const rothConversionYMax = d3.max(data, d => d.IRA_to_Roth) || 0;
+      createStackedBarChart(
+        rothConversionChartRef.current,
+        rothConversionYMax,
+        "IRA to Roth Conv. ($)",
+        ["IRA_to_Roth"], // Data key
+        [COLORS_OTHER[5]] // Example color (purple)
       );
     }
   }, [drawdownPlan]);
@@ -365,7 +380,8 @@ function AppContent() {
               <div className="mt-8" ref={spendingChartRef}></div>
               <div className="mt-8" ref={chartRef}></div>
               <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
-            </div>
+              <div className="mt-8" ref={rothConversionChartRef}></div> {/* <-- Add container for Roth Conversion chart */}
+             </div>
           ) : (
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
              // Or potentially keep the limitations text until the form is submitted?
