@@ -6,30 +6,31 @@ import {
     Predictions,
     Roth,
   } from "@/services/drawdown-plan";
-  import { zodResolver } from "@hookform/resolvers/zod";
-  import { useWatch } from "react-hook-form";
-  import { useState } from "react";
-  import { useForm } from "react-hook-form";
-  import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useWatch } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
   
-  import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-  import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form";
-  import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { defaultFormValues } from "@/lib/form-schema"; // Import the schema and defaults
 
   
 const states = [
@@ -163,53 +164,7 @@ const months = [
   export function DrawdownPlanForm({ onSubmit, onFormEdit }: DrawdownPlanFormProps) {
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
-      defaultValues: {
-        about: {
-          age: 55,
-          birth_month: "5",
-          end_of_plan_age: 96,
-          filing_status: "Single",
-          state_of_residence: "DC",
-        },
-        social_security: {
-          amount: 2500,
-          starts: 70,
-        },
-        predictions: {
-          inflation: 2.5,
-          returns: 5.5,
-        },
-        cash: {
-          amount: 5000,
-        },
-        brokerage: {
-          balance: 200000,
-          basis: 150000,
-          distributions: 5.0,
-        },
-        IRA: {
-          balance: 500000,
-        },
-        Roth: {
-          balance: 40000,
-          old_conversions: 0,
-          conversion_year_minus_1: 10000,
-          conversion_year_minus_2: 10000,
-          conversion_year_minus_3: 10000,
-          conversion_year_minus_4: 0,
-        },
-        ACA: {
-          premium: 800,
-          slcsp: 0,
-          people_covered: 1, // Default to 1
-        },
-        spending_preference: "max_spend",
-        annual_spending: 0,
-        pessimistic: {
-          taxes: false,
-          healthcare: true,
-      }
-    },
+      defaultValues: defaultFormValues, // Use the imported defaults
     });
   
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
