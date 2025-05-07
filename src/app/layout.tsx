@@ -4,6 +4,7 @@ import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
+import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,10 +29,11 @@ function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
           Close
         </button>
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
-        <p className="text-gray-700">
+        <DisclaimerContent />
+        {/* <p className="text-gray-700">
           This is a brief description of the application. You can include details about the
           purpose, features, and how to use the app.
-        </p>
+        </p> */}
       </div>
     </div>
   );

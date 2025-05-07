@@ -18,6 +18,7 @@ import {
   SidebarRail,
   useSidebar, // Import useSidebar
 } from "@/components/ui/sidebar";
+import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
 import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear } from "@/services/drawdown-plan";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -404,13 +405,9 @@ function AppContent() {
 
       <SidebarInset>
         {!hasAcceptedTerms ? (
-          <div className="flex flex-col items-center justify-center h-full p-4 text-center gap-4">
-            <p>This website is not a substitute for professional advice.
-              All financial decisions should be made in consultation with a qualified advisor who understands your specific
-              circumstances.
-            </p>
+          <div className="flex flex-col items-center h-full px-8 md:px-16 py-6 gap-6"> {/* Adjusted padding: more on sides, less on top/bottom */}
+            <DisclaimerContent />
             <Button onClick={handleAcceptTerms}>I Understand</Button>
-            {/* Removed Toggle Button from here */}
           </div>
         ) : loading ? (
           <div className="flex items-center justify-center h-full">
