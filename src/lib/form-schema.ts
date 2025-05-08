@@ -18,5 +18,5 @@ export const defaultFormValues: z.infer<typeof formSchema> = {
     ACA: { premium: 800, slcsp: 0, people_covered: 1 },
     spending_preference: "max_spend",
     annual_spending: 0,
-    pessimistic: { taxes: false, healthcare: true }
+    pessimistic: { taxes: false, healthcare: false }
 };
