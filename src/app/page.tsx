@@ -301,6 +301,9 @@ function AppContent() {
     console.log(input);
     const apiPayload = {
       arguments: {
+        allow_conversions: input.roth_conversion_preference === "anytime",
+        no_conversions: input.roth_conversion_preference === "never",
+        no_conversions_after_socsec: input.roth_conversion_preference === "before_socsec",
         pessimistic_taxes: input.pessimistic.taxes,
         pessimistic_healthcare: input.pessimistic.healthcare,
         objective: {
@@ -324,7 +327,11 @@ function AppContent() {
         },
         cash: { amount: input.cash.amount, age: `${input.about.age}`, tax: false } // Assuming cash is for startAge and not taxable by default
       },
-      aca: { premium: input.ACA.premium, slcsp: input.ACA.slcsp },
+      aca: { 
+        premium: input.ACA.premium, 
+        slcsp: input.ACA.slcsp,
+        covered: input.ACA.people_covered 
+      },
       aftertax: {
         bal: input.brokerage.balance,
         basis: input.brokerage.basis,

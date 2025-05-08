@@ -31,6 +31,8 @@ export interface DrawdownPlanInput {
 
   cash: Cash;
 
+  roth_conversion_preference: string;
+
   spending_preference: string;
   
   pessimistic: Pessimistic;
@@ -112,6 +114,7 @@ export interface IRA {
 export interface ACA {
     premium: number;
     slcsp: number;
+    people_covered: number;
 }
 
 export interface Cash {

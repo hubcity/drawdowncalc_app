@@ -143,6 +143,7 @@ const months = [
       slcsp: z.coerce.number().max(10000, { message: "This should be a monthly amount." }),
       people_covered: z.coerce.number().min(1, { message: "Must cover at least 1 person" }).max(8, { message: "Can cover up to 8 people" }).optional(),
     }).optional(),
+    roth_conversion_preference: z.enum(["anytime", "before_socsec", "never"]),
     spending_preference: z.enum(["max_spend", "max_assets"]),
     annual_spending: z.coerce.number().optional(),
     pessimistic: z.object({
@@ -626,6 +627,25 @@ const months = [
           </FormItem>
         )}
       />
+              <FormField
+                control={form.control}
+                name="ACA.people_covered"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ACA People Covered</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="ACA People Covered"
+                        type="number"
+                        {...field}
+                        onChange={handleInputChange(field.onChange)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <Separator />
     </>
   )}
@@ -661,6 +681,30 @@ const months = [
             </div>
 
             <Separator/> */}
+
+          <FormField
+            control={form.control}
+            name="roth_conversion_preference"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Roth Conversions</FormLabel>
+                <Select onValueChange={handleInputChange(field.onChange)} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Roth conversion strategy" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="anytime">Anytime</SelectItem>
+                    <SelectItem value="before_socsec">Before Social Security</SelectItem>
+                    <SelectItem value="never">Never</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Separator/>
 
           <FormField
             control={form.control}
