@@ -231,13 +231,20 @@ export interface DrawdownPlanYear {
   Required_RMD: number;
 }
 
+export interface DrawdownPlanResponse {
+  planYears: DrawdownPlanYear[];
+  spendingFloor?: number;
+  endOfPlanAssets?: number;
+  status?: string;
+}
+
 /**
  * Asynchronously calculates the drawdown plan based on user input.
  *
  * @param input The user's input data.
- * @returns A promise that resolves to an array of DrawdownPlanYear objects.
+ * @returns A promise that resolves to a DrawdownPlanResponse.
  */
-export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanYear[]> {
+export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanResponse> {
   const response = await fetch('http://localhost:5001/calculate', {
     method: 'POST',
     headers: {
@@ -261,7 +268,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanY
     throw new Error(errorMessage);
   }
 
-  const rawData: { retire: { [key: string]: any } } = await response.json();
+  const rawData: { retire: { [key: string]: any }, spending_floor?: number, endofplan_assets?: number, status?: string } = await response.json();
 
   // Transform the rawData into DrawdownPlanYear[]
   const formattedPlan: DrawdownPlanYear[] = Object.keys(rawData.retire)
@@ -302,5 +309,10 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanY
     })
     .sort((a, b) => a.age - b.age); // Ensure sorted by age
 
-  return formattedPlan;
+  return {
+    planYears: formattedPlan,
+    spendingFloor: rawData.spending_floor,
+    endOfPlanAssets: rawData.endofplan_assets,
+    status: rawData.status,
+  };
 }

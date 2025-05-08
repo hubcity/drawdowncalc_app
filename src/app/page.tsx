@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
-import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear } from "@/services/drawdown-plan";
+import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear, DrawdownPlanResponse } from "@/services/drawdown-plan";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,7 @@ const formatCurrency = (value: number): string => {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value);
 };
 
@@ -102,6 +103,10 @@ function AppContent() {
   const [drawdownPlan, setDrawdownPlan] = useState<DrawdownPlanYear[] | null>(null);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [spendingFloor, setSpendingFloor] = useState<number | undefined>(undefined);
+  const [endOfPlanAssets, setEndOfPlanAssets] = useState<number | undefined>(undefined);
+  const [planStatus, setPlanStatus] = useState<string | undefined>(undefined);
+  const [currentObjectiveType, setCurrentObjectiveType] = useState<string | undefined>(undefined); // State for objective type
   const [loading, setLoading] = useState(false);
   const [isFormEdited, setIsFormEdited] = useState(false);
   const withdrawChartRef = useRef(null);
@@ -362,9 +367,13 @@ function AppContent() {
     setLoading(true);
     try {
       // The 'input' to calculateDrawdownPlan should now be the apiPayload
-      const plan = await calculateDrawdownPlan(apiPayload as any); // Using 'as any' for now, ideally update DrawdownPlanInput type
-      setDrawdownPlan(plan);
+      const response: DrawdownPlanResponse = await calculateDrawdownPlan(apiPayload as any); // Using 'as any' for now, ideally update DrawdownPlanInput type
+      setDrawdownPlan(response.planYears);
       setSubmitted(true);
+      setSpendingFloor(response.spendingFloor);
+      setEndOfPlanAssets(response.endOfPlanAssets);
+      setPlanStatus(response.status);
+      setCurrentObjectiveType(apiPayload.arguments.objective.type); // Store the objective type
       setIsFormEdited(false); // Reset isFormEdited to false on successful submission
     } catch (error) {
       console.error("Failed to calculate drawdown plan:", error);
@@ -449,10 +458,25 @@ function AppContent() {
           ) : drawdownPlan ? (
             <div ref={pageRef} className="flex flex-col gap-4 p-4">
               {drawdownPlan && isFormEdited && (
-                <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50">
+                      <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
                 </div>
               )}
+                    {/* Display Spending Floor or End of Plan Assets */}
+                    <Card className="mb-4">
+                      <CardHeader>
+                        <CardTitle className="text-center">Plan Summary</CardTitle>
+                      </CardHeader>
+                      <CardContent className="text-center text-lg">
+                        {/* planStatus <p className="mb-2">Solver Status: <span className="font-semibold">{planStatus}</span></p> */}
+                  {currentObjectiveType === 'max_spend' && spendingFloor !== undefined && (
+                          <p>Projected Annual Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
+                        )}
+                  {(currentObjectiveType === 'max_assets' || currentObjectiveType === 'min_taxes') && endOfPlanAssets !== undefined && (
+                          <p>Projected End-of-Plan Assets: <span className="font-semibold">{formatCurrency(endOfPlanAssets)}</span></p>
+                        )}
+                      </CardContent>
+                    </Card>
               <Card>
                 <CardHeader>
                   <CardTitle>Drawdown Plan Results</CardTitle>
