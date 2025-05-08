@@ -114,8 +114,9 @@ function AppContent() {
   const incomeChartRef = useRef<HTMLDivElement>(null);
   const spendingChartRef = useRef<HTMLDivElement>(null);
   const incomeTypeChartRef = useRef<HTMLDivElement>(null); // <-- Add ref for the new chart
-  const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
+  // const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
   const automaticIncomeChartRef = useRef<HTMLDivElement>(null); // Ref for the new automatic income chart
+  const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
   const pageRef = useRef(null);
 
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
@@ -123,13 +124,14 @@ function AppContent() {
   useEffect(() => {
     if (drawdownPlan && chartRef.current && incomeChartRef.current
       && spendingChartRef.current && incomeTypeChartRef.current
-      && rothConversionChartRef.current && automaticIncomeChartRef.current) {
+      && automaticIncomeChartRef.current
+      && withdrawalsLineChartRef.current) { // Add new ref to condition
       // Clear previous charts
       d3.select(chartRef.current).select("svg").remove();
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
       d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
-      d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
+      // d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
       d3.select(automaticIncomeChartRef.current).select("svg").remove(); // <-- Clear)
       const data = drawdownPlan;
       const margin = { top: 20, right: 30, bottom: 30, left: 60 };
@@ -145,7 +147,106 @@ function AppContent() {
         return key.replace(/_/g, ' '); // Replace underscores with spaces
       };
 
-      // Function to create the stacked bar chart
+      // Function to create the line chart
+      const createLineChart = (
+        ref: React.RefObject<HTMLDivElement> | null,
+        yLabel: string,
+        dataKeys: (keyof DrawdownPlanYear)[], // Keys for the lines
+        lineColors: string[] // Colors for the lines
+      ) => {
+        if (!data || data.length === 0 || !ref?.current) return; // Added !ref?.current check
+
+        const yMax = d3.max(data, d => {
+          let maxVal = 0;
+          dataKeys.forEach(key => {
+            const val = d[key] as number; // Type assertion
+            if (val > maxVal) maxVal = val;
+          });
+          return maxVal;
+        }) || 0;
+
+
+        const svg = d3.select(ref.current) // Use ref.current directly
+          .append("svg")
+          .attr("width", '100%')
+          .attr("height", height + margin.top + margin.bottom)
+          .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleLinear()
+          .domain(d3.extent(data, d => d.age) as [number, number])
+          .range([0, width]);
+
+        const y = d3.scaleLinear()
+          .domain([0, yMax])
+          .nice()
+          .range([height, 0]);
+
+        svg.append("g")
+          .attr("transform", `translate(0,${height})`)
+          .call(d3.axisBottom(x).tickFormat(d3.format("d"))); // Format ticks as integers for age
+
+        svg.append("g")
+          .call(d3.axisLeft(y).tickFormat(formatYAxis));
+
+        dataKeys.forEach((key, i) => {
+          const line = d3.line<DrawdownPlanYear>()
+            .x(d => x(d.age))
+            .y(d => y(d[key] as number)); // Type assertion
+
+          svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", lineColors[i % lineColors.length])
+            .attr("stroke-width", 3) // Increased stroke-width for bolder lines
+            .attr("d", line);
+
+          // Add circles for tooltips
+          svg.selectAll(`.dot-${key}`) // Use a class specific to the key
+            .data(data)
+            .enter().append("circle")
+            .attr("class", `dot-${key}`)
+            .attr("cx", d => x(d.age))
+            .attr("cy", d => y(d[key] as number))
+            .attr("r", 5) // Radius of the circle, adjust as needed
+            .style("fill", lineColors[i % lineColors.length])
+            .style("fill-opacity", 0.5)
+            .style("opacity", 0.9) // Make them invisible initially
+            .on("mouseover", (event, d_point) => {
+              tooltip.transition().duration(200).style("opacity", .9);
+              tooltip.html(`<strong>Age:</strong> ${d_point.age}<br/><strong>${formatKey(key as string)}:</strong> ${formatCurrency(d_point[key] as number)}`)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => {
+              tooltip.transition().duration(500).style("opacity", 0);
+            });
+
+
+          svg.append("path") // Re-add the line on top of circles if you want circles to be "under"
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", lineColors[i % lineColors.length])
+            .attr("stroke-width", 3)
+            .attr("d", line);
+
+          // Add circles for tooltips - these will be drawn on top of the lines
+       });
+
+        // Y-axis label
+        svg.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left)
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .text(yLabel);
+
+        // X-axis label (Age) could be added similarly if desired
+      };
+
+       // Function to create the stacked bar chart
       const createStackedBarChart = (ref: React.RefObject<HTMLDivElement> | null, yMax: number, yLabel: string, dataKeys: string[], colors: string[], yFormat = d3.formatPrefix(".1", 1e3)) => {
         const svg = d3.select(ref?.current) // Use ref.current here
           .append("svg")
@@ -234,6 +335,14 @@ function AppContent() {
 
       };
 
+      // Withdrawals and Conversions Line Chart
+      createLineChart(
+        withdrawalsLineChartRef,
+        "Amount",
+        ["Brokerage_Withdraw", "IRA_Withdraw", "Roth_Withdraw", "IRA_to_Roth"],
+        [COLORS[0], COLORS[1], COLORS[2], COLORS_OTHER[5]] // Example colors
+      );
+
       // Income Sources Chart
       const incomeSourcesYMax = d3.max(data, d => d.Brokerage_Withdraw + d.IRA_Withdraw + d.Roth_Withdraw + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw) || 0;
       createStackedBarChart(
@@ -291,14 +400,14 @@ function AppContent() {
       );
 
       // Roth Conversion Chart
-      const rothConversionYMax = d3.max(data, d => d.IRA_to_Roth) || 0;
-      createStackedBarChart(
-        rothConversionChartRef, // Pass ref object
-        rothConversionYMax,
-        "Roth Conversions",
-        ["IRA_to_Roth"], // Data key
-        [COLORS_OTHER[5]] // Example color (purple)
-      );
+      // const rothConversionYMax = d3.max(data, d => d.IRA_to_Roth) || 0;
+      // createStackedBarChart(
+      //   rothConversionChartRef, // Pass ref object
+      //   rothConversionYMax,
+      //   "Roth Conversions",
+      //   ["IRA_to_Roth"], // Data key
+      //   [COLORS_OTHER[5]] // Example color (purple)
+      // );
     }
   }, [drawdownPlan]);
 
@@ -458,24 +567,31 @@ function AppContent() {
           ) : drawdownPlan ? (
             <div ref={pageRef} className="flex flex-col gap-4 p-4">
               {drawdownPlan && isFormEdited && (
-                      <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 text-center">
+                      <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 top-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
                 </div>
               )}
                     {/* Display Spending Floor or End of Plan Assets */}
                     <Card className="mb-4">
-                      <CardHeader>
-                        <CardTitle className="text-center">Plan Summary</CardTitle>
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <div className="flex-grow text-center"><CardTitle>Plan Summary</CardTitle></div>
+                        {/* Button is now part of the conditional rendering below */}
                       </CardHeader>
                       <CardContent className="text-center text-lg">
                         {/* planStatus <p className="mb-2">Solver Status: <span className="font-semibold">{planStatus}</span></p> */}
                   {currentObjectiveType === 'max_spend' && spendingFloor !== undefined && (
-                          <p>Projected Annual Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
+                          <div className="flex items-center justify-center"> {/* Flex container for text and button */}
+                            <p className="mr-4">Projected Annual Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
+                            <Button onClick={() => downloadCsv(drawdownPlan)} size="sm">Download CSV</Button>
+                          </div>
                         )}
                   {(currentObjectiveType === 'max_assets' || currentObjectiveType === 'min_taxes') && endOfPlanAssets !== undefined && (
-                          <p>Projected End-of-Plan Assets: <span className="font-semibold">{formatCurrency(endOfPlanAssets)}</span></p>
+                          <div className="flex items-center justify-center"> {/* Flex container for text and button */}
+                            <p className="mr-4">Projected End-of-Plan Assets: <span className="font-semibold">{formatCurrency(endOfPlanAssets)}</span></p>
+                            <Button onClick={() => downloadCsv(drawdownPlan)} size="sm">Download CSV</Button>
+                          </div>
                         )}
-                      </CardContent>
+                        </CardContent>
                     </Card>
               <Card>
                 <CardHeader>
@@ -509,16 +625,13 @@ function AppContent() {
                       </TableBody>
                     </Table>
                   </div>
-                  <div className="mt-8">
-                    <Button onClick={() => downloadCsv(drawdownPlan)}>Download CSV</Button>
-                  </div>
                 </CardContent>
+                      <div className="mt-8" ref={withdrawalsLineChartRef}></div> {/* Add container for the new line chart */}
               </Card>
               <div className="mt-8" ref={chartRef}></div>
               <div className="mt-8" ref={incomeChartRef}></div>
               <div className="mt-8" ref={spendingChartRef}></div>
               <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
-              <div className="mt-8" ref={rothConversionChartRef}></div> {/* <-- Add container for Roth Conversion chart */}
               <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
              </div>
           ) : (
