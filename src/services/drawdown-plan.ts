@@ -289,8 +289,8 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Brokerage_Withdraw: yearData.Brokerage_Withdraw,
         IRA_Balance: yearData.IRA_Balance,
         IRA_Withdraw: yearData.IRA_Withdraw,
-        Required_RMD: yearData.Required_RMD,
         Roth_Balance: yearData.Roth_Balance,
+        Required_RMD: yearData.Required_RMD,
         Roth_Withdraw: yearData.Roth_Withdraw,
         IRA_to_Roth: yearData.IRA_to_Roth,
         CGD_Spendable: yearData.CGD_Spendable,
@@ -298,13 +298,15 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Total_Capital_Gains: yearData.Total_Capital_Gains,
         Ordinary_Income: yearData.Ordinary_Income,
         Fed_AGI: yearData.Fed_AGI,
-        Social_Security: yearData.Social_Security,
         Fed_Tax: yearData.Fed_Tax,
+        State_AGI: yearData.State_AGI,
         State_Tax: yearData.State_Tax,
         Total_Tax: yearData.Total_Tax,
+        Social_Security: yearData.Social_Security,
         ACA_HC_Payment: yearData.ACA_HC_Payment,
         ACA_Help: yearData.ACA_Help,
         True_Spending: yearData.True_Spending,
+        Excess: yearData.Excess,
       };
     })
     .sort((a, b) => a.age - b.age); // Ensure sorted by age

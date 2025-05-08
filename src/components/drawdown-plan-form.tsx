@@ -7,8 +7,8 @@ import {
     Roth,
   } from "@/services/drawdown-plan";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useWatch } from "react-hook-form";
-import { useState } from "react";
+import { useWatch, useFormState } from "react-hook-form";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
   
@@ -173,29 +173,61 @@ const months = [
     const currentAge = useWatch({control: form.control, name: "about.age"});
     const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)+1) }, (_, i) => Number(currentAge)+ 1 + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
-    const [hasErrors, setHasErrors] = useState(false);
-    const [isFormEdited, setIsFormEdited] = useState(false);
+    const [hasErrors, setHasErrors] = useState(false); // To style the button
+    // const [isFormEdited, setIsFormEdited] = useState(false); // Local state for form edit, managed by onFormEdit prop
+    const prevFilingStatusRef = useRef<string | undefined>(form.getValues("about.filing_status"));
 
     const { setFocus } = form;
+    const { isSubmitted } = useFormState({ control: form.control }); // Get isSubmitted state
 
     const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
       try {
         setHasErrors(false);
         setFormValues(values);
         await onSubmit(values);
+        prevFilingStatusRef.current = values.about.filing_status; // Update prev status on successful submit
       } catch (error) {
         console.error("Submission failed:", error);
       }
     };
   
     const handleError = (errors: any) => {
-      setHasErrors(true);
       console.log("Validation errors:", errors);
+      setHasErrors(true);
     };
+
+    const filingStatus = form.watch("about.filing_status"); // Watch for changes in filing status
+
+    useEffect(() => {
+      // Only run if filingStatus has actually changed from its previous value
+      // and the form is not in a "just submitted" state (to prevent reset on re-render after submit)
+      if (filingStatus !== prevFilingStatusRef.current) {
+        // console.log("Filing status CHANGED from", prevFilingStatusRef.current, "to", filingStatus); // DEBUG
+        const currentPeopleCoveredString = form.getValues("ACA.people_covered");
+        const currentPeopleCovered = Number(currentPeopleCoveredString); // Convert to number
+        // console.log("Current ACA people covered (string):", currentPeopleCoveredString, " (parsed as number):", currentPeopleCovered); // DEBUG
+
+        if (filingStatus === "MFJ" && currentPeopleCovered === 1) {
+          // console.log("Condition MET: MFJ and 1 person. Setting to 2."); // DEBUG
+          form.setValue("ACA.people_covered", 2, { shouldValidate: true, shouldDirty: true });
+          onFormEdit(); // Notify parent that form has been edited
+        } else if (filingStatus === "Single" && currentPeopleCovered === 2) {
+          // console.log("Condition MET: Single and 2 people. Setting to 1."); // DEBUG
+          form.setValue("ACA.people_covered", 1, { shouldValidate: true, shouldDirty: true });
+          onFormEdit(); // Notify parent that form has been edited
+        }
+        prevFilingStatusRef.current = filingStatus; // Update the ref to the new current status
+      }
+    }, [filingStatus, form, onFormEdit, isSubmitted]);
+    
+    // const handleInputChange = (fieldOnChange: (...event: any[]) => void) => (e: any) => {
+    //   fieldOnChange(e);
+    //   onFormEdit(); // Notify the parent component of the edit
+    // };
 
     const handleInputChange = (fieldOnChange: (...event: any[]) => void) => (e: any) => {
       fieldOnChange(e);
-      setIsFormEdited(true);
+      // setIsFormEdited(true); // This local state is not strictly needed if onFormEdit handles parent state
       onFormEdit(); // Notify the parent component of the edit
     };
   
