@@ -199,7 +199,7 @@ function AppContent() {
             .datum(data)
             .attr("fill", "none")
             .attr("stroke", lineColors[i % lineColors.length])
-            .attr("stroke-width", 3) // Increased stroke-width for bolder lines
+            .attr("stroke-width", 5) // Increased stroke-width for bolder lines
             .attr("d", line);
 
           // Add circles for tooltips
@@ -209,10 +209,10 @@ function AppContent() {
             .attr("class", `dot-${key}`)
             .attr("cx", d => x(d.age))
             .attr("cy", d => y(d[key] as number))
-            .attr("r", 5) // Radius of the circle, adjust as needed
+            .attr("r", 10) // Radius of the circle, adjust as needed
             .style("fill", lineColors[i % lineColors.length])
-            .style("fill-opacity", 0.5)
-            .style("opacity", 0.9) // Make them invisible initially
+            .style("fill-opacity", 0.0)
+            .style("opacity", 0.0)
             .on("mouseover", (event, d_point) => {
               tooltip.transition().duration(200).style("opacity", .9);
               tooltip.html(`<strong>Age:</strong> ${d_point.age}<br/><strong>${formatKey(key as string)}:</strong> ${formatCurrency(d_point[key] as number)}`)
@@ -247,12 +247,20 @@ function AppContent() {
       };
 
        // Function to create the stacked bar chart
-      const createStackedBarChart = (ref: React.RefObject<HTMLDivElement> | null, yMax: number, yLabel: string, dataKeys: string[], colors: string[], yFormat = d3.formatPrefix(".1", 1e3)) => {
-        const svg = d3.select(ref?.current) // Use ref.current here
+      const createStackedBarChart = (
+        ref: React.RefObject<HTMLDivElement> | null, 
+        yMax: number, 
+        yLabel: string, 
+        dataKeys: string[], 
+        colors: string[], 
+        yFormat = d3.formatPrefix(".1", 1e3),
+        chartHeight = height // Default to the global height
+      ) => {
+        const svg = d3.select(ref?.current)
           .append("svg")
           .attr("width", '100%')
-          .attr("height", height + margin.top + margin.bottom)
-          .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+          .attr("height", chartHeight + margin.top + margin.bottom)
+          .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
           .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -264,7 +272,7 @@ function AppContent() {
         const y = d3.scaleLinear()
           .domain([0, yMax])
           .nice()
-          .range([height, 0]);
+          .range([chartHeight, 0]);
 
         const stack = d3.stack()
           .keys(dataKeys);
@@ -281,7 +289,7 @@ function AppContent() {
           .enter().append("rect")
           .attr("x", d => x(d.data.age.toString()) || "0")
           .attr("y", d => y(d[1])) // Use the top value of the segment
-          .attr("height", d => Math.max(0, y(d[0]) - y(d[1]))) // Ensure height is not negative
+          .attr("height", d => Math.max(0, y(d[0]) - y(d[1])))
           .attr("width", x.bandwidth())
           .on("mouseover", function(event, d) { // `function` syntax to access `this` if needed, or arrow for lexical scope
             // console.log("Mouseover fired!", { event, d }); // <-- Add console log
@@ -307,21 +315,45 @@ function AppContent() {
                    .duration(500)
                    .style("opacity", 0);
           });
+        
+        // Add invisible rects at the top of each bar for total tooltip
+        data.forEach(d_item => {
+          let total = 0;
+          dataKeys.forEach(key => {
+            total += d_item[key as keyof DrawdownPlanYear] as number;
+          });
+
+          svg.append("rect")
+            .attr("x", x(d_item.age.toString()) || "0")
+            .attr("y", y(total) - margin.top) // Start at the very top of the bar
+            .attr("width", x.bandwidth())
+            .attr("height", margin.top) // Make it as tall as the top margin, or a bit less
+            .style("fill", "transparent") // Make it invisible "transparent"
+            .on("mouseover", (event) => {
+              tooltip.transition().duration(200).style("opacity", .9);
+              tooltip.html(`<strong>Age:</strong> ${d_item.age}<br/><strong>Total:</strong> ${formatCurrency(total)}`)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", () => {
+              tooltip.transition().duration(500).style("opacity", 0);
+            });
+        });
 
         svg.append("g")
-          .attr("transform", `translate(0,${height})`)
+          .attr("transform", `translate(0,${chartHeight})`)
           .call(d3.axisBottom(x).tickSize(0).tickPadding(10));
 
         svg.append("g")
           .call(d3.axisLeft(y).tickFormat(yFormat));
 
         svg.append("text")
-          .attr("x", width / 2)
-          .attr("y", height + margin.bottom - 5)
+          .attr("x", width / 2) // Centered horizontally
+          .attr("y", chartHeight + margin.bottom - 5) // Positioned below the x-axis
           .style("text-anchor", "middle")
           .text("");
 
-        svg.append("text")
+        svg.append("text") // Y-axis label
           .attr("transform", "rotate(-90)")
           .attr("y", 0 - margin.left)
           .attr("x", 0 - (height / 2))
@@ -338,7 +370,7 @@ function AppContent() {
       // Withdrawals and Conversions Line Chart
       createLineChart(
         withdrawalsLineChartRef,
-        "Amount",
+        "Withdrawals & Conversions",
         ["Brokerage_Withdraw", "IRA_Withdraw", "Roth_Withdraw", "IRA_to_Roth"],
         [COLORS[0], COLORS[1], COLORS[2], COLORS_OTHER[5]] // Example colors
       );
@@ -369,7 +401,7 @@ function AppContent() {
       createStackedBarChart(
         chartRef, // Pass ref object
         accountBalanceYMax,
-        "Account Balance",
+        "Account Balances",
         ["Brokerage_Balance", "IRA_Balance", "Roth_Balance"],
         COLORS,
         formatYAxis
@@ -377,12 +409,15 @@ function AppContent() {
 
       // Income Type Chart (Ordinary vs Capital Gains)
       const incomeTypeYMax = d3.max(data, d => d.Ordinary_Income + d.Total_Capital_Gains) || 0;
+      const tinyChartHeight = 400; // Define a very small height
       createStackedBarChart(
         incomeTypeChartRef, // Pass ref object
         incomeTypeYMax,
         "AGI",
         ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
-        COLORS_OTHER // <-- Example colors, adjust as needed
+        COLORS_OTHER, // <-- Example colors, adjust as needed
+        formatYAxis, // Pass the y-axis formatter
+        tinyChartHeight // Pass the tiny height
       );
 
       // Automatic Income Chart
@@ -610,7 +645,7 @@ function AppContent() {
                       </TableRow>
                     </TableHeader>
                   </Table>
-                  <div className="overflow-auto max-h-40">
+                  <div className="overflow-auto max-h-64">
                     <Table>
                       <TableBody>
                         {drawdownPlan.map((year) => (
@@ -632,7 +667,10 @@ function AppContent() {
               <div className="mt-8" ref={incomeChartRef}></div>
               <div className="mt-8" ref={spendingChartRef}></div>
               <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
-              <div className="mt-8" ref={incomeTypeChartRef}></div> {/* <-- Add container for the new chart */}
+                    {/* In the JSX part of page.tsx */}
+                    <div className="mt-8 w-1/4"> {/* Example: make it 1/4 of the available width "mt-8 w-1/4"*/}
+                      <div ref={incomeTypeChartRef}></div>
+                    </div>
              </div>
           ) : (
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
