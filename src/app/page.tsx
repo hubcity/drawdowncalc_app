@@ -109,6 +109,7 @@ function AppContent() {
   const [currentObjectiveType, setCurrentObjectiveType] = useState<string | undefined>(undefined); // State for objective type
   const [loading, setLoading] = useState(false);
   const [isFormEdited, setIsFormEdited] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
   const withdrawChartRef = useRef(null);
   const chartRef = useRef<HTMLDivElement>(null);
   const incomeChartRef = useRef<HTMLDivElement>(null);
@@ -470,6 +471,7 @@ function AppContent() {
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
     console.log(input);
+    setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
       arguments: {
         allow_conversions: input.roth_conversion_preference === "anytime",
@@ -542,12 +544,20 @@ function AppContent() {
       setCurrentObjectiveType(apiPayload.arguments.objective.type); // Store the objective type
       setIsFormEdited(false); // Reset isFormEdited to false on successful submission
     } catch (error) {
-      console.error("Failed to calculate drawdown plan:", error);
+      console.error("Failed to calculate drawdown plan:", error); // This is line 544
+      let displayError = "An error occurred while calculating the drawdown plan. Please check your inputs or try again later.";
+      if (error instanceof Error && error.message) {
+        // You could potentially parse error.message if it contains user-friendly info
+        // For now, we'll stick to a generic message or append for debugging:
+        // displayError += ` (Details: ${error.message})`;
+      }
+      setErrorMessage(displayError);
+      setDrawdownPlan(null); // Ensure no old plan is shown
+      setSubmitted(true); // To move to the results/error display area
     } finally {
       setLoading(false);
     }
   };
-
   const handleAcceptTerms = () => {
     setHasAcceptedTerms(true);
     // setShowFieldDescriptions(true); // Show field descriptions
@@ -597,39 +607,52 @@ function AppContent() {
             Calculating Drawdown Plan...
           </div>
         ) : (
-          !submitted ? (
-            <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
-            <h2>Form Field Descriptions:</h2>
-            <p><b>Age:</b> Your current age.</p>
-            <p><b>Birth Month:</b> Your birth month.</p>
-            <p><b>End of Plan Age:</b> The age to which the drawdown plan should project.</p>
-            <p><b>Tax Filing Status:</b> Your tax filing status (Single or Married Filing Jointly).</p>
-            <p><b>State of Residence:</b> The state where you currently reside.</p>
-            <p><b>Inflation Rate:</b> The assumed annual inflation rate, expressed as a percentage.</p>
-            <p><b>Rate of Return:</b> The assumed annual investment rate of return, expressed as a percentage.</p>
-            <p><b>Brokerage Balance:</b> The current balance of your taxable brokerage account.</p>
-            <p><b>Brokerage Basis:</b> The cost basis of the assets in your brokerage account.</p>
-            <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
-            <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
-            <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
-            <p><b>Recent Additions:</b> Roth conversions made in recent years.</p>
-            <p><b>Older Additions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
-            <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
-            <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
-            <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
-            <p><b>SLCSP Premium:</b> The premium amount for the Second Lowest Cost Silver Plan (SLCSP) ACA health insurance plan.</p>
-            <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
-            <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
-          </div>
-          ) : drawdownPlan ? (
-                  <div ref={pageRef} className="flex flex-col gap-4 p-4">
+          // Content to display when not loading and terms accepted
+          <>
+            {errorMessage && (
+              <div className="p-4 m-4 bg-red-100 text-red-700 rounded text-center border border-red-300">
+                <strong>Error:</strong> {errorMessage}
+                <Button onClick={() => setErrorMessage(null)} size="sm" variant="destructive" className="ml-4 mt-2 sm:mt-0">
+                  Dismiss
+                </Button>
+              </div>
+            )}
+
+            {/* Regular content, shown if no error message is currently active */}
+            {!errorMessage && (
+              !submitted ? (
+                <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+                  <h2>Form Field Descriptions:</h2>
+                  <p><b>Age:</b> Your current age.</p>
+                  <p><b>Birth Month:</b> Your birth month.</p>
+                  <p><b>End of Plan Age:</b> The age to which the drawdown plan should project.</p>
+                  <p><b>Tax Filing Status:</b> Your tax filing status (Single or Married Filing Jointly).</p>
+                  <p><b>State of Residence:</b> The state where you currently reside.</p>
+                  <p><b>Inflation Rate:</b> The assumed annual inflation rate, expressed as a percentage.</p>
+                  <p><b>Rate of Return:</b> The assumed annual investment rate of return, expressed as a percentage.</p>
+                  <p><b>Brokerage Balance:</b> The current balance of your taxable brokerage account.</p>
+                  <p><b>Brokerage Basis:</b> The cost basis of the assets in your brokerage account.</p>
+                  <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
+                  <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
+                  <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
+                  <p><b>Recent Additions:</b> Roth conversions made in recent years.</p>
+                  <p><b>Older Additions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
+                  <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
+                  <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
+                  <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
+                  <p><b>SLCSP Premium:</b> The premium amount for the Second Lowest Cost Silver Plan (SLCSP) ACA health insurance plan.</p>
+                  <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
+                  <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
+                </div>
+              ) : drawdownPlan ? (
+                <div ref={pageRef} className="flex flex-col gap-4 p-4">
               {drawdownPlan && isFormEdited && (
                       <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 top-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
                 </div>
               )}
                     {/* Display Spending Floor or End of Plan Assets */}
-                    <Card className="mb-4 border-2 border-primary">
+                    <Card className="mb-4 border-2 border-primary"> {/* This card might be pushed down by error message if m-4 is used on error */}
                       <CardHeader className="flex flex-row items-center justify-between">
                         <div className="flex-grow text-center"><CardTitle>Plan Summary</CardTitle></div>
                         {/* Button is now part of the conditional rendering below */}
@@ -666,7 +689,7 @@ function AppContent() {
                             All of the values on this page are displayed in constant dollars.
                           </p>
                           <p className="mb-3">
-                            Constant dollars, also called real dollars, can be thought of a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars could be used to by more stuff.
+                            Constant dollars, also called real dollars, can be thought of as a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars could be used to buy more stuff.
                           </p>
                           <p className="mb-3"> {/* Text will wrap around the floated chart */}
                             Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your General Spending in constant dollars.  Your General Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc manages your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your General Spending keeps up inflation it looks the same year after year in terms of constant dollars.
@@ -764,9 +787,11 @@ function AppContent() {
              // Let's keep the limitations text until submission for clarity
              // <div className="flex items-center justify-center h-full p-4 text-center">
           <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
-            <h2>When is ths page shown?</h2>
+            
           </div>
           )
+        )}
+        </>
         )}
       </SidebarInset>
     </>
