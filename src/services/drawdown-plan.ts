@@ -207,6 +207,8 @@ export interface DrawdownPlanYear {
    * The federal tax amount.
    */
   Fed_Tax: number;
+
+  State_AGI: number;
   /**
    * The state tax amount.
    */
@@ -226,9 +228,11 @@ export interface DrawdownPlanYear {
   /**
    * The actual spending amount for the year.
    */
-  True_Spending: number;
+  General_Spending: number;
 
   Required_RMD: number;
+
+  Excess: number;
 }
 
 export interface DrawdownPlanResponse {
@@ -305,7 +309,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Social_Security: yearData.Social_Security,
         ACA_HC_Payment: yearData.ACA_HC_Payment,
         ACA_Help: yearData.ACA_Help,
-        True_Spending: yearData.True_Spending,
+        General_Spending: yearData.True_Spending,
         Excess: yearData.Excess,
       };
     })

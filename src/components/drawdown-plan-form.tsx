@@ -712,7 +712,7 @@ const months = [
             </div>
             </div>
 
-            <Separator/> */}
+            <Separator/>
 
           <FormField
             control={form.control}
@@ -736,7 +736,7 @@ const months = [
               </FormItem>
             )}
           />
-          <Separator/>
+          <Separator/> */}
 
           <FormField
             control={form.control}
@@ -776,10 +776,10 @@ const months = [
               name="annual_spending"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Annual Spending</FormLabel>
+                  <FormLabel>General Spending</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Annual Spending"
+                      placeholder="General Spending"
                       type="number"
                       {...field}
                       onChange={handleInputChange(field.onChange)}

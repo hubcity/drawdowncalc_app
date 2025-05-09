@@ -116,6 +116,7 @@ function AppContent() {
   const incomeTypeChartRef = useRef<HTMLDivElement>(null); // <-- Add ref for the new chart
   // const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
   const automaticIncomeChartRef = useRef<HTMLDivElement>(null); // Ref for the new automatic income chart
+  const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the general spending chart in "General Spending & Constant Dollars" card
   const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
   const pageRef = useRef(null);
 
@@ -125,16 +126,18 @@ function AppContent() {
     if (drawdownPlan && chartRef.current && incomeChartRef.current
       && spendingChartRef.current && incomeTypeChartRef.current
       && automaticIncomeChartRef.current
+      && generalSpendingConstantDollarsChartRef.current // Ensure this ref is also current
       && withdrawalsLineChartRef.current) { // Add new ref to condition
       // Clear previous charts
       d3.select(chartRef.current).select("svg").remove();
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
       d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
+      d3.select(generalSpendingConstantDollarsChartRef.current).select("svg").remove(); // Clear the new general spending chart
       // d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
       d3.select(automaticIncomeChartRef.current).select("svg").remove(); // <-- Clear)
       const data = drawdownPlan;
-      const margin = { top: 20, right: 30, bottom: 30, left: 60 };
+      const margin = { top: 20, right: 60, bottom: 30, left: 60 };
       const width = 800 - margin.left - margin.right;
       const height = 400 - margin.top - margin.bottom;
 
@@ -168,8 +171,8 @@ function AppContent() {
 
         const svg = d3.select(ref.current) // Use ref.current directly
           .append("svg")
-          .attr("width", '100%')
-          .attr("height", height + margin.top + margin.bottom)
+          .attr("width", '100%') // Height attribute removed to allow scaling with aspect ratio
+          // .attr("height", height + margin.top + margin.bottom) 
           .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
           .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -254,12 +257,15 @@ function AppContent() {
         dataKeys: string[], 
         colors: string[], 
         yFormat = d3.formatPrefix(".1", 1e3),
-        chartHeight = height // Default to the global height
+        chartHeight = height, // Default to the global height
+        customMargins?: { top: number; right: number; bottom: number; left: number } // Optional custom margins
       ) => {
+        const margin = customMargins || { top: 20, right: 60, bottom: 30, left: 90 };
         const svg = d3.select(ref?.current)
           .append("svg")
-          .attr("width", '100%')
-          .attr("height", chartHeight + margin.top + margin.bottom)
+          // .attr("preserveAspectRatio", "none")
+          .attr("width", '100%') // Height attribute removed
+          // .attr("height", chartHeight + margin.top + margin.bottom)
           .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
           .append("g")
           .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -361,9 +367,9 @@ function AppContent() {
           .style("text-anchor", "middle")
           .text(yLabel);
 
-        const legend = svg.append("g")
-          .attr("class", "legend")
-          .attr("transform", `translate(${width - 100}, -10)`);
+        // const legend = svg.append("g")
+        //   .attr("class", "legend")
+        //   .attr("transform", `translate(${width - 100}, -10)`);
 
       };
 
@@ -409,15 +415,15 @@ function AppContent() {
 
       // Income Type Chart (Ordinary vs Capital Gains)
       const incomeTypeYMax = d3.max(data, d => d.Ordinary_Income + d.Total_Capital_Gains) || 0;
-      const tinyChartHeight = 400; // Define a very small height
+      // const tinyChartHeight = 400; // Define a very small height
       createStackedBarChart(
         incomeTypeChartRef, // Pass ref object
         incomeTypeYMax,
-        "AGI",
+        "Federal AGI",
         ["Ordinary_Income", "Total_Capital_Gains"], // <-- Keys for the new chart
         COLORS_OTHER, // <-- Example colors, adjust as needed
         formatYAxis, // Pass the y-axis formatter
-        tinyChartHeight // Pass the tiny height
+        // tinyChartHeight // Pass the tiny height
       );
 
       // Automatic Income Chart
@@ -432,6 +438,22 @@ function AppContent() {
         "Automatic Income",
         ["Required_RMD", "Social_Security", "CGD_Spendable", "Cash_Withdraw"], // Adjust IRA_Withdraw if RMD is separate
         [COLORS[1], COLORS[3], COLORS[4], COLORS[5]] // Example colors
+      );
+
+      // General Spending (Constant Dollars) Chart
+      // This chart is intended for the "General Spending & Constant Dollars" card to illustrate the concept.
+      // It assumes 'General_Spending' is a key in DrawdownPlanYear representing constant dollar spending,
+      // which should appear as a flat line if inflation is correctly accounted for and spending is constant.
+      const gsYMax = d3.max(data, d => (d.General_Spending)) || 0;
+      createStackedBarChart(
+        generalSpendingConstantDollarsChartRef,
+        gsYMax,
+        "",
+        ["General_Spending"],
+        ['#004040'], // Example colors
+        formatYAxis,
+        300,
+        // { top: 0, right: 5, bottom: 0, left: 45 } // Custom smaller margins
       );
 
       // Roth Conversion Chart
@@ -600,14 +622,14 @@ function AppContent() {
             <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
           </div>
           ) : drawdownPlan ? (
-            <div ref={pageRef} className="flex flex-col gap-4 p-4">
+                  <div ref={pageRef} className="flex flex-col gap-4 p-4">
               {drawdownPlan && isFormEdited && (
                       <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 top-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
                 </div>
               )}
                     {/* Display Spending Floor or End of Plan Assets */}
-                    <Card className="mb-4">
+                    <Card className="mb-4 border-2 border-primary">
                       <CardHeader className="flex flex-row items-center justify-between">
                         <div className="flex-grow text-center"><CardTitle>Plan Summary</CardTitle></div>
                         {/* Button is now part of the conditional rendering below */}
@@ -616,7 +638,7 @@ function AppContent() {
                         {/* planStatus <p className="mb-2">Solver Status: <span className="font-semibold">{planStatus}</span></p> */}
                   {currentObjectiveType === 'max_spend' && spendingFloor !== undefined && (
                           <div className="flex items-center justify-center"> {/* Flex container for text and button */}
-                            <p className="mr-4">Projected Annual Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
+                            <p className="mr-4">Projected General Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
                             <Button onClick={() => downloadCsv(drawdownPlan)} size="sm">Download CSV</Button>
                           </div>
                         )}
@@ -628,10 +650,34 @@ function AppContent() {
                         )}
                         </CardContent>
                     </Card>
-              <Card>
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>General Spending & Constant Dollars</CardTitle>
+                        <CardDescription>About these numbers.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {/* Container for the chart, floated to the upper right */}
+                        <div className="float-right ml-4 mb-2 w-1/3"> {/* Adjust width (e.g., w-1/3) and margins as needed */}
+                          <div ref={generalSpendingConstantDollarsChartRef}></div>
+                        </div>
+                        {/* Text content will flow around the floated chart */}
+                        <div className="text-left">
+                          <p className="mb-3">
+                            All of the values on this page are displayed in constant dollars.
+                          </p>
+                          <p className="mb-3">
+                            Constant dollars, also called real dollars, can be thought of a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars could be used to by more stuff.
+                          </p>
+                          <p className="mb-3"> {/* Text will wrap around the floated chart */}
+                            Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your General Spending in constant dollars.  Your General Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc manages your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your General Spending keeps up inflation it looks the same year after year in terms of constant dollars.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+              <Card className="border-2 border-primary">
                 <CardHeader>
-                  <CardTitle>Drawdown Plan Results</CardTitle>
-                  <CardDescription>A summary of your drawdown plan.</CardDescription>
+                  <CardTitle>Drawdown Plan</CardTitle>
+                  <CardDescription>A drawdown plan based on your form.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -660,17 +706,57 @@ function AppContent() {
                       </TableBody>
                     </Table>
                   </div>
+                        <div className="mt-8" ref={withdrawalsLineChartRef}></div> {/* Add container for the new line chart */}
                 </CardContent>
-                      <div className="mt-8" ref={withdrawalsLineChartRef}></div> {/* Add container for the new line chart */}
               </Card>
-              <div className="mt-8" ref={chartRef}></div>
-              <div className="mt-8" ref={incomeChartRef}></div>
-              <div className="mt-8" ref={spendingChartRef}></div>
-              <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>Account Balances</CardTitle>
+                        <CardDescription>Beginning of the year balances for each account.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mt-8" ref={chartRef}></div>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>Income Sources</CardTitle>
+                        <CardDescription>Where your money comes from.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mt-8" ref={incomeChartRef}></div>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>Mandatory Spending</CardTitle>
+                        <CardDescription>Costs that are generally unavoidable.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mt-8" ref={spendingChartRef}></div>
+                      </CardContent>
+                    </Card>
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>Automatic Income</CardTitle>
+                        <CardDescription>Income that arrives based on age or prior decisions, rather than immediate need or active effort.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
+                      </CardContent>
+                    </Card>
                     {/* In the JSX part of page.tsx */}
-                    <div className="mt-8 w-1/4"> {/* Example: make it 1/4 of the available width "mt-8 w-1/4"*/}
-                      <div ref={incomeTypeChartRef}></div>
-                    </div>
+                    <Card className="border-2 border-primary">
+                      <CardHeader>
+                        <CardTitle>AGI</CardTitle>
+                        <CardDescription>A closer look at AGI.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="mt-8"> {/* Example: make it 1/4 of the available width "mt-8 w-1/4"*/}
+                          <div ref={incomeTypeChartRef}></div>
+                        </div>
+                      </CardContent>
+                    </Card>
              </div>
           ) : (
              // Show example data if submitted is false and no drawdown plan exists (initial state after accept)
