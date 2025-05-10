@@ -1,5 +1,5 @@
 "use client";
-
+import React from 'react'; // Import React for Fragment
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { Menu } from 'lucide-react';
@@ -109,6 +109,10 @@ function AppContent() {
   const [currentObjectiveType, setCurrentObjectiveType] = useState<string | undefined>(undefined); // State for objective type
   const [loading, setLoading] = useState(false);
   const [isFormEdited, setIsFormEdited] = useState(false);
+  const [submittedSocialSecurityStartAge, setSubmittedSocialSecurityStartAge] = useState<number | null>(null);
+  const [submittedBirthMonth, setSubmittedBirthMonth] = useState<number | null>(null);
+  const [submittedCurrentAge, setSubmittedCurrentAge] = useState<number | null>(null);
+  const [cardMilestoneMessages, setCardMilestoneMessages] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
   const withdrawChartRef = useRef(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -138,7 +142,7 @@ function AppContent() {
       // d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
       d3.select(automaticIncomeChartRef.current).select("svg").remove(); // <-- Clear)
       const data = drawdownPlan;
-      const margin = { top: 20, right: 60, bottom: 30, left: 60 };
+      const margin = { top: 40, right: 60, bottom: 60, left: 90 }; // { top: 20, right: 60, bottom: 30, left: 60 };
       const width = 800 - margin.left - margin.right;
       const height = 400 - margin.top - margin.bottom;
 
@@ -172,7 +176,7 @@ function AppContent() {
 
         const svg = d3.select(ref.current) // Use ref.current directly
           .append("svg")
-          .attr("width", '100%') // Height attribute removed to allow scaling with aspect ratio
+          .attr("width", '90%') // Height attribute removed to allow scaling with aspect ratio
           // .attr("height", height + margin.top + margin.bottom) 
           .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
           .append("g")
@@ -203,7 +207,7 @@ function AppContent() {
             .datum(data)
             .attr("fill", "none")
             .attr("stroke", lineColors[i % lineColors.length])
-            .attr("stroke-width", 5) // Increased stroke-width for bolder lines
+            .attr("stroke-width", 3) // Increased stroke-width for bolder lines
             .attr("d", line);
 
           // Add circles for tooltips
@@ -228,12 +232,12 @@ function AppContent() {
             });
 
 
-          svg.append("path") // Re-add the line on top of circles if you want circles to be "under"
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", lineColors[i % lineColors.length])
-            .attr("stroke-width", 3)
-            .attr("d", line);
+          // svg.append("path") // Re-add the line on top of circles if you want circles to be "under"
+          //   .datum(data)
+          //   .attr("fill", "none")
+          //   .attr("stroke", lineColors[i % lineColors.length])
+          //   .attr("stroke-width", 3)
+          //   .attr("d", line);
 
           // Add circles for tooltips - these will be drawn on top of the lines
        });
@@ -261,11 +265,11 @@ function AppContent() {
         chartHeight = height, // Default to the global height
         customMargins?: { top: number; right: number; bottom: number; left: number } // Optional custom margins
       ) => {
-        const margin = customMargins || { top: 20, right: 60, bottom: 30, left: 90 };
+        const margin = customMargins || { top: 40, right: 60, bottom: 60, left: 90 };
         const svg = d3.select(ref?.current)
           .append("svg")
           // .attr("preserveAspectRatio", "none")
-          .attr("width", '100%') // Height attribute removed
+          .attr("width", '90%') // Height attribute removed
           // .attr("height", chartHeight + margin.top + margin.bottom)
           .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${chartHeight + margin.top + margin.bottom}`)
           .append("g")
@@ -298,24 +302,17 @@ function AppContent() {
           .attr("y", d => y(d[1])) // Use the top value of the segment
           .attr("height", d => Math.max(0, y(d[0]) - y(d[1])))
           .attr("width", x.bandwidth())
-          .on("mouseover", function(event, d) { // `function` syntax to access `this` if needed, or arrow for lexical scope
-            // console.log("Mouseover fired!", { event, d }); // <-- Add console log
-            tooltip.transition()
-                   .duration(200)
-                   .style("opacity", .9);
-            const segmentValue = d[1] - d[0];
+          .on("mouseover", function(event, d_segment) {  // d_segment is the data for this segment
+            const segmentValue = d_segment[1] - d_segment[0]; // Use d_segment here
             // Find the key corresponding to this segment
-            // The `d` object in the stack layout doesn't directly contain the key easily.
-            // We need to find which key's stack produced this segment.
-            // A slightly roundabout way: find the index of the series this rect belongs to.
-            const seriesIndex = stackedData.findIndex(series => series.some(segment => segment === d));
+            const seriesIndex = stackedData.findIndex(series => series.some(segment => segment === d_segment));
             const segmentKey = dataKeys[seriesIndex] || "Unknown";
-            // console.log("Tooltip Data:", { age: d.data.age, key: segmentKey, value: segmentValue }); // <-- Log tooltip content
-
-            tooltip.html(`<strong>Age:</strong> ${d.data.age}<br/><strong>${formatKey(segmentKey)}:</strong> ${formatCurrency(segmentValue)}`)
-                   .style("left", (event.pageX + 15) + "px") // Position tooltip near cursor
-                   .style("top", (event.pageY - 28) + "px");
-          })
+            
+            tooltip.transition().duration(200).style("opacity", .9);
+            tooltip.html(`<strong>Age:</strong> ${d_segment.data.age}<br/><strong>${formatKey(segmentKey)}:</strong> ${formatCurrency(segmentValue)}`)
+              .style("left", (event.pageX + 15) + "px") // Position tooltip near cursor
+              .style("top", (event.pageY - 28) + "px");
+           })
           .on("mouseout", function(d) {
             // console.log("Mouseout fired!"); // <-- Add console log
             tooltip.transition()
@@ -332,11 +329,11 @@ function AppContent() {
 
           svg.append("rect")
             .attr("x", x(d_item.age.toString()) || "0")
-            .attr("y", y(total) - margin.top) // Start at the very top of the bar
+            .attr("y", y(total) - margin.top/2.0) // Start at the very top of the bar
             .attr("width", x.bandwidth())
-            .attr("height", margin.top) // Make it as tall as the top margin, or a bit less
+            .attr("height", margin.top/2.0) // Make it as tall as the top margin, or a bit less
             .style("fill", "transparent") // Make it invisible "transparent"
-            .on("mouseover", (event) => {
+            .on("mouseover", (event) => { // Renamed event to avoid conflict if d_item was named event
               tooltip.transition().duration(200).style("opacity", .9);
               tooltip.html(`<strong>Age:</strong> ${d_item.age}<br/><strong>Total:</strong> ${formatCurrency(total)}`)
                 .style("left", (event.pageX + 15) + "px")
@@ -542,8 +539,32 @@ function AppContent() {
       setEndOfPlanAssets(response.endOfPlanAssets);
       setPlanStatus(response.status);
       setCurrentObjectiveType(apiPayload.arguments.objective.type); // Store the objective type
+      setSubmittedSocialSecurityStartAge(input.social_security.starts); // Store SS start age
+      const birthMonth = Number(input.about.birth_month);
+      const currentAge = input.about.age;
+      setSubmittedBirthMonth(birthMonth); // Store birth month
+      setSubmittedCurrentAge(currentAge); // Store current age
       setIsFormEdited(false); // Reset isFormEdited to false on successful submission
+
+      // Calculate card milestone messages
+      const messages: string[] = [];
+      if (birthMonth) {
+        if (birthMonth <= 6 && currentAge === 59) {
+          messages.push("This is the year you turn 59.5.  DrawdownCalc assumes that you time your withdrawals to avoid withdrawal penalties.");
+        } else if (birthMonth > 6 && currentAge === 60) {
+          messages.push("This is the year you turn 59.5.  DrawdownCalc assumes that you time your withdrawals to avoid withdrawal penalties.");
+        }
+      }
+      if (input.social_security.starts && currentAge === input.social_security.starts && input.social_security.starts !== -1) {
+        messages.push("This is the year your Social Security payments begin.  DrawdownCalc assumes they begin in your birth month.");
+      }
+      if (currentAge === 65) {
+        messages.push("This is the year you become eligible for Medicare.  DrawdownCalc assumes your last ACA payment/subsidy occurs the month before your birth month.");
+      }
+      setCardMilestoneMessages(messages);
+
     } catch (error) {
+      setCardMilestoneMessages([]); // Clear messages on error
       console.error("Failed to calculate drawdown plan:", error); // This is line 544
       let displayError = "An error occurred while calculating the drawdown plan. Please check your inputs or try again later.";
       if (error instanceof Error && error.message) {
@@ -681,7 +702,7 @@ function AppContent() {
                       <CardContent>
                         {/* Container for the chart, floated to the upper right */}
                         <div className="float-right ml-4 mb-2 w-1/3"> {/* Adjust width (e.g., w-1/3) and margins as needed */}
-                          <div ref={generalSpendingConstantDollarsChartRef}></div>
+                          <div ref={generalSpendingConstantDollarsChartRef} className="flex justify-center"></div>
                         </div>
                         {/* Text content will flow around the floated chart */}
                         <div className="text-left">
@@ -692,7 +713,7 @@ function AppContent() {
                             Constant dollars, also called real dollars, can be thought of as a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars could be used to buy more stuff.
                           </p>
                           <p className="mb-3"> {/* Text will wrap around the floated chart */}
-                            Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your General Spending in constant dollars.  Your General Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc manages your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your General Spending keeps up inflation it looks the same year after year in terms of constant dollars.
+                            Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your General Spending in constant dollars.  Your General Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc schedules your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your General Spending keeps up inflation it looks the same year after year in terms of constant dollars.
                           </p>
                         </div>
                       </CardContent>
@@ -703,34 +724,45 @@ function AppContent() {
                   <CardDescription>A drawdown plan based on your form.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-24 text-center">Age</TableHead>
-                        <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                        <TableHead className="w-32 text-center">From IRA</TableHead>
-                        <TableHead className="w-32 text-center">From Roth</TableHead>
-                        <TableHead className="w-32 text-center">Roth Conversion</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                  </Table>
-                  <div className="overflow-auto max-h-64">
-                    <Table>
-                      <TableBody>
-                        {drawdownPlan.map((year) => (
-                          <TableRow key={year.age}>
-                            <TableCell className="w-24 text-center">{year.age}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.Brokerage_Withdraw)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.IRA_Withdraw)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.Roth_Withdraw)}</TableCell>
-                            <TableCell className="w-32 text-center">{formatCurrency(year.IRA_to_Roth)}</TableCell>
-                          </TableRow>
+                  {cardMilestoneMessages.length > 0 && (
+                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-700">
+                      <p className="font-semibold mb-1">Important Milestones This Year:</p>
+                      <ul className="list-disc list-inside pl-2">
+                        {cardMilestoneMessages.map((msg, index) => (
+                          <li key={index}>{msg}</li>
                         ))}
-                      </TableBody>
+                      </ul>
+                    </div>
+                  )}
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-24 text-center">Age</TableHead>
+                          <TableHead className="w-32 text-center">From Brokerage</TableHead>
+                          <TableHead className="w-32 text-center">From IRA</TableHead>
+                          <TableHead className="w-32 text-center">From Roth</TableHead>
+                          <TableHead className="w-32 text-center">Roth Conversion</TableHead>
+                        </TableRow>
+                      </TableHeader>
                     </Table>
-                  </div>
-                        <div className="mt-8" ref={withdrawalsLineChartRef}></div> {/* Add container for the new line chart */}
-                </CardContent>
+                    <div className="overflow-auto max-h-64">
+                      <Table>
+                        <TableBody>{drawdownPlan.map((year) => {
+                            const rowContent = (
+                              <>
+                                <TableCell className="w-24 text-center">{year.age}</TableCell>
+                                <TableCell className="w-32 text-center">{formatCurrency(year.Brokerage_Withdraw)}</TableCell>
+                                <TableCell className="w-32 text-center">{formatCurrency(year.IRA_Withdraw)}</TableCell>
+                                <TableCell className="w-32 text-center">{formatCurrency(year.Roth_Withdraw)}</TableCell>
+                                <TableCell className="w-32 text-center">{formatCurrency(year.IRA_to_Roth)}</TableCell>
+                              </>
+                            );
+                            return <TableRow key={year.age}>{rowContent}</TableRow>;
+                          })}</TableBody>
+                      </Table>
+                    </div> {/* Add container for the new line chart */}
+                          <div className="mt-8 flex justify-center" ref={withdrawalsLineChartRef}></div>
+                  </CardContent>
               </Card>
                     <Card className="border-2 border-primary">
                       <CardHeader>
@@ -738,7 +770,7 @@ function AppContent() {
                         <CardDescription>Beginning of the year balances for each account.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8" ref={chartRef}></div>
+                        <div className="mt-8 flex justify-center" ref={chartRef}></div>
                       </CardContent>
                     </Card>
                     <Card className="border-2 border-primary">
@@ -747,7 +779,7 @@ function AppContent() {
                         <CardDescription>Where your money comes from.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8" ref={incomeChartRef}></div>
+                        <div className="mt-8 flex justify-center" ref={incomeChartRef}></div>
                       </CardContent>
                     </Card>
                     <Card className="border-2 border-primary">
@@ -756,7 +788,7 @@ function AppContent() {
                         <CardDescription>Costs that are generally unavoidable.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8" ref={spendingChartRef}></div>
+                        <div className="mt-8 flex justify-center" ref={spendingChartRef}></div>
                       </CardContent>
                     </Card>
                     <Card className="border-2 border-primary">
@@ -765,7 +797,7 @@ function AppContent() {
                         <CardDescription>Income that arrives based on age or prior decisions, rather than immediate need or active effort.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
+                        <div className="mt-8 flex justify-center" ref={automaticIncomeChartRef}></div> {/* Add container for the new chart */}
                       </CardContent>
                     </Card>
                     {/* In the JSX part of page.tsx */}
@@ -775,9 +807,7 @@ function AppContent() {
                         <CardDescription>A closer look at AGI.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8"> {/* Example: make it 1/4 of the available width "mt-8 w-1/4"*/}
-                          <div ref={incomeTypeChartRef}></div>
-                        </div>
+                        <div className="mt-8 flex justify-center" ref={incomeTypeChartRef}></div> {/* Inner div for D3, parent handles centering */}
                       </CardContent>
                     </Card>
              </div>

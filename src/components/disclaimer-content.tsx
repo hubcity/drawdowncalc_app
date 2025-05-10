@@ -8,9 +8,9 @@ export function DisclaimerContent() {
                 DrawdownCalc is designed to help you explore and understand potential strategies for withdrawing funds throughout your retirement years. By inputting various assumptions, you can model different financial scenarios and see how they might unfold over time, giving you insights into the long-term impact of your choices.
             </p>
 
-            <h3 className="text-lg font-semibold mb-2">How DrawdownCalc Works & Understanding Its Approach</h3>
+                  <h3 className="text-base font-semibold mb-2">How DrawdownCalc Works & Understanding Its Approach</h3>
             <p className="mb-3">
-                At its core, DrawdownCalc utilizes a sophisticated mathematical modeling technique known as mixed-integer linear programming to analyze these complex scenarios. To make these calculations possible and provide you with results, the real world is necessarily represented through a simplified and predictable mathematical model.
+                At its core, DrawdownCalc utilizes a mathematical modeling technique called mixed-integer linear programming to analyze these complex scenarios. To make these calculations possible and provide you with results, the real world is necessarily represented through a simplified and predictable mathematical model.
             </p>
             <p className="mb-3">
                 It&apos;s important to understand what this &quot;simplified and predictable&quot; nature means when you use DrawdownCalc:
@@ -32,12 +32,12 @@ export function DisclaimerContent() {
                 </li>
             </ul>
 
-            <h3 className="text-lg font-semibold mb-2">Using DrawdownCalc Wisely</h3>
+            <h3 className="text-base font-semibold mb-2">Using DrawdownCalc Wisely</h3>
             <p className="mb-3">
                 By understanding these inherent simplifications, DrawdownCalc can be a powerful tool for your retirement thinking. It allows you to run &quot;what-if&quot; scenarios, compare different withdrawal strategies, and see how various assumptions can influence your long-term financial picture.
             </p>
 
-            <h3 className="text-lg font-semibold mb-2 text-red-600">--- IMPORTANT DISCLAIMER ---</h3>
+            <h3 className="text-base font-semibold mb-2 text-red-600">--- IMPORTANT DISCLAIMER ---</h3>
             <p className="mb-3">
                 DrawdownCalc is an exploratory tool provided for informational and educational purposes only. The calculations and scenarios generated are based entirely on the assumptions you provide and the simplified mathematical model described above.
             </p>

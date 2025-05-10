@@ -151,7 +151,7 @@ const months = [
       healthcare: z.boolean(),
     }),
   }).refine((schema) => 
-    schema.social_security.starts > schema.about.age ||
+    (schema.social_security.starts >= schema.about.age) ||
     schema.social_security.starts === -1, { 
     message: "Make a selection",
     path: ["social_security.starts"]
@@ -171,7 +171,7 @@ const months = [
     const [formValues, setFormValues] = useState<DrawdownPlanInput | null>(null);
     const currentYear = 2025;
     const currentAge = useWatch({control: form.control, name: "about.age"});
-    const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)+1) }, (_, i) => Number(currentAge)+ 1 + i);
+    const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)) }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
     const [hasErrors, setHasErrors] = useState(false); // To style the button
     // const [isFormEdited, setIsFormEdited] = useState(false); // Local state for form edit, managed by onFormEdit prop

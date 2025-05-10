@@ -5,6 +5,8 @@ import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
 import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
+import { FundamentalsContent } from '@/components/fundamentals-content'; // Import the new component
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -51,10 +53,8 @@ function MathematicsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Mathematics</h2>
-        <p className="text-gray-700">
-          This modal contains information about the mathematics behind the application.
-        </p>
+        <h2 className="text-2xl font-bold mb-4">Fundamentals</h2>
+        <FundamentalsContent />
       </div>
     </div>
   );
@@ -136,7 +136,7 @@ export default function RootLayout({
               }}
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
-              Mathematics
+              Fundamentals
             </a>
             <a
               href="#"
