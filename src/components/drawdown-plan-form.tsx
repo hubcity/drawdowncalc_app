@@ -180,6 +180,21 @@ const months = [
     const { setFocus } = form;
     const { isSubmitted } = useFormState({ control: form.control }); // Get isSubmitted state
 
+    const numberInputOnWheelPreventChange = (e) => {
+      // Prevent the input value change
+      e.target.blur()
+
+      // Prevent the page/container scrolling
+      // e.stopPropagation()
+
+      // Refocus immediately, on the next tick (after the current function is done)
+      setTimeout(() => {
+        e.target.focus()
+      }, 0)
+    }
+
+    // return <input type="number" onWheel={numberInputOnWheelPreventChange} />    
+    
     const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
       try {
         setHasErrors(false);
@@ -244,7 +259,7 @@ const months = [
               <FormItem>
                 <FormLabel>{`Age (end of ${currentYear})`}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+                  <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -289,6 +304,7 @@ const months = [
                     placeholder="End of Plan Age"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -355,7 +371,7 @@ const months = [
       <FormItem>
         <FormLabel>Inflation Rate (%)</FormLabel>
         <FormControl>
-          <Input placeholder="Inflation Rate (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+          <Input placeholder="Inflation Rate (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -369,7 +385,7 @@ const months = [
       <FormItem>
         <FormLabel>Investment Returns (%)</FormLabel>
         <FormControl>
-          <Input placeholder="Rate of Return (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+          <Input placeholder="Rate of Return (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -389,6 +405,7 @@ const months = [
                     placeholder="Cash"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -410,6 +427,7 @@ const months = [
                     placeholder="Brokerage Balance"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -437,7 +455,7 @@ const months = [
                 </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -455,6 +473,7 @@ const months = [
                     placeholder="Brokerage Distributions (%)"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -472,7 +491,7 @@ const months = [
               <FormItem>
                 <FormLabel>IRA Balance</FormLabel>
                 <FormControl>
-                  <Input placeholder="IRA Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+                  <Input placeholder="IRA Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -502,7 +521,7 @@ const months = [
                 </TooltipProvider>
                 </div>
                 <FormControl>
-                  <Input placeholder="Roth Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} />
+                  <Input placeholder="Roth Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -529,6 +548,7 @@ const months = [
                         placeholder={`${yearLabel} Roth Additions`}
                         type="number"
                         {...field}
+                        onWheel={numberInputOnWheelPreventChange}
                         onChange={handleInputChange(field.onChange)}
                       />
                     </FormControl>
@@ -551,6 +571,7 @@ const months = [
                     placeholder="Older Roth Additions"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -598,6 +619,7 @@ const months = [
             placeholder="Monthly Benefit"
                     type="number"
                     {...field}
+                    onWheel={numberInputOnWheelPreventChange}
                     onChange={handleInputChange(field.onChange)}
                   />
                 </FormControl>
@@ -621,6 +643,7 @@ const months = [
                 placeholder="Full Monthly ACA Premium"
                 type="number"
                 {...field}
+                onWheel={numberInputOnWheelPreventChange}
                 onChange={handleInputChange(field.onChange)}
               />
             </FormControl>
@@ -652,6 +675,7 @@ const months = [
                 placeholder="SLCSP Monthly Premium"
                 type="number"
                 {...field}
+                onWheel={numberInputOnWheelPreventChange}
                 onChange={handleInputChange(field.onChange)}
               />
             </FormControl>
@@ -670,6 +694,7 @@ const months = [
                         placeholder="ACA People Covered"
                         type="number"
                         {...field}
+                        onWheel={numberInputOnWheelPreventChange}
                         onChange={handleInputChange(field.onChange)}
                       />
                     </FormControl>
@@ -782,6 +807,7 @@ const months = [
                       placeholder="General Spending"
                       type="number"
                       {...field}
+                      onWheel={numberInputOnWheelPreventChange}
                       onChange={handleInputChange(field.onChange)}
                     />
                   </FormControl>
