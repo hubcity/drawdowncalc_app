@@ -30,6 +30,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
+import { NumericFormat } from 'react-number-format'; // Import NumericFormat
 import { defaultFormValues } from "@/lib/form-schema"; // Import the schema and defaults
 
   
@@ -370,13 +371,31 @@ const months = [
     render={({ field }) => (
       <FormItem>
         <FormLabel>Inflation Rate (%)</FormLabel>
-        <FormControl>
-          <Input placeholder="Inflation Rate (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  suffix=" %"
+                  decimalScale={1} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Inflation Rate"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
   <FormField
     control={form.control}
@@ -384,31 +403,27 @@ const months = [
     render={({ field }) => (
       <FormItem>
         <FormLabel>Investment Returns (%)</FormLabel>
-        <FormControl>
-          <Input placeholder="Rate of Return (%)" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-
-            <Separator/>
-
-          <FormField
-            control={form.control}
-            name="cash.amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cash</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Cash"
-                    type="number"
-                    {...field}
-                    onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
-                  />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  suffix=" %"
+                  decimalScale={1} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Investment Returns"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -418,20 +433,66 @@ const months = [
 
           <FormField
             control={form.control}
+            name="cash.amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cash</FormLabel>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Cash"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
+          <FormField
+            control={form.control}
             name="brokerage.balance"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Brokerage Balance</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Brokerage Balance"
-                    type="number"
-                    {...field}
+                    {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                    value={field.value}
+                    onValueChange={(values) => {
+                      // values.floatValue is the numeric value, or undefined if empty
+                      // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                      const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                      field.onChange(numericValue);
+                      onFormEdit(); // Call onFormEdit directly
+                    }}
+                    thousandSeparator={true}
+                    prefix="$ "
+                    decimalScale={0} // No decimals for whole dollar amounts
+                    customInput={Input} // Use your Shadcn Input component for styling
                     onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
+                    placeholder="Brokerage Balance"
+                    // {...field} // Spread field props carefully, value and onChange are handled
+                    name={field.name} // Pass name for accessibility/form association
+                    onBlur={field.onBlur} // Pass onBlur
+                    ref={field.ref} // Pass ref
                   />
-                </FormControl>
-                <FormMessage />
+                  <FormMessage />
               </FormItem>
             )}
           />
@@ -454,9 +515,27 @@ const months = [
                     </Tooltip>
                 </TooltipProvider>
                 </div>
-                <FormControl>
-                  <Input placeholder="Brokerage Cost Basis" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Brokerage Cost Basis"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -468,15 +547,27 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Brokerage Distributions (%)</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Brokerage Distributions (%)"
-                    type="number"
-                    {...field}
-                    onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
-                  />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  suffix=" %"
+                  decimalScale={1} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Brokerage Distributions"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -490,9 +581,27 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>IRA Balance</FormLabel>
-                <FormControl>
-                  <Input placeholder="IRA Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="IRA Balance"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -520,9 +629,27 @@ const months = [
                     </Tooltip>
                 </TooltipProvider>
                 </div>
-                <FormControl>
-                  <Input placeholder="Roth Balance" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Roth Balance"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -543,17 +670,29 @@ const months = [
                     <FormLabel>
                       {`${yearLabel} Roth Additions`}
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={`${yearLabel} Roth Additions`}
-                        type="number"
-                        {...field}
-                        onWheel={numberInputOnWheelPreventChange}
-                        onChange={handleInputChange(field.onChange)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder={`${yearLabel} Roth Additions`}
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
+                <FormMessage />
+              </FormItem>
                 );
               }}
             />
@@ -566,15 +705,27 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Older Roth Additions</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Older Roth Additions"
-                    type="number"
-                    {...field}
-                    onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
-                  />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Older Roth Additions"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -614,15 +765,27 @@ const months = [
             render={({ field }) => (
               <FormItem>
         <FormLabel>Monthly Benefit</FormLabel>
-                <FormControl>
-                  <Input
-            placeholder="Monthly Benefit"
-                    type="number"
-                    {...field}
-                    onWheel={numberInputOnWheelPreventChange}
-                    onChange={handleInputChange(field.onChange)}
-                  />
-                </FormControl>
+                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <NumericFormat
+                  value={field.value}
+                  onValueChange={(values) => {
+                    // values.floatValue is the numeric value, or undefined if empty
+                    // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                    const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                    field.onChange(numericValue);
+                    onFormEdit(); // Call onFormEdit directly
+                  }}
+                  thousandSeparator={true}
+                  prefix="$ "
+                  decimalScale={0} // No decimals for whole dollar amounts
+                  customInput={Input} // Use your Shadcn Input component for styling
+                  onWheel={numberInputOnWheelPreventChange}
+                  placeholder="Monthly Benefit"
+                  // {...field} // Spread field props carefully, value and onChange are handled
+                  name={field.name} // Pass name for accessibility/form association
+                  onBlur={field.onBlur} // Pass onBlur
+                  ref={field.ref} // Pass ref
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -638,19 +801,31 @@ const months = [
         render={({ field }) => (
           <FormItem>
             <FormLabel>Full Monthly ACA Premium</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Full Monthly ACA Premium"
-                type="number"
-                {...field}
-                onWheel={numberInputOnWheelPreventChange}
-                onChange={handleInputChange(field.onChange)}
+                    {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                    <NumericFormat
+                      value={field.value}
+                      onValueChange={(values) => {
+                        // values.floatValue is the numeric value, or undefined if empty
+                        // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                        const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                        field.onChange(numericValue);
+                        onFormEdit(); // Call onFormEdit directly
+                      }}
+                      thousandSeparator={true}
+                      prefix="$ "
+                      decimalScale={0} // No decimals for whole dollar amounts
+                      customInput={Input} // Use your Shadcn Input component for styling
+                      onWheel={numberInputOnWheelPreventChange}
+                      placeholder="Monthly ACA Premium"
+                      // {...field} // Spread field props carefully, value and onChange are handled
+                      name={field.name} // Pass name for accessibility/form association
+                      onBlur={field.onBlur} // Pass onBlur
+                      ref={field.ref} // Pass ref
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
     <FormField
         control={form.control}
@@ -670,19 +845,31 @@ const months = [
               </Tooltip>
             </TooltipProvider>
             </div>
-            <FormControl>
-              <Input
-                placeholder="SLCSP Monthly Premium"
-                type="number"
-                {...field}
-                onWheel={numberInputOnWheelPreventChange}
-                onChange={handleInputChange(field.onChange)}
+                    {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                    <NumericFormat
+                      value={field.value}
+                      onValueChange={(values) => {
+                        // values.floatValue is the numeric value, or undefined if empty
+                        // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                        const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                        field.onChange(numericValue);
+                        onFormEdit(); // Call onFormEdit directly
+                      }}
+                      thousandSeparator={true}
+                      prefix="$ "
+                      decimalScale={0} // No decimals for whole dollar amounts
+                      customInput={Input} // Use your Shadcn Input component for styling
+                      onWheel={numberInputOnWheelPreventChange}
+                      placeholder="SLCSP Monthly"
+                      // {...field} // Spread field props carefully, value and onChange are handled
+                      name={field.name} // Pass name for accessibility/form association
+                      onBlur={field.onBlur} // Pass onBlur
+                      ref={field.ref} // Pass ref
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
               <FormField
                 control={form.control}
                 name="ACA.people_covered"
@@ -802,15 +989,27 @@ const months = [
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Available Spending</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Available Spending"
-                      type="number"
-                      {...field}
-                      onWheel={numberInputOnWheelPreventChange}
-                      onChange={handleInputChange(field.onChange)}
-                    />
-                  </FormControl>
+                  {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                  <NumericFormat
+                    value={field.value}
+                    onValueChange={(values) => {
+                      // values.floatValue is the numeric value, or undefined if empty
+                      // Pass null if undefined so Zod can coerce it (often to 0 or handle as empty)
+                      const numericValue = values.floatValue === undefined ? null : values.floatValue;
+                      field.onChange(numericValue);
+                      onFormEdit(); // Call onFormEdit directly
+                    }}
+                    thousandSeparator={true}
+                    prefix="$ "
+                    decimalScale={0} // No decimals for whole dollar amounts
+                    customInput={Input} // Use your Shadcn Input component for styling
+                    onWheel={numberInputOnWheelPreventChange}
+                    placeholder="Available Spending"
+                    // {...field} // Spread field props carefully, value and onChange are handled
+                    name={field.name} // Pass name for accessibility/form association
+                    onBlur={field.onBlur} // Pass onBlur
+                    ref={field.ref} // Pass ref
+                  />
                   <FormMessage />
                 </FormItem>
               )}
