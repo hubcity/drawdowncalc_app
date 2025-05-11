@@ -5,6 +5,7 @@ import {Geist, Geist_Mono} from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
 import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
+import { PrivacyContent } from '@/components/privacy-content'; // Import the new PrivacyContent component
 import { FundamentalsContent } from '@/components/fundamentals-content'; // Import the new component
 
 
@@ -73,9 +74,7 @@ function PrivacyModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
           Close
         </button>
         <h2 className="text-2xl font-bold mb-4">Privacy</h2>
-        <p className="text-gray-700">
-          This modal contains information about the privacy policy of the application.
-        </p>
+        <PrivacyContent />
       </div>
     </div>
   );
