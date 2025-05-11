@@ -5,7 +5,7 @@ export function FundamentalsContent() {
     <div className="text-left">
       <h2 className="text-xl font-semibold mb-3">Omissions</h2>
       <p className="mb-3">
-        Let’s start by first talking about what DrawdownCalc doesn’t do.
+        Let’s start by talking about what DrawdownCalc doesn’t do.
       </p>
       <p className="mb-3">
         Here is a certainly incomplete list of current or future life situations not supported by DrawdownCalc (and thereby potentially making this website useless to you):
@@ -38,7 +38,7 @@ export function FundamentalsContent() {
 
       <h3 className="text-base font-semibold mb-2">Capital Gains Taxes</h3>
       <p className="mb-3">
-        How much tax is owed on the sale of stocks or mutual funds seems like a fairly straight-forward calculation. There are different ways to compute the taxes owed on a sale and all of them require the calculation of a cost basis. Many mutual funds use an average cost basis. That’s what DrawdownCalc would prefer to use (especially since other methods, like specific lot basis, would require collecting a lot more information from the user). Unfortunately, computing the average cost basis is not a calculation that fits into a linear programming model. As an alternative, DrawdownCalc calculates the cost basis as if the sale associated with a brokerage withdrawal is the first sale that has ever happened in that account. This will be inaccurate for every withdrawal except the first one. So it’s wrong, but it’s the least wrong calculation that DrawdownCalc has found.
+        How much tax is owed on the sale of stocks or mutual funds seems like a fairly straight-forward calculation. There are different ways to compute the taxes owed on a sale. All of them require the calculation of a cost basis. Many mutual funds use an average cost basis. That’s what DrawdownCalc would prefer to use (especially since other methods, like specific lot basis, would require collecting a lot more information from the user). Unfortunately, computing the average cost basis is not a calculation that fits into a linear programming model. As an alternative, DrawdownCalc calculates the cost basis as if the sale associated with a brokerage withdrawal is the first sale that has ever happened in that account. This will be inaccurate for every withdrawal except the first one. So it’s wrong, but it’s the least wrong calculation that DrawdownCalc has found.
       </p>
 
       <h3 className="text-base font-semibold mb-2">ACA Premium Subsidies</h3>
@@ -58,10 +58,10 @@ export function FundamentalsContent() {
 
       <h2 className="text-xl font-semibold mb-3">Resulting Plan</h2>
       <p className="mb-3">
-        DrawdownCalc can work to produce a plan that maximizes your spending (not counting taxes and ACA premiums) in the first year of retirement such that the plan can continue to produce that same amount of available spending (taking inflation into account) for every year of retirement. Or if you choose, it can work to produce a plan to maximize your end-of-plan assets based on a set spending level.
+        DrawdownCalc can produce plans with one of two goals in mind.  It can work to produce a plan that maximizes your spending (not counting taxes and ACA premiums) in the first year of retirement such that the plan can continue to produce that same amount of available spending (taking inflation into account) for every year of retirement. Or if you choose, it can work to produce a plan to maximize your end-of-plan assets based on a set spending level.
       </p>
       <p className="mb-3">
-        In the best case the resulting plan is within 99.99% of the optimal plan based on your form inputs, the assumptions about predictable inflation, investing return rates and other factors and the simplified model of the tax environment. If the solver hasn’t found a solution after 1.5 minutes, it will return the best answer that it has found. Most users will see a solution within that time. In rare cases the solver may fail and will be run again in search of a solution. If the solver can find a solution it should be returned within 5 minutes.
+        In the best case the resulting plan will be within 99.99% of the optimal plan based on your form inputs, the numerous assumptions made by DrawdownCalc and the simplified model of the tax environment. If the solver hasn’t found a solution after one and a half minutes, it will return the best answer that it has found. Most users will see a solution within that time. In rare cases the solver may fail and will be run again in search of a solution. If the solver can find a solution that solution will be returned within five minutes.
       </p>
     </div>
   );

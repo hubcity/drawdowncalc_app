@@ -228,9 +228,9 @@ export interface DrawdownPlanYear {
   /**
    * The actual spending amount for the year.
    */
-  General_Spending: number;
+  Available_Spending: number;
 
-  Required_RMD: number;
+  IRA_RMD: number;
 
   Excess: number;
 }
@@ -294,7 +294,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         IRA_Balance: yearData.IRA_Balance,
         IRA_Withdraw: yearData.IRA_Withdraw,
         Roth_Balance: yearData.Roth_Balance,
-        Required_RMD: yearData.Required_RMD,
+        IRA_RMD: yearData.Required_RMD,
         Roth_Withdraw: yearData.Roth_Withdraw,
         IRA_to_Roth: yearData.IRA_to_Roth,
         CGD_Spendable: yearData.CGD_Spendable,
@@ -309,7 +309,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Social_Security: yearData.Social_Security,
         ACA_HC_Payment: yearData.ACA_HC_Payment,
         ACA_Help: yearData.ACA_Help,
-        General_Spending: yearData.True_Spending,
+        Available_Spending: yearData.True_Spending,
         Excess: yearData.Excess,
       };
     })

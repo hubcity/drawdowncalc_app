@@ -121,7 +121,7 @@ function AppContent() {
   const incomeTypeChartRef = useRef<HTMLDivElement>(null); // <-- Add ref for the new chart
   // const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
   const automaticIncomeChartRef = useRef<HTMLDivElement>(null); // Ref for the new automatic income chart
-  const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the general spending chart in "General Spending & Constant Dollars" card
+  const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the available spending chart in "Available Spending & Constant Dollars" card
   const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
   const pageRef = useRef(null);
 
@@ -138,7 +138,7 @@ function AppContent() {
       d3.select(incomeChartRef.current).select("svg").remove();
       d3.select(spendingChartRef.current).select("svg").remove();
       d3.select(incomeTypeChartRef.current).select("svg").remove(); // <-- Clear the new chart too
-      d3.select(generalSpendingConstantDollarsChartRef.current).select("svg").remove(); // Clear the new general spending chart
+      d3.select(generalSpendingConstantDollarsChartRef.current).select("svg").remove(); // Clear the new available spending chart
       // d3.select(rothConversionChartRef.current).select("svg").remove(); // <-- Clear Roth Conversion chart
       d3.select(automaticIncomeChartRef.current).select("svg").remove(); // <-- Clear)
       const data = drawdownPlan;
@@ -394,7 +394,7 @@ function AppContent() {
       createStackedBarChart(
         spendingChartRef, // Pass ref object
         spendingCategoriesYMax,
-        "Mandatory Expenses",
+        "Mandatory Spending",
         ["Fed_Tax", "State_Tax", "ACA_HC_Payment"],
         COLORS_SPENDING,
         d3.formatPrefix(".1", 1e3)
@@ -429,25 +429,25 @@ function AppContent() {
       // If RMD is a separate field in DrawdownPlanYear, use that.
       // For now, let's assume 'IRA_Withdraw' for RMDs (this might need adjustment based on your data structure)
       // and 'Ordinary_Income' for other non-SS, non-CGD income.
-      const automaticIncomeYMax = d3.max(data, d => (d.Required_RMD + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw)) || 0;
+      const automaticIncomeYMax = d3.max(data, d => (d.IRA_RMD + d.Social_Security + d.CGD_Spendable + d.Cash_Withdraw)) || 0;
       createStackedBarChart(
         automaticIncomeChartRef,
         automaticIncomeYMax,
         "Automatic Income",
-        ["Required_RMD", "Social_Security", "CGD_Spendable", "Cash_Withdraw"], // Adjust IRA_Withdraw if RMD is separate
+        ["IRA_RMD", "Social_Security", "CGD_Spendable", "Cash_Withdraw"], // Adjust IRA_Withdraw if RMD is separate
         [COLORS[1], COLORS[3], COLORS[4], COLORS[5]] // Example colors
       );
 
-      // General Spending (Constant Dollars) Chart
-      // This chart is intended for the "General Spending & Constant Dollars" card to illustrate the concept.
-      // It assumes 'General_Spending' is a key in DrawdownPlanYear representing constant dollar spending,
+      // Available Spending (Constant Dollars) Chart
+      // This chart is intended for the "Available Spending & Constant Dollars" card to illustrate the concept.
+      // It assumes 'Available_Spending' is a key in DrawdownPlanYear representing constant dollar spending,
       // which should appear as a flat line if inflation is correctly accounted for and spending is constant.
-      const gsYMax = d3.max(data, d => (d.General_Spending)) || 0;
+      const gsYMax = d3.max(data, d => (d.Available_Spending)) || 0;
       createStackedBarChart(
         generalSpendingConstantDollarsChartRef,
         gsYMax,
         "",
-        ["General_Spending"],
+        ["Available_Spending"],
         ['#004040'], // Example colors
         formatYAxis,
         300,
@@ -556,10 +556,10 @@ function AppContent() {
         }
       }
       if (input.social_security.starts && currentAge === input.social_security.starts && input.social_security.starts !== -1) {
-        messages.push("This is the year your Social Security payments begin.  DrawdownCalc assumes they begin in your birth month.");
+        messages.push("This is the year your Social Security payments begin.  DrawdownCalc assumes that they begin in your birth month.");
       }
       if (currentAge === 65) {
-        messages.push("This is the year you become eligible for Medicare.  DrawdownCalc assumes your last ACA payment/subsidy occurs the month before your birth month.");
+        messages.push("This is the year you become eligible for Medicare.  DrawdownCalc assumes that your last ACA payment occurs the month before your birth month.");
       }
       setCardMilestoneMessages(messages);
 
@@ -682,7 +682,7 @@ function AppContent() {
                         {/* planStatus <p className="mb-2">Solver Status: <span className="font-semibold">{planStatus}</span></p> */}
                   {currentObjectiveType === 'max_spend' && spendingFloor !== undefined && (
                           <div className="flex items-center justify-center"> {/* Flex container for text and button */}
-                            <p className="mr-4">Projected General Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
+                            <p className="mr-4">Projected Available Spending: <span className="font-semibold">{formatCurrency(spendingFloor)}</span></p>
                             <Button onClick={() => downloadCsv(drawdownPlan)} size="sm">Download CSV</Button>
                           </div>
                         )}
@@ -696,7 +696,7 @@ function AppContent() {
                     </Card>
                     <Card className="border-2 border-primary">
                       <CardHeader>
-                        <CardTitle>General Spending & Constant Dollars</CardTitle>
+                        <CardTitle>Available Spending & Constant Dollars</CardTitle>
                         <CardDescription>About these numbers.</CardDescription>
                       </CardHeader>
                       <CardContent>
@@ -710,10 +710,10 @@ function AppContent() {
                             All of the values on this page are displayed in constant dollars.
                           </p>
                           <p className="mb-3">
-                            Constant dollars, also called real dollars, can be thought of as a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars could be used to buy more stuff.
+                            Constant dollars, also called real dollars, can be thought of as a measure of purchasing power.  That means that when comparing values across time, the larger value of constant dollars can be used to buy more stuff.
                           </p>
                           <p className="mb-3"> {/* Text will wrap around the floated chart */}
-                            Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your General Spending in constant dollars.  Your General Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc schedules your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your General Spending keeps up inflation it looks the same year after year in terms of constant dollars.
+                            Here's a quick illustration involving one of the most boring charts possible.  This is a chart of your Available Spending in constant dollars.  Your Available Spending is how much you have left to spend after paying taxes and ACA premiums.  DrawdownCalc schedules your withdrawals so that you have the same amount of purchasing power every year even after inflation.  In constant dollar charts the values that keep up with inflation look the same year after year, because the purchasing power has not changed.  Since your Available Spending keeps up inflation it looks the same year after year in terms of constant dollars.
                           </p>
                         </div>
                       </CardContent>

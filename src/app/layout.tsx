@@ -30,7 +30,7 @@ function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Overview</h2>
+        <h2 className="text-2xl font-bold mb-4">Welcome to DrawdownCalc!</h2>
         <DisclaimerContent />
         {/* <p className="text-gray-700">
           This is a brief description of the application. You can include details about the
@@ -93,7 +93,7 @@ function ContactUsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
+        <h2 className="text-2xl font-bold mb-4">About</h2>
         <p className="text-gray-700">
           This modal contains contact information for the application.
         </p>
@@ -156,7 +156,7 @@ export default function RootLayout({
               }}
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
-              Contact Us
+              About
             </a>
           </div>
         </footer>

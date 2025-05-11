@@ -801,10 +801,10 @@ const months = [
               name="annual_spending"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>General Spending</FormLabel>
+                  <FormLabel>Available Spending</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="General Spending"
+                      placeholder="Available Spending"
                       type="number"
                       {...field}
                       onWheel={numberInputOnWheelPreventChange}
