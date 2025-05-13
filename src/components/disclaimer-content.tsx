@@ -18,14 +18,14 @@ export function DisclaimerContent() {
                 <li>
                     <strong>Predictable Inputs for an Unpredictable Future:</strong> The real world is anything but predictable. However, to calculate plans, DrawdownCalc will ask you to provide specific assumptions for factors that are inherently unknowable with certainty.
                     <ul className="list-circle list-inside ml-4 mt-1 space-y-1">
-                        <li>For instance, you&apos;ll be asked to define a planning horizon or an &quot;end-of-plan&quot; date – a point in the future we all hope remains uncertain for a long time!</li>
+                        <li>For instance, you&apos;ll be asked to define a planning horizon or an &quot;end-of-plan&quot; date - a point in the future we all hope remains uncertain for a long time!</li>
                         <li>Similarly, you&apos;ll input your predictions for future inflation and rates of return, which the model will treat as constant year after year. This is a significant simplification, as actual rates fluctuate. The value of this approach lies in being able to calculate plans based on your chosen, consistent set of assumptions, rather than trying to precisely predict an unknowable future.</li>
                     </ul>
                 </li>
                 <li>
                     <strong>Simplified Rules for Complex Realities:</strong> Real-world financial systems, particularly tax laws, are incredibly intricate and subject to frequent change. DrawdownCalc employs simplified tax rules for several reasons:
                     <ul className="list-circle list-inside ml-4 mt-1 space-y-1">
-                        <li>Feasibility: Some calculations would be too slow or computationally impossible with fully detailed tax codes.</li>
+                        <li>Feasibility: Some calculations would be too slow or computationally impossible in this type of mathematical model with fully detailed tax codes.</li>
                         <li>Clarity: Simplification helps illustrate broader strategic trade-offs without getting lost in minute details that vary greatly person-to-person. While these simplified rules allow the tool to function and provide insights, they mean that tax calculations are approximations and cannot be comprehensive or reflect every nuance of current or future tax law.</li>
                     </ul>
                 </li>

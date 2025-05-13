@@ -92,3 +92,14 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none; /* Remove spinners in WebKit browsers */
   margin: 0; /* Remove margin for consistency */
 }
+
+.initial-view-background {
+  background-image: url('/calculator.svg');
+  /* Make sure 'initial-page-bg.svg' matches your SVG filename in /public */
+  background-size: cover;
+  /* Adjust as needed: cover, contain, auto, etc. */
+  background-position: center;
+  /* Adjust as needed */
+  background-repeat: no-repeat;
+  /* Usually good for background images */
+}

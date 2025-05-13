@@ -115,9 +115,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
-        <footer className="w-full mt-auto py-4 border-t border-border bg-background">
-          <div className="container mx-auto flex flex-wrap items-center justify-center gap-10"> {/* Increased gap */}
-            <a
+        <footer className="z-50 w-full mt-auto py-4 border-t-2 border-primary bg-background fixed bottom-0">
+          <div className="container mx-auto flex flex-wrap items-center justify-center gap-28"> {/* Increased gap */}
+            <div><a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
@@ -126,8 +126,8 @@ export default function RootLayout({
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Overview
-            </a>
-            <a
+            </a></div>
+            <div><a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
@@ -136,8 +136,8 @@ export default function RootLayout({
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Fundamentals
-            </a>
-            <a
+            </a></div>
+            <div><a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
@@ -146,8 +146,8 @@ export default function RootLayout({
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               Privacy
-            </a>
-            <a
+            </a></div>
+            <div><a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
@@ -156,7 +156,7 @@ export default function RootLayout({
               className="text-black text-sm font-bold hover:underline" // Changed classes
             >
               About
-            </a>
+            </a></div>
           </div>
         </footer>
         <OverviewModal isOpen={isOverviewOpen} onClose={() => setIsOverviewOpen(false)} />

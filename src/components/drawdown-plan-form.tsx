@@ -32,6 +32,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { NumericFormat } from 'react-number-format'; // Import NumericFormat
 import { defaultFormValues } from "@/lib/form-schema"; // Import the schema and defaults
+import { notDeepEqual } from "assert";
 
   
 const states = [
@@ -182,6 +183,9 @@ const months = [
     const { isSubmitted } = useFormState({ control: form.control }); // Get isSubmitted state
 
     const numberInputOnWheelPreventChange = (e) => {
+      // if (!(e.target === document.activeElement)) {
+      //   return;
+      // }
       // Prevent the input value change
       e.target.blur()
 
@@ -189,9 +193,9 @@ const months = [
       // e.stopPropagation()
 
       // Refocus immediately, on the next tick (after the current function is done)
-      setTimeout(() => {
-        e.target.focus()
-      }, 0)
+      // setTimeout(() => {
+      //   e.target.focus()
+      // }, 0)
     }
 
     // return <input type="number" onWheel={numberInputOnWheelPreventChange} />    
@@ -251,7 +255,8 @@ const months = [
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleFormSubmit, handleError)}
-          className="space-y-8 p-4"
+          className="space-y-8 px-4 pt-4 pb-20"
+          autoComplete="off"
         >
           <FormField
             control={form.control}

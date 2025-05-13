@@ -4,10 +4,10 @@ export function PrivacyContent() {
   return (
     <div className="text-left">
       <p className="mb-3">
-        DrawdownCalc uses the information from your form to calculate your drawdown plan.
+        DrawdownCalc uses the information from your form to calculate your drawdown plan. That's it. Nothing else.
       </p>
       <p className="mb-3">
-        DrawdownCalc does not log any of the information from your form.
+        DrawdownCalc does not record or log any of the information from your form.
       </p>
       <p className="mb-3">
         DrawdownCalc does not store any of the information from your form in a database.

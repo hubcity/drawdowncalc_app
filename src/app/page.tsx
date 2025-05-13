@@ -533,6 +533,7 @@ function AppContent() {
     try {
       // The 'input' to calculateDrawdownPlan should now be the apiPayload
       const response: DrawdownPlanResponse = await calculateDrawdownPlan(apiPayload as any); // Using 'as any' for now, ideally update DrawdownPlanInput type
+      // console.log(response);
       setDrawdownPlan(response.planYears);
       setSubmitted(true);
       setSpendingFloor(response.spendingFloor);
@@ -618,14 +619,14 @@ function AppContent() {
 
       <SidebarInset>
         {!hasAcceptedTerms ? (
-          <div className="flex flex-col items-center h-full px-8 md:px-16 py-6 gap-6"> {/* Adjusted padding: more on sides, less on top/bottom */}
+          <div className="flex flex-col items-center h-full px-8 md:px-16 py-6 gap-6 initial-view-background bg-white/95 bg-blend-overlay"> {/* Adjusted padding: more on sides, less on top/bottom */}
             <DisclaimerContent />
             <Button onClick={handleAcceptTerms}>I Understand</Button>
           </div>
         ) : loading ? (
-          <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-full initial-view-background bg-white/50 bg-blend-overlay">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-            Calculating Drawdown Plan...
+            <span className="text-2xl font-bold">Calculating Drawdown Plan...</span>
           </div>
         ) : (
           // Content to display when not loading and terms accepted
@@ -642,7 +643,7 @@ function AppContent() {
             {/* Regular content, shown if no error message is currently active */}
             {!errorMessage && (
               !submitted ? (
-                <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto">
+                    <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto initial-view-background bg-white/95 bg-blend-overlay">
                   <h2>Form Field Descriptions:</h2>
                   <p><b>Age:</b> Your current age.</p>
                   <p><b>Birth Month:</b> Your birth month.</p>
@@ -666,7 +667,7 @@ function AppContent() {
                   <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
                 </div>
               ) : drawdownPlan ? (
-                <div ref={pageRef} className="flex flex-col gap-4 p-4">
+                <div ref={pageRef} className="flex flex-col gap-4 p-4 pb-20">
               {drawdownPlan && isFormEdited && (
                       <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 top-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.

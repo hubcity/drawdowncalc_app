@@ -256,7 +256,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
     },
     body: JSON.stringify(payload),
   });
-
+  // console.log(response);
   if (!response.ok) {
     // Attempt to parse error message from backend if available
     let errorMessage = `HTTP error! status: ${response.status}`;
@@ -272,7 +272,9 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
     throw new Error(errorMessage);
   }
 
-  const rawData: { retire: { [key: string]: any }, spending_floor?: number, endofplan_assets?: number, status?: string } = await response.json();
+  const rawData: { retire: { [key: string]: any }, federal: { [key: string]: any }, state: { [key: string]: any }, spending_floor?: number, endofplan_assets?: number, status?: string } = await response.json();
+
+  // console.log('Raw data:', rawData);
 
   // Transform the rawData into DrawdownPlanYear[]
   const formattedPlan: DrawdownPlanYear[] = Object.keys(rawData.retire)
@@ -292,11 +294,11 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
         Brokerage_Balance: yearData.Brokerage_Balance,
         Brokerage_Withdraw: yearData.Brokerage_Withdraw,
         IRA_Balance: yearData.IRA_Balance,
-        IRA_Withdraw: yearData.IRA_Withdraw,
-        Roth_Balance: yearData.Roth_Balance,
         IRA_RMD: yearData.Required_RMD,
-        Roth_Withdraw: yearData.Roth_Withdraw,
+        IRA_Withdraw: yearData.IRA_Withdraw,
         IRA_to_Roth: yearData.IRA_to_Roth,
+        Roth_Balance: yearData.Roth_Balance,
+        Roth_Withdraw: yearData.Roth_Withdraw,
         CGD_Spendable: yearData.CGD_Spendable,
         Capital_Gains_Distribution: yearData.Capital_Gains_Distribution,
         Total_Capital_Gains: yearData.Total_Capital_Gains,
