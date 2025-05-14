@@ -103,3 +103,15 @@ input[type="number"]::-webkit-outer-spin-button {
   background-repeat: no-repeat;
   /* Usually good for background images */
 }
+
+h2 {
+  margin-top: 3rem;
+}
+
+h3 {
+  margin-top: 2rem;
+}
+
+a {
+  @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600
+}

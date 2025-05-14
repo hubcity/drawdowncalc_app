@@ -2,11 +2,13 @@
 
 import type {Metadata} from 'next';
 import {Geist, Geist_Mono} from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { useState } from 'react';
 import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
 import { PrivacyContent } from '@/components/privacy-content'; // Import the new PrivacyContent component
 import { FundamentalsContent } from '@/components/fundamentals-content'; // Import the new component
+import { ContactUsContent } from '@/components/contactus-content'; // Import the new component
 
 
 const geistSans = Geist({
@@ -18,6 +20,9 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+const inter = Inter({ subsets: ['latin'] })
+
 
 function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
@@ -31,7 +36,7 @@ function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Welcome to DrawdownCalc!</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-0">Welcome to DrawdownCalc!</h2>
         <DisclaimerContent />
         {/* <p className="text-gray-700">
           This is a brief description of the application. You can include details about the
@@ -54,7 +59,7 @@ function MathematicsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Fundamentals</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-0">Fundamentals</h2>
         <FundamentalsContent />
       </div>
     </div>
@@ -73,7 +78,7 @@ function PrivacyModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">Privacy</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-0">Privacy</h2>
         <PrivacyContent />
       </div>
     </div>
@@ -92,10 +97,8 @@ function ContactUsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4">About</h2>
-        <p className="text-gray-700">
-          This modal contains contact information for the application.
-        </p>
+        <h2 className="text-2xl font-bold mb-4 mt-0">About</h2>
+        <ContactUsContent />
       </div>
     </div>
   );
@@ -113,7 +116,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}> {/* `${inter.className} ${geistMono.variable} antialiased` */}
         {children}
         <footer className="z-50 w-full mt-auto py-4 border-t-2 border-primary bg-background fixed bottom-0">
           <div className="container mx-auto flex flex-wrap items-center justify-center gap-28"> {/* Increased gap */}

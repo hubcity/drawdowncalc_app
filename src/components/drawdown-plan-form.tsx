@@ -175,6 +175,7 @@ const months = [
     const currentAge = useWatch({control: form.control, name: "about.age"});
     const socialSecurityStartAges = Array.from({ length: 71 - (Number(currentAge)) }, (_, i) => Number(currentAge) + i);
     const conversionYears = Array.from({ length: 4 }, (_, i) => currentYear - 1 - i);
+    const cashInputRef = useRef<HTMLInputElement>(null); // Create a ref for the cash input
     const [hasErrors, setHasErrors] = useState(false); // To style the button
     // const [isFormEdited, setIsFormEdited] = useState(false); // Local state for form edit, managed by onFormEdit prop
     const prevFilingStatusRef = useRef<string | undefined>(form.getValues("about.filing_status"));
@@ -452,6 +453,12 @@ const months = [
                     field.onChange(numericValue);
                     onFormEdit(); // Call onFormEdit directly
                   }}
+                  getInputRef={cashInputRef} // Pass the ref to NumericFormat
+                  // onClick={() => {
+                  //   if (cashInputRef.current) {
+                  //     cashInputRef.current.select(); // Call select on the input element
+                  //   }
+                  // }}
                   thousandSeparator={true}
                   prefix="$ "
                   decimalScale={0} // No decimals for whole dollar amounts

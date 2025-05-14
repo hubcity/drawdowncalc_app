@@ -3,6 +3,9 @@ import React from 'react';
 export function FundamentalsContent() {
   return (
     <div className="text-left">
+      <p className="mb-3">
+        I'd like to be as clear as I can be about what DrawdownCalc does and does not do.  This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/fplan">source code at github</a>.
+      </p>
       <h2 className="text-xl font-semibold mb-3">Omissions</h2>
       <p className="mb-3">
         Let’s start by talking about what DrawdownCalc doesn’t do.
@@ -12,7 +15,6 @@ export function FundamentalsContent() {
       </p>
       <ul className="list-disc list-inside mb-3 space-y-1">
         <li>A spouse with their own retirement accounts</li>
-        <li>The future financial situation of a surviving spouse</li>
         <li>The complexities of taking social security as a couple</li>
         <li>Moving to a different state during retirement</li>
       </ul>

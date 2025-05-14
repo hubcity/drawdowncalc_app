@@ -624,7 +624,7 @@ function AppContent() {
             <Button onClick={handleAcceptTerms}>I Understand</Button>
           </div>
         ) : loading ? (
-            <div className="flex items-center justify-center h-full initial-view-background bg-white/50 bg-blend-overlay">
+            <div className="flex items-center justify-center h-full initial-view-background bg-white/70 bg-blend-overlay">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
             <span className="text-2xl font-bold">Calculating Drawdown Plan...</span>
           </div>
