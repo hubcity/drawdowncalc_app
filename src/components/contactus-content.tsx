@@ -43,8 +43,8 @@ export function ContactUsContent() {
         If you have found a general issue, send me an email or submit an issue to the corresponding project on github:
       </p>
       <ul className="list-disc list-inside mb-3 space-y-1">
-              <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/fplan/issues">DrawdownCalc</a> which deals with the math problem</li>
-              <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc_app/issues">DrawdownCalc_app</a> which draws the web pages</li>
+              <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc/issues">DrawdownCalc</a> which deals with the math problem</li>
+              <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc_web/issues">DrawdownCalc_web</a> which draws the web pages</li>
       </ul>
       <p className="mb-3">
         If you have found a bug it would be very helpful if you could email me the form data that you were using when you found the bug (because I don’t have a record of your form inputs).
