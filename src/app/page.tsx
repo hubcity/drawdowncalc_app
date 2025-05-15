@@ -643,28 +643,22 @@ function AppContent() {
             {/* Regular content, shown if no error message is currently active */}
             {!errorMessage && (
               !submitted ? (
-                    <div className="flex flex-col items-start justify-start h-full p-4 gap-4 overflow-y-auto initial-view-background bg-white/95 bg-blend-overlay">
-                  <h2>Form Field Descriptions:</h2>
-                  <p><b>Age:</b> Your current age.</p>
-                  <p><b>Birth Month:</b> Your birth month.</p>
-                  <p><b>End of Plan Age:</b> The age to which the drawdown plan should project.</p>
-                  <p><b>Tax Filing Status:</b> Your tax filing status (Single or Married Filing Jointly).</p>
-                  <p><b>State of Residence:</b> The state where you currently reside.</p>
-                  <p><b>Inflation Rate:</b> The assumed annual inflation rate, expressed as a percentage.</p>
-                  <p><b>Rate of Return:</b> The assumed annual investment rate of return, expressed as a percentage.</p>
-                  <p><b>Brokerage Balance:</b> The current balance of your taxable brokerage account.</p>
-                  <p><b>Brokerage Basis:</b> The cost basis of the assets in your brokerage account.</p>
-                  <p><b>Brokerage Distributions:</b>The percentage of the account that will be returned to the user in the form of capital gains and dividends each year.</p>
-                  <p><b>IRA Balance:</b> The current balance of your Traditional IRA account.</p>
-                  <p><b>Roth Balance:</b> The current balance of your Roth IRA account.</p>
-                  <p><b>Recent Additions:</b> Roth conversions made in recent years.</p>
-                  <p><b>Older Additions:</b> The amount of Roth Conversions made more than 5 years ago.  This should only include conversions, not normal contributions.</p>
-                  <p><b>Social Security Starts:</b> The age at which you expect to begin receiving Social Security benefits.</p>
-                  <p><b>Social Security Amount:</b> The estimated annual amount you expect to receive from Social Security.</p>
-                  <p><b>Full ACA Premium:</b> The full premium amount for an ACA (Affordable Care Act) health insurance plan.</p>
-                  <p><b>SLCSP Premium:</b> The premium amount for the Second Lowest Cost Silver Plan (SLCSP) ACA health insurance plan.</p>
-                  <p><b>Goal:</b>Choose between maximizing your spending or maximizing your end-of-plan assets.</p>
-                  <p><b>Living Expenses:</b> Estimated annual spending/living expenses.</p>
+                    <div className="flex flex-col m-4 items-start justify-center h-full p-12 pr-14 gap-4 overflow-y-auto initial-view-background bg-white/95 bg-blend-overlay text-justify">
+                  <p className="mb-3">
+                    DrawdownCalc focuses on the three different types of accounts that many retirees have.
+                  </p>
+                  <p className="mb-3">
+                    The first is your taxable investments account. Earnings from this account will be taxed according to the capital gains tax rates. DrawdownCalc refers to this account as your <b>Brokerage</b> account.
+                  </p>
+                  <p className="mb-3">
+                    Another type of account is your retirement account where the money has not yet been taxed, but will be taxed when withdrawn. This can be a traditional 401k, traditional IRA, SEP, etc. DrawdownCalc uses the term <b>IRA</b> to refer to all of these.
+                  </p>
+                  <p className="mb-3">
+                    The last type of account is your retirement account where taxes have already been paid and withdrawals will be tax free. DrawdownCalc refers to these accounts as <b>Roth</b> account.
+                  </p>
+                  <p className="mb-3">
+                    DrawdownCalc needs information about all of these accounts and more to calculate a drawdown plan. The form at the left is long. If you simply want to see what DrawdownCalc does you can scroll to the bottom, select <b>Calculate Drawdown Plan</b> and a plan will be calculated based on the default values.
+                  </p>
                 </div>
               ) : drawdownPlan ? (
                 <div ref={pageRef} className="flex flex-col gap-4 p-4 pb-20">
@@ -738,11 +732,28 @@ function AppContent() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-24 text-center">Age</TableHead>
-                          <TableHead className="w-32 text-center">From Brokerage</TableHead>
-                          <TableHead className="w-32 text-center">From IRA</TableHead>
-                          <TableHead className="w-32 text-center">From Roth</TableHead>
-                          <TableHead className="w-32 text-center">Roth Conversion</TableHead>
+                          {/* Age column - no color swatch */}
+                          <TableHead className="w-24 text-center align-middle">Age</TableHead>
+                          {/* Brokerage Withdraw column with color swatch */}
+                          <TableHead className="w-32 text-center align-middle">
+                            <span className="inline-block w-3 h-3 mr-1 rounded-sm align-middle" style={{ backgroundColor: COLORS[0] }}></span>
+                            From Brokerage
+                          </TableHead>
+                          {/* IRA Withdraw column with color swatch */}
+                          <TableHead className="w-32 text-center align-middle">
+                            <span className="inline-block w-3 h-3 mr-1 rounded-sm align-middle" style={{ backgroundColor: COLORS[1] }}></span>
+                            From IRA
+                          </TableHead>
+                          {/* Roth Withdraw column with color swatch */}
+                          <TableHead className="w-32 text-center align-middle">
+                            <span className="inline-block w-3 h-3 mr-1 rounded-sm align-middle" style={{ backgroundColor: COLORS[2] }}></span>
+                            From Roth
+                          </TableHead>
+                          {/* Roth Conversion column with color swatch */}
+                          <TableHead className="w-32 text-center align-middle">
+                            <span className="inline-block w-3 h-3 mr-1 rounded-sm align-middle" style={{ backgroundColor: COLORS_OTHER[5] }}></span>
+                            Roth Conversion
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                     </Table>

@@ -29,7 +29,7 @@ function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-4xl h-5/6 overflow-auto relative">
+      <div className="bg-white rounded-lg shadow-lg p-10 w-11/12 max-w-5xl h-5/6 overflow-auto relative">
         <button
           className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           onClick={onClose}
@@ -52,7 +52,7 @@ function MathematicsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-4xl h-5/6 overflow-auto relative">
+      <div className="bg-white rounded-lg shadow-lg p-10 w-11/12 max-w-5xl h-5/6 overflow-auto relative">
         <button
           className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           onClick={onClose}
@@ -71,7 +71,7 @@ function PrivacyModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-4xl h-5/6 overflow-auto relative">
+      <div className="bg-white rounded-lg shadow-lg p-10 w-11/12 max-w-5xl h-5/6 overflow-auto relative">
         <button
           className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           onClick={onClose}
@@ -90,7 +90,7 @@ function ContactUsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-4xl h-5/6 overflow-auto relative">
+      <div className="p-10 bg-white rounded-lg shadow-lg w-11/12 max-w-5xl h-5/6 overflow-auto relative">
         <button
           className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           onClick={onClose}

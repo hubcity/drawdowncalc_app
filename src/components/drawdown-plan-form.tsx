@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react"; // Import Info icon
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -376,7 +376,7 @@ const months = [
     name="predictions.inflation"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>Inflation Rate (%)</FormLabel>
+        <FormLabel>Inflation Rate</FormLabel>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}
@@ -408,7 +408,7 @@ const months = [
     name="predictions.returns"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>Investment Returns (%)</FormLabel>
+        <FormLabel>Investment Returns</FormLabel>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}
@@ -442,7 +442,17 @@ const months = [
             name="cash.amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Cash</FormLabel>
+                <div className="flex items-center gap-1">
+                  <FormLabel>Cash</FormLabel>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                        <Info size={16} className="text-blue-600" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs break-words">Readily available cash not subject to tax, such as your checking account balance.</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}
@@ -515,7 +525,7 @@ const months = [
             render={({ field }) => (
               <FormItem>
                 <div className="flex items-center gap-1">
-                <FormLabel>Brokerage Cost Basis</FormLabel>
+                <FormLabel>Cost Basis</FormLabel>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger
@@ -523,7 +533,7 @@ const months = [
                           onClick={(e) => e.stopPropagation()} // Prevent form submission
                       ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
 /></TooltipTrigger>
-                      <TooltipContent className="max-w-xs break-words">The calculation of the amount of earnings subject to capital gains taxes is an approximation.</TooltipContent>
+                      <TooltipContent className="max-w-xs break-words">Calculation of earnings subject to capital gains tax is an approximation.</TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
                 </div>
@@ -558,8 +568,18 @@ const months = [
             name="brokerage.distributions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Brokerage Distributions (%)</FormLabel>
-                {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
+                <div className="flex items-center gap-1">
+                  <FormLabel>Distributions</FormLabel>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                        <Info size={16} className="text-blue-600" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs break-words">Percentage of the account paid out annually regardless of withdrawals.</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+             {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}
                   onValueChange={(values) => {
@@ -679,9 +699,21 @@ const months = [
                 
                 return (
                   <FormItem>
-                    <FormLabel>
-                      {`${yearLabel} Roth Additions`}
-                    </FormLabel>
+                    <div className="flex items-center gap-1">
+                      <FormLabel>
+                        {`${yearLabel} Roth Additions`}
+                      </FormLabel>
+                      {index === 0 && ( // Only add tooltip for the first field (conversion_year_minus_1)
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                              <Info size={16} className="text-blue-600" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs break-words">For each year enter the amount of additions (contributions or conversions) made to the account that have not yet been withdrawn.</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    </div>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}
@@ -716,7 +748,17 @@ const months = [
             name="Roth.old_conversions"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Older Roth Additions</FormLabel>
+                <div className="flex items-center gap-1">
+                  <FormLabel>Older Roth Additions</FormLabel>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
+                        <Info size={16} className="text-blue-600" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs break-words">If you are older than 59.5 and your Roth account has been open for more than 5 years, enter 1; otherwise enter the amount of older additions that have not yet been withdrawn.</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}

@@ -26,7 +26,7 @@ export function FundamentalsContent() {
         <li>HSA</li>
         <li>AMT</li>
         <li>Itemized deductions</li>
-        <li>Capital loses</li>
+        <li>Capital losses</li>
         <li>IRMAA</li>
         <li>Medicare premiums</li>
         <li>ACA cost sharing subsidies (not the same thing as ACA premium subsidies)</li>
@@ -45,7 +45,7 @@ export function FundamentalsContent() {
 
       <h3 className="text-base font-semibold mb-2">ACA Premium Subsidies</h3>
       <p className="mb-3">
-        The IRS calculation of ACA premium subsidies is based on a sliding scale depending on the user’s AGI as a percentage of the Federal Poverty Level (FPL). Implementing such a sliding scale in an MiLP is not simple. DrawdownCalc has chosen to implement a stairstep type estimate that sometimes underestimates the subsidy available.  The current version of DrawdownCalc assumes that the subsidy rules in place in 2025 will continue to be in place in the future.
+        The IRS calculation of ACA premium subsidies is based on a sliding scale depending on the user’s AGI as a percentage of the Federal Poverty Level (FPL). Implementing such a sliding scale in an MiLP is not simple. DrawdownCalc has chosen to implement a stair-step type estimate that sometimes underestimates the subsidy available.  The current version of DrawdownCalc assumes that the subsidy rules in place in 2025 will continue to be in place in the future.
       </p>
 
       <h3 className="text-base font-semibold mb-2">Roth Withdrawal Rules</h3>
