@@ -776,7 +776,19 @@ const months = [
     name="social_security.amount"
             render={({ field }) => (
               <FormItem>
+                <div className="flex items-center gap-1">
         <FormLabel>Monthly Benefit</FormLabel>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      type="button"
+                      onClick={(e) => e.stopPropagation()} // Prevent form submission
+                    ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      /></TooltipTrigger>
+                    <TooltipContent className="max-w-xs break-words">DrawdownCalc assumes that 85% of social security is taxable.</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                </div>
                 {/* We need to use field.onChange and onFormEdit directly with NumericFormat's onValueChange */}
                 <NumericFormat
                   value={field.value}

@@ -4,7 +4,7 @@ export function FundamentalsContent() {
   return (
     <div className="text-left">
       <p className="mb-3">
-        I'd like to be as clear as I can be about what DrawdownCalc does and does not do.  This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/fplan">source code at github</a>.
+        I'd like to be as clear as I can be about what DrawdownCalc does and does not do.  This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc">source code at github</a>.
       </p>
       <h2 className="text-xl font-semibold mb-3">Omissions</h2>
       <p className="mb-3">
