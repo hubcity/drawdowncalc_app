@@ -23,7 +23,7 @@ export function DisclaimerContent() {
             <h3 className="text-base font-semibold mb-2">Predictable Inputs for an Unpredictable Future</h3>
             <p>The real world is anything but predictable. However, to calculate plans, DrawdownCalc will ask you to provide specific assumptions for factors that are inherently unknowable with certainty.</p>
             <ul className="list-inside list-disc">
-            <li className="pl-4">For instance, you&apos;ll be asked to define a planning horizon or an &quot;end-of-plan&quot; date - a point in the future we all hope remains uncertain for a long time!</li>
+            <li className="pl-4">For instance, you&apos;ll be asked to define a planning horizon or an &quot;end-of-plan&quot; date, a point in the future we all hope remains uncertain for a long time!</li>
             <li className="pl-4">Similarly, you&apos;ll input your predictions for future inflation and rates of return, which the model will treat as constant year after year. This is a significant simplification, as actual rates fluctuate. The value of this approach lies in being able to calculate plans based on your chosen, consistent set of assumptions, rather than trying to precisely predict an unknowable future.</li>
             </ul>
             <h2 className="text-xl font-semibold mb-3">IMPORTANT DISCLAIMER</h2>
