@@ -371,7 +371,7 @@ function AppContent() {
 
           cgTaxBrackets.forEach((bracket, index) => {
             const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
-            if (threshold < yMax) { // Only draw if within chart range
+            if (threshold < y.domain()[1]) { // Only draw if within chart's actual y-axis range
               svg.append("line")
                 .attr("x1", 0)
                 .attr("x2", width)
@@ -385,7 +385,7 @@ function AppContent() {
 
           taxBrackets.forEach((bracket, index) => {
             const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
-            if (threshold < yMax) { // Only draw if within chart range
+            if (threshold < y.domain()[1]) { // Only draw if within chart's actual y-axis range
               svg.append("line")
                 .attr("x1", 0)
                 .attr("x2", width)
@@ -403,7 +403,7 @@ function AppContent() {
 
           taxBrackets.forEach((bracket, index) => {
             const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
-            if (threshold < yMax) { // Only draw if within chart range
+            if (threshold < y.domain()[1]) { // Only draw if within chart's actual y-axis range
               svg.append("line")
                 .attr("x1", 0)
                 .attr("x2", width)
