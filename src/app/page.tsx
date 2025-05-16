@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { DisclaimerContent } from '@/components/disclaimer-content'; // Import the new component
 import { DrawdownPlanForm } from "@/components/drawdown-plan-form";
-import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear, DrawdownPlanResponse } from "@/services/drawdown-plan";
+import { calculateDrawdownPlan, DrawdownPlanInput, DrawdownPlanYear, DrawdownPlanResponse, FederalTaxData, TaxBracketTuple, StateTaxData } from "@/services/drawdown-plan";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -113,6 +113,8 @@ function AppContent() {
   const [submittedBirthMonth, setSubmittedBirthMonth] = useState<number | null>(null);
   const [submittedCurrentAge, setSubmittedCurrentAge] = useState<number | null>(null);
   const [cardMilestoneMessages, setCardMilestoneMessages] = useState<string[]>([]);
+  const [federalTaxData, setFederalTaxData] = useState<FederalTaxData | null>(null);
+  const [stateTaxData, setStateTaxData] = useState<StateTaxData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // State for error messages
   const withdrawChartRef = useRef(null);
   const chartRef = useRef<HTMLDivElement>(null);
@@ -121,6 +123,7 @@ function AppContent() {
   const incomeTypeChartRef = useRef<HTMLDivElement>(null); // <-- Add ref for the new chart
   // const rothConversionChartRef = useRef<HTMLDivElement>(null); // <-- Ref for Roth Conversion chart
   const automaticIncomeChartRef = useRef<HTMLDivElement>(null); // Ref for the new automatic income chart
+  const stateAgiAndCgChartRef = useRef<HTMLDivElement>(null); // Ref for the new State AGI & CG chart
   const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the available spending chart in "Available Spending & Constant Dollars" card
   const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
   const pageRef = useRef(null);
@@ -131,6 +134,7 @@ function AppContent() {
     if (drawdownPlan && chartRef.current && incomeChartRef.current
       && spendingChartRef.current && incomeTypeChartRef.current
       && automaticIncomeChartRef.current
+      && stateAgiAndCgChartRef.current // Ensure this new ref is also current
       && generalSpendingConstantDollarsChartRef.current // Ensure this ref is also current
       && withdrawalsLineChartRef.current) { // Add new ref to condition
       // Clear previous charts
@@ -355,7 +359,65 @@ function AppContent() {
           .attr("x", width / 2) // Centered horizontally
           .attr("y", chartHeight + margin.bottom - 5) // Positioned below the x-axis
           .style("text-anchor", "middle")
-          .text("");
+          .text(""); // Remove the x-axis label
+
+        // Add horizontal lines for tax bracket thresholds
+        if (yLabel === "Federal AGI") { // Only add lines to the Federal AGI chart
+          const taxBrackets = federalTaxData?.taxtable || [];
+          const standardDeduction = federalTaxData?.standard_deduction || 0;
+
+          // Add horizontal lines for capital gains tax bracket thresholds
+          const cgTaxBrackets = federalTaxData?.cg_taxtable || [];
+
+          cgTaxBrackets.forEach((bracket, index) => {
+            const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
+            if (threshold < yMax) { // Only draw if within chart range
+              svg.append("line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", y(threshold))
+                .attr("y2", y(threshold))
+                .attr("stroke", "darkgray") // Use a slightly different color or style
+                .attr("stroke-dasharray", "2 4") // Solid line for distinction
+                .attr("stroke-width", 1);
+            }
+          });
+
+          taxBrackets.forEach((bracket, index) => {
+            const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
+            if (threshold < yMax) { // Only draw if within chart range
+              svg.append("line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", y(threshold))
+                .attr("y2", y(threshold))
+                .attr("stroke", "gray")
+                .attr("stroke-dasharray", "4 2") // Dashed line
+                .attr("stroke-width", 1);
+            }
+          });
+
+        } else if (yLabel === "State AGI") { // Add lines for the State AGI chart
+          const taxBrackets = stateTaxData?.taxtable || [];
+          const standardDeduction = stateTaxData?.standard_deduction || 0;
+
+          taxBrackets.forEach((bracket, index) => {
+            const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
+            if (threshold < yMax) { // Only draw if within chart range
+              svg.append("line")
+                .attr("x1", 0)
+                .attr("x2", width)
+                .attr("y1", y(threshold))
+                .attr("y2", y(threshold))
+                .attr("stroke", "gray") // Different color for state lines
+                .attr("stroke-dasharray", "2 4") // Different dash pattern
+                .attr("stroke-width", 1);
+            }
+          });
+
+          // Note: State AGI chart currently doesn't show capital gains brackets separately
+          // If it did, you'd add logic for state-specific CG brackets here.
+        }
 
         svg.append("text") // Y-axis label
           .attr("transform", "rotate(-90)")
@@ -422,6 +484,20 @@ function AppContent() {
         COLORS_OTHER, // <-- Example colors, adjust as needed
         formatYAxis, // Pass the y-axis formatter
         // tinyChartHeight // Pass the tiny height
+      );
+
+      // New Stacked Bar Chart for State AGI and Total Capital Gains
+      const stateAgiAndCgYMax = d3.max(data, d => d.State_AGI) || 0;
+      createStackedBarChart(
+        stateAgiAndCgChartRef,
+        stateAgiAndCgYMax,
+        "State AGI",
+        ["State_AGI"],
+        // Using distinct colors, perhaps from a different palette or new ones
+        COLORS_OTHER, // Example: using next available colors
+        formatYAxis,
+        // 300, // Default height
+        // { top: 20, right: 60, bottom: 30, left: 70 } // Adjusted left margin for potentially longer y-axis labels
       );
 
       // Automatic Income Chart
@@ -540,6 +616,8 @@ function AppContent() {
       setEndOfPlanAssets(response.endOfPlanAssets);
       setPlanStatus(response.status);
       setCurrentObjectiveType(apiPayload.arguments.objective.type); // Store the objective type
+      setFederalTaxData(response.federal || null); // Store federal tax data
+      setStateTaxData(response.state || null); // Store state tax data
       setSubmittedSocialSecurityStartAge(input.social_security.starts); // Store SS start age
       const birthMonth = Number(input.about.birth_month);
       const currentAge = input.about.age;
@@ -566,6 +644,8 @@ function AppContent() {
 
     } catch (error) {
       setCardMilestoneMessages([]); // Clear messages on error
+      setFederalTaxData(null); // Clear federal tax data on error
+      setStateTaxData(null); // Clear state tax data on error
       console.error("Failed to calculate drawdown plan:", error); // This is line 544
       let displayError = "An error occurred while calculating the drawdown plan. Please check your inputs or try again later.";
       if (error instanceof Error && error.message) {
@@ -815,11 +895,106 @@ function AppContent() {
                     {/* In the JSX part of page.tsx */}
                     <Card className="border-2 border-primary">
                       <CardHeader>
-                        <CardTitle>AGI</CardTitle>
-                        <CardDescription>A closer look at AGI.</CardDescription>
+                        <CardTitle>Taxes</CardTitle>
+                        <CardDescription>A closer look at taxes.</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="mt-8 flex justify-center" ref={incomeTypeChartRef}></div> {/* Inner div for D3, parent handles centering */}
+                        {federalTaxData && (
+                              <div className="mt-6 text-sm border-t pt-4">
+                            <h4 className="font-semibold text-md mb-2 text-center">Federal Tax Details ({federalTaxData.status})</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                              <div>
+                                <p><strong>Standard Deduction:</strong> {formatCurrency(federalTaxData.standard_deduction)}</p>
+                                <p><strong>Net Investment Income Tax Threshold (AGI):</strong> {formatCurrency(federalTaxData.nii)}</p>
+                              </div>
+                              <div> {/* Placeholder for potential second column general info or keep it for tables */} </div>
+
+                              <div className="md:col-span-1">
+                                <h5 className="font-medium mb-1">Ordinary Income Brackets:</h5>
+                                <Table className="text-xs">
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead className="h-8 px-2">Rate</TableHead>
+                                      <TableHead className="h-8 px-2 text-right">From</TableHead>
+                                      <TableHead className="h-8 px-2 text-right">To</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {federalTaxData.taxtable.map((bracket, index) => (
+                                      <TableRow key={`ord-${index}`}>
+                                        <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
+                                        <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
+                                        <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+
+                              <div className="md:col-span-1">
+                                <h5 className="font-medium mb-1">Capital Gains Brackets:</h5>
+                                <Table className="text-xs">
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead className="h-8 px-2">Rate</TableHead>
+                                      <TableHead className="h-8 px-2 text-right">From</TableHead>
+                                      <TableHead className="h-8 px-2 text-right">To</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {federalTaxData.cg_taxtable.map((bracket, index) => (
+                                      <TableRow key={`cg-${index}`}>
+                                        <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(1)}%</TableCell>
+                                        <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
+                                        <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                            <div className="mt-8 flex justify-center" ref={incomeTypeChartRef}></div> {/* Inner div for D3, parent handles centering */}
+                            {stateTaxData && (
+                              <div className="mt-6 text-sm border-t pt-4">
+                                <h4 className="font-semibold text-md mb-2 text-center">State Tax Details ({stateTaxData.status.replace('_', ' ')})</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                                  <div>
+                                    <p><strong>Standard Deduction:</strong> {formatCurrency(stateTaxData.standard_deduction)}</p>
+                                    <p><strong>Taxes Retirement Income:</strong> {stateTaxData.taxes_retirement_income ? 'Yes' : 'No'}</p>
+                                    <p><strong>Taxes Social Security:</strong> {stateTaxData.taxes_ss ? 'Yes' : 'No'}</p>
+                                  </div>
+
+                                  <div className="md:col-span-2"> {/* Make table span full width if only one table */}
+                                    <h5 className="font-medium mb-1">Income Brackets:</h5>
+                                    {stateTaxData.taxtable && stateTaxData.taxtable.length > 0 ? (
+                                      <Table className="text-xs">
+                                        <TableHeader>
+                                          <TableRow>
+                                            <TableHead className="h-8 px-2">Rate</TableHead>
+                                            <TableHead className="h-8 px-2 text-right">From</TableHead>
+                                            <TableHead className="h-8 px-2 text-right">To</TableHead>
+                                          </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                          {stateTaxData.taxtable.map((bracket, index) => (
+                                            <TableRow key={`state-ord-${index}`}>
+                                              <TableCell className="py-1 px-2">{(bracket[0] * 100).toFixed(2)}%</TableCell>
+                                              <TableCell className="py-1 px-2 text-right">{formatCurrency(bracket[1])}</TableCell>
+                                              <TableCell className="py-1 px-2 text-right">{bracket[2] >= 100000000 ? 'And above' : formatCurrency(bracket[2])}</TableCell>
+                                            </TableRow>
+                                          ))}
+                                        </TableBody>
+                                      </Table>
+                                    ) : (
+                                      <p>No state income tax or brackets defined.</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-8 flex justify-center" ref={stateAgiAndCgChartRef}></div> {/* Container for the new State AGI & CG chart */}
                       </CardContent>
                     </Card>
              </div>

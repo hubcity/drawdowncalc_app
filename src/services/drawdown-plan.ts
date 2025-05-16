@@ -235,11 +235,35 @@ export interface DrawdownPlanYear {
   Excess: number;
 }
 
+// You might want to place this interface in a shared types file or at the top of page.tsx
+export interface TaxBracketTuple extends Array<number> {
+  0: number; // rate
+  1: number; // from (income)
+  2: number; // to (income)
+}
+
+export interface FederalTaxData {
+  cg_taxtable: TaxBracketTuple[];
+  nii: number; // Net Investment Income tax threshold
+  standard_deduction: number;
+  status: string; // e.g., "Single", "MFJ"
+  taxtable: TaxBracketTuple[]; // Ordinary income tax brackets
+}
+
+export interface StateTaxData {
+  standard_deduction: number;
+  status: string; // e.g., "DC_Single"
+  taxes_retirement_income: boolean;
+  taxes_ss: boolean;
+  taxtable: TaxBracketTuple[];
+}
 export interface DrawdownPlanResponse {
   planYears: DrawdownPlanYear[];
   spendingFloor?: number;
   endOfPlanAssets?: number;
   status?: string;
+  federal?: FederalTaxData;
+  state?: StateTaxData;
 }
 
 /**
@@ -272,9 +296,11 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
     throw new Error(errorMessage);
   }
 
-  const rawData: { retire: { [key: string]: any }, federal: { [key: string]: any }, state: { [key: string]: any }, spending_floor?: number, endofplan_assets?: number, status?: string } = await response.json();
+  const everything = await response.json();
+  const rawData: { retire: { [key: string]: any }, federal: FederalTaxData, state: StateTaxData, spending_floor?: number, endofplan_assets?: number, status?: string } = everything;
 
-  // console.log('Raw data:', rawData);
+  console.log('Everything:', everything);
+  console.log('Raw data:', rawData);
 
   // Transform the rawData into DrawdownPlanYear[]
   const formattedPlan: DrawdownPlanYear[] = Object.keys(rawData.retire)
@@ -322,5 +348,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
     spendingFloor: rawData.spending_floor,
     endOfPlanAssets: rawData.endofplan_assets,
     status: rawData.status,
+    federal: rawData.federal,
+    state: rawData.state,
   };
 }
