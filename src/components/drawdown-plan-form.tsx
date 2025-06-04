@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Info } from "lucide-react"; // Import Info icon
+import { AlertTriangle, Info, X } from "lucide-react"; // Import Info icon
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -104,7 +104,7 @@ const months = [
     { value: '12', label: 'December' },
 ];
   
-  const formSchema = z.object({
+  export const formSchema = z.object({
     about: z.object({
       age: z.coerce.number(),
       birth_month: z.string(),
@@ -183,12 +183,12 @@ const months = [
     const { setFocus } = form;
     const { isSubmitted } = useFormState({ control: form.control }); // Get isSubmitted state
 
-    const numberInputOnWheelPreventChange = (e) => {
+    const numberInputOnWheelPreventChange = (e: React.WheelEvent<HTMLInputElement>) => {
       // if (!(e.target === document.activeElement)) {
       //   return;
       // }
       // Prevent the input value change
-      e.target.blur()
+      (e.target as HTMLInputElement).blur()
 
       // Prevent the page/container scrolling
       // e.stopPropagation()
@@ -204,8 +204,19 @@ const months = [
     const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
       try {
         setHasErrors(false);
-        setFormValues(values);
-        await onSubmit(values);
+        // Ensure ACA is always present (with default values if missing)
+        const safeValues = {
+          ...values,
+          ACA: values.ACA
+            ? {
+                ...values.ACA,
+                people_covered: values.ACA.people_covered ?? 1,
+              }
+            : { premium: 0, slcsp: 0, people_covered: 1 },
+          annual_spending: values.annual_spending ?? 0, // Ensure it's always a number
+        };
+        setFormValues(safeValues);
+        await onSubmit(safeValues);
         prevFilingStatusRef.current = values.about.filing_status; // Update prev status on successful submit
       } catch (error) {
         console.error("Submission failed:", error);
@@ -396,7 +407,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -428,7 +438,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -478,7 +487,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -512,7 +520,6 @@ const months = [
                     // {...field} // Spread field props carefully, value and onChange are handled
                     name={field.name} // Pass name for accessibility/form association
                     onBlur={field.onBlur} // Pass onBlur
-                    ref={field.ref} // Pass ref
                   />
                   <FormMessage />
               </FormItem>
@@ -556,7 +563,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -598,7 +604,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -632,7 +637,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -680,7 +684,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -692,7 +695,7 @@ const months = [
             <FormField
               key={year}
               control={form.control}
-              name={`Roth.conversion_year_minus_${index + 1}`}
+              name={`Roth.conversion_year_minus_${index + 1}` as any}
               render={({ field }) => {
                 const yearLabel = year;
 
@@ -733,7 +736,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -778,7 +780,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -850,7 +851,6 @@ const months = [
                   // {...field} // Spread field props carefully, value and onChange are handled
                   name={field.name} // Pass name for accessibility/form association
                   onBlur={field.onBlur} // Pass onBlur
-                  ref={field.ref} // Pass ref
                 />
                 <FormMessage />
               </FormItem>
@@ -886,7 +886,6 @@ const months = [
                       // {...field} // Spread field props carefully, value and onChange are handled
                       name={field.name} // Pass name for accessibility/form association
                       onBlur={field.onBlur} // Pass onBlur
-                      ref={field.ref} // Pass ref
                     />
                     <FormMessage />
                   </FormItem>
@@ -930,7 +929,6 @@ const months = [
                       // {...field} // Spread field props carefully, value and onChange are handled
                       name={field.name} // Pass name for accessibility/form association
                       onBlur={field.onBlur} // Pass onBlur
-                      ref={field.ref} // Pass ref
                     />
                     <FormMessage />
                   </FormItem>
@@ -1074,7 +1072,6 @@ const months = [
                     // {...field} // Spread field props carefully, value and onChange are handled
                     name={field.name} // Pass name for accessibility/form association
                     onBlur={field.onBlur} // Pass onBlur
-                    ref={field.ref} // Pass ref
                   />
                   <FormMessage />
                 </FormItem>

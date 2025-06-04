@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { formSchema } from "@/components/drawdown-plan-form";
 
 export const defaultFormValues: z.infer<typeof formSchema> = {
     about: { age: 65, birth_month: "5", end_of_plan_age: 95, filing_status: "Single", state_of_residence: "DC" },

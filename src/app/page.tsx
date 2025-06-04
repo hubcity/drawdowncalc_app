@@ -126,7 +126,7 @@ function AppContent() {
   const stateAgiAndCgChartRef = useRef<HTMLDivElement>(null); // Ref for the new State AGI & CG chart
   const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the available spending chart in "Available Spending & Constant Dollars" card
   const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
-  const pageRef = useRef(null);
+  const pageRef = useRef<HTMLDivElement>(null);
 
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
 
@@ -270,7 +270,8 @@ function AppContent() {
         customMargins?: { top: number; right: number; bottom: number; left: number } // Optional custom margins
       ) => {
         const margin = customMargins || { top: 40, right: 60, bottom: 60, left: 90 };
-        const svg = d3.select(ref?.current)
+        if (!ref?.current) return;
+        const svg = d3.select(ref.current)
           .append("svg")
           // .attr("preserveAspectRatio", "none")
           .attr("width", '90%') // Height attribute removed
@@ -292,7 +293,17 @@ function AppContent() {
         const stack = d3.stack()
           .keys(dataKeys);
 
-        const stackedData = stack(data);
+        // Map DrawdownPlanYear[] to { [key: string]: number }[]
+        const stackableData = data.map(d =>
+          dataKeys.reduce<{ [key: string]: number }>((acc, key) => {
+            acc[key] = d[key as keyof DrawdownPlanYear] as number;
+            // Optionally add other fields (like age) if needed for tooltips
+            (acc as any).age = d.age;
+            return acc;
+          }, {})
+        );
+
+        const stackedData = stack(stackableData);
 
         svg.selectAll(".series")
           .data(stackedData)
@@ -602,7 +613,7 @@ function AppContent() {
 
     console.log("Submitting payload:", apiPayload); // For debugging
     if (pageRef.current) {
-      pageRef.current.scrollIntoView({ behavior: 'smooth' });
+      pageRef.current.scrollIntoView({ behavior: 'smooth' }); // Cast to HTMLElement
     }
 
     setLoading(true);
