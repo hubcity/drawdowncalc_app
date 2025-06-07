@@ -267,7 +267,7 @@ const months = [
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleFormSubmit, handleError)}
-          className="space-y-8 px-4 pt-4 pb-20"
+          className="space-y-8 px-4 pt-4"
           autoComplete="off"
         >
           <FormField

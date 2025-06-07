@@ -50,7 +50,7 @@ export function FundamentalsContent() {
 
       <h3 className="text-base font-semibold mb-2">Roth Withdrawal Rules</h3>
       <p className="mb-3">
-        The IRS rules for withdrawals from Roth accounts are surprisingly complex. (If you don’t think so, try implementing them in software while requiring as little data from the user as possible). DrawdownCalc allows full access to Roth balances if the user is older than 59.5 and the account has been open for at least 5 years. Otherwise access is limited to those additions to the account that are at least 5 years old. These rules, while more strict than the IRS rules, were relatively simple to implement. The IRS also allows early withdrawals with penalties under certain circumstances. DrawdownCalc does not support those scenarios.
+        The IRS rules for withdrawals from Roth accounts are surprisingly complex. DrawdownCalc does not implement those rules. DrawdownCalc allows full access to Roth balances if the user is older than 59.5 and the account has been open for at least 5 years. Otherwise access is limited to those additions to the account that are at least 5 years old. These rules, while more strict than the IRS rules, were relatively simple to implement. The IRS also allows early withdrawals with penalties under certain circumstances. DrawdownCalc does not support those scenarios.
       </p>
 
       <h3 className="text-base font-semibold mb-2">Taxability of Social Security</h3>

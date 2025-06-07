@@ -126,9 +126,19 @@ function AppContent() {
   const stateAgiAndCgChartRef = useRef<HTMLDivElement>(null); // Ref for the new State AGI & CG chart
   const generalSpendingConstantDollarsChartRef = useRef<HTMLDivElement>(null); // Ref for the available spending chart in "Available Spending & Constant Dollars" card
   const withdrawalsLineChartRef = useRef<HTMLDivElement>(null); // Ref for the new line chart
-  const pageRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null); // This ref will target the main results container div
 
   const { setOpen, toggleSidebar } = useSidebar(); // Call useSidebar here
+
+  useEffect(() => {
+    // Scroll to the top of the results when the plan is successfully submitted and displayed
+    // or when an error occurs, or when loading starts (button pressed).
+    if (pageRef.current && (loading || errorMessage || (submitted && drawdownPlan && !errorMessage))) {
+        requestAnimationFrame(() => {
+          pageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+  }, [submitted, drawdownPlan, errorMessage, loading]); // Added loading to dependencies
 
   useEffect(() => {
     if (drawdownPlan && chartRef.current && incomeChartRef.current
@@ -554,6 +564,12 @@ function AppContent() {
   }, [drawdownPlan]);
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
+    // Scroll SidebarInset to top immediately when user presses Calculate
+    if (pageRef.current) {
+      // Try using scrollTop for compatibility with divs
+      pageRef.current.scrollTop = 0;
+    }
+
     console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
@@ -612,10 +628,6 @@ function AppContent() {
     };
 
     console.log("Submitting payload:", apiPayload); // For debugging
-    if (pageRef.current) {
-      pageRef.current.scrollIntoView({ behavior: 'smooth' }); // Cast to HTMLElement
-    }
-
     setLoading(true);
     try {
       // The 'input' to calculateDrawdownPlan should now be the apiPayload
@@ -687,7 +699,7 @@ function AppContent() {
         zIndex: 9999 // Add a high z-index
       }}></div>
       <Sidebar collapsible="icon"> {/* defaultOpen controls initial state */}
-        <div className="p-2"> {/* Add padding if needed */}
+        <div className="px-2 pb-2 pt-[2.875rem] border-t-8"> {/* Adjusted top padding for page header */}
             {(
               <SidebarTrigger />  
             )}
@@ -703,12 +715,12 @@ function AppContent() {
             />
           </SidebarContent>
         </div>
-        <SidebarFooter>
+        <SidebarFooter className="pb-[5.125rem]"> {/* Adjusted bottom padding for new page footer height */}
           <SidebarSeparator />
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset>
+      <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem]">
         {!hasAcceptedTerms ? (
           <div className="flex flex-col items-center h-full px-8 md:px-16 py-6 gap-6 initial-view-background bg-white/95 bg-blend-overlay"> {/* Adjusted padding: more on sides, less on top/bottom */}
             <DisclaimerContent />
@@ -752,14 +764,14 @@ function AppContent() {
                   </p>
                 </div>
               ) : drawdownPlan ? (
-                <div ref={pageRef} className="flex flex-col gap-4 p-4 pb-20">
+                <div className="flex flex-col gap-4 px-4 pb-4 pt-4"> {/* Changed p-4 to px-4 pb-4 pt-6 */}
               {drawdownPlan && isFormEdited && (
                       <div className="p-4 bg-yellow-100 text-yellow-800 rounded fixed z-50 w-full left-0 top-0 text-center">
                   <strong>Warning:</strong> The results no longer match the current form inputs. Please recalculate to update the results.
                 </div>
               )}
                     {/* Display Spending Floor or End of Plan Assets */}
-                    <Card className="mb-4 border-2 border-primary"> {/* This card might be pushed down by error message if m-4 is used on error */}
+                    <Card className="mb-4 border-2 border-primary"> {/* Added ref to the Plan Summary Card */}
                       <CardHeader className="flex flex-row items-center justify-between">
                         <div className="flex-grow text-center"><CardTitle>Plan Summary</CardTitle></div>
                         {/* Button is now part of the conditional rendering below */}

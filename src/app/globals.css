@@ -113,5 +113,5 @@ h3 {
 }
 
 a {
-  @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600
+  @apply text-[#008080] hover:text-blue-800 hover:underline visited:text-[#45a1a1]
 }
