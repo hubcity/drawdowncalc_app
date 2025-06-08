@@ -715,9 +715,9 @@ function AppContent() {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem] scroll-mb-[5.125rem] h-[calc(99vh-2.875rem-5.125rem)] min-h-0">
+      <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem] scroll-mb-[5.125rem] min-h-0">
         {!hasAcceptedTerms ? (
-          <div className="flex flex-col items-center flex-1 min-h-0 px-6 py-6 gap-6 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
+          <div className="h-[calc(100vh-2.875rem-5.125rem)] flex flex-col gap-4 px-4 pb-4 pt-4 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
             <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/85 bg-blend-overlay"> {/* Removed h-full, flex-1 is sufficient */}
               <CardContent className="flex-1 flex flex-col justify-center items-center">
                 <div className="text-center text-[#008080]"> {/* Removed h-full as parent now handles centering */}
@@ -739,7 +739,7 @@ function AppContent() {
             </Card>
           </div>
         ) : loading ? (
-            <div className="flex items-center justify-center h-[calc(100vh-2.875rem-5.125rem)] initial-view-background bg-white/70 bg-blend-overlay">
+            <div className="h-[calc(100vh-2.875rem-5.125rem)] flex items-center justify-center initial-view-background bg-white/70 bg-blend-overlay">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
             <span className="text-2xl font-bold">Calculating Drawdown Plan...</span>
           </div>
@@ -758,7 +758,7 @@ function AppContent() {
             {/* Regular content, shown if no error message is currently active */}
             {!errorMessage && (
               !submitted ? (
-                <div className="flex flex-col md:grid md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto] flex-1 gap-4 px-4 pb-4 pt-4">
+                    <div className="flex flex-col gap-4 px-4 pb-4 pt-4 md:grid md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto]">
                  {/* Flex container for the two cards */}
                   <div className="flex flex-col md:flex-row md:flex-1 gap-4">
                         <Card className="border-2 border-primary md:w-1/2 md:h-full flex flex-col bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/85 bg-blend-overlay">
