@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Info, X } from "lucide-react"; // Import Info icon
+import { AlertTriangle, Info } from "lucide-react"; // Import Info icon
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -458,7 +458,7 @@ const months = [
                       <TooltipTrigger type="button" onClick={(e) => e.stopPropagation()}>
                         <Info size={16} className="text-blue-600" />
                       </TooltipTrigger>
-                      <TooltipContent className="max-w-xs break-words">Readily available cash not subject to tax, such as your checking account balance.</TooltipContent>
+                      <TooltipContent className="max-w-xs break-words">Readily available cash where a withdrawal is not subject to tax, such as your checking account balance.</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>

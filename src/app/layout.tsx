@@ -138,7 +138,7 @@ export default function RootLayout({
                       </defs>
                     </svg>
                   </div>
-                <h2 className="mt-0 text-lg font-bold leading-none tracking-[-0.015em]">DrawdownCalc</h2>
+                  <h2 className="mt-0 text-lg font-bold leading-none tracking-[-0.015em]"><span className="inline-block">DrawdownCalc</span></h2>
                 </a>
               </div>
           <div className="flex flex-1 justify-end gap-8">

@@ -26,6 +26,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
 import { Loader2 } from "lucide-react";
+import { AlertTriangle, Info } from "lucide-react"; // Import Info icon
 import * as d3 from "d3";
 
 
@@ -746,22 +747,98 @@ function AppContent() {
             {/* Regular content, shown if no error message is currently active */}
             {!errorMessage && (
               !submitted ? (
-                    <div className="flex flex-col m-4 items-start justify-center h-full p-12 pr-14 gap-4 overflow-y-auto initial-view-background bg-white/95 bg-blend-overlay text-justify">
-                  <p className="mb-3">
-                    DrawdownCalc focuses on the three different types of accounts that many retirees have.
-                  </p>
-                  <p className="mb-3">
-                    The first is your taxable investments account. Earnings from this account will be taxed according to the capital gains tax rates. DrawdownCalc refers to this account as your <b>Brokerage</b> account.
-                  </p>
-                  <p className="mb-3">
-                    Another type of account is your retirement account where the money has not yet been taxed, but will be taxed when withdrawn. This can be a traditional 401k, traditional IRA, SEP, etc. DrawdownCalc uses the term <b>IRA</b> to refer to all of these.
-                  </p>
-                  <p className="mb-3">
-                    The last type of account is your retirement account where taxes have already been paid and withdrawals will be tax free. DrawdownCalc refers to these accounts as <b>Roth</b> account.
-                  </p>
-                  <p className="mb-3">
-                    DrawdownCalc needs information about all of these accounts and more to calculate a drawdown plan. The form at the left is long. If you simply want to see what DrawdownCalc does you can scroll to the bottom, select <b>Calculate Drawdown Plan</b> and a plan will be calculated based on the default values.
-                  </p>
+                <div className="flex flex-col md:grid md:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto] flex-1 gap-4 px-4 pb-4 pt-4">
+                 {/* Flex container for the two cards */}
+                  <div className="flex flex-col md:flex-row md:flex-1 gap-4">
+                        <Card className="border-2 border-primary md:w-1/2 md:h-full flex flex-col bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/85 bg-blend-overlay">
+                          <CardContent className="flex flex-col justify-center items-center flex-grow">
+                            <div className="text-center text-[#008080]"> {/* Removed h-full as parent now handles centering */}
+                              <p className="mb-6 font-bold text-4xl">
+                                Accounts
+                              </p><p></p>
+                              <p className="mb-3 text-2xl">
+                                Brokerage
+                              </p>
+                              <p className="mb-3 text-2xl">
+                                IRA
+                              </p>
+                              <p className="mb-3 text-2xl">
+                                Roth
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                    <Card className="border-2 border-primary md:w-1/2 md:h-full flex flex-col">
+                      <CardHeader>
+                        <CardTitle>Accounts</CardTitle>
+                        <CardDescription></CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex-grow">
+                        <div className="text-left">
+                          <p className="mb-3">
+                            DrawdownCalc focuses on the three different types of accounts that many retirees have.
+                          </p>
+                          <p className="mb-3">
+                            The first is your taxable investments account. Earnings from this account will be taxed according to the capital gains tax rates. DrawdownCalc refers to this account as your <b>Brokerage</b> account.
+                          </p>
+                          <p className="mb-3">
+                            Another type of account is your retirement account where the money has not yet been taxed, but will be taxed when withdrawn. This can be a traditional 401k, traditional IRA, SEP, etc. DrawdownCalc uses the term <b>IRA</b> to refer to all of these.
+                          </p>
+                          <p className="mb-3">
+                            The last type of account is your retirement account where taxes have already been paid and withdrawals will be tax free. DrawdownCalc refers to these accounts as your <b>Roth</b> account.
+                          </p>
+                          <p className="mb-3">
+                            DrawdownCalc needs information about all of these accounts and more to calculate a drawdown plan.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                      <div className="flex flex-col md:flex-row md:flex-1 gap-4">
+                       <Card className="border-2 border-primary md:w-1/2 md:h-full flex flex-col">
+                          <CardHeader>
+                            <CardTitle>Form</CardTitle>
+                            <CardDescription></CardDescription>
+                          </CardHeader>
+                          <CardContent className="flex-grow">
+                            <div className="text-left">
+                              <p className="mb-3">
+                                The form on the left has many fields, but they are all necessary to calculate a drawdown plan.
+                              </p>
+                              <p className="mb-3">
+                                Most of the fields should be self explanitory.  Hover over the <b>information</b> icons <Info size={16} className="text-blue-600 inline-block" /> for additional information about selected fields.
+                              </p>
+                              <p className="mb-3">
+                                For fields that may not be used in a straight-forward way, hovering over the <b>alert</b> icon <AlertTriangle size={16} className="text-yellow-700 inline-block"/> will give you more information.  For even more information about these fields click on the Fundamentals link at the top of the page.
+                              </p>
+                              <p className="mb-3">
+                                DrawdownCalc can produce plans with one of two <b>goals</b> in mind.  It can work to produce a plan that maximizes your spending (not counting taxes and ACA premiums) in the first year of retirement such that the plan can continue to produce that same amount of available spending (taking inflation into account) for every year of retirement. Or if you choose, it can work to produce a plan to maximize your end-of-plan assets based on a set spending level.
+                              </p>
+                              <p className="mb-3">
+                                Once you have filled out the form select <b>Calculate Drawdown Plan</b> and a plan will be calculated for you.  Be prepared to be patient as the creation of a plan can take anywhere from 30 seconds to 5 minutes.
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card className="border-2 border-primary md:w-1/2 bg-primary md:h-full flex flex-col">
+                          <CardContent className="flex flex-col justify-center items-center flex-grow">
+                            <div className="text-center text-white"> {/* Removed h-full as parent now handles centering */}
+                              <p className="mb-6 font-bold text-4xl">
+                                Form
+                              </p><p></p>
+                              <p className="mb-3 text-2xl">
+                                Information
+                              </p>
+                              <p className="mb-3 text-2xl">
+                                Alerts
+                              </p>
+                              <p className="mb-3 text-2xl">
+                                Goals
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
                 </div>
               ) : drawdownPlan ? (
                 <div className="flex flex-col gap-4 px-4 pb-4 pt-4"> {/* Changed p-4 to px-4 pb-4 pt-6 */}
