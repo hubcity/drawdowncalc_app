@@ -565,12 +565,6 @@ function AppContent() {
   }, [drawdownPlan]);
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
-    // Scroll SidebarInset to top immediately when user presses Calculate
-    if (pageRef.current) {
-      // Try using scrollTop for compatibility with divs
-      pageRef.current.scrollTop = 0;
-    }
-
     console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
@@ -699,8 +693,8 @@ function AppContent() {
         fontSize: '12px', whiteSpace: 'nowrap',
         zIndex: 9999 // Add a high z-index
       }}></div>
-      <Sidebar collapsible="icon"> {/* defaultOpen controls initial state */}
-        <div className="px-2 pb-2 pt-[2.875rem] border-t-8"> {/* Adjusted top padding for page header */}
+      <Sidebar collapsible="icon" className="pt-[2.875rem] pb-[5.125rem]"> {/* defaultOpen controls initial state */}
+        <div className="px-2 pb-2 pt-2"> {/* Adjusted top padding for page header */}
             {(
               <SidebarTrigger />  
             )}
@@ -716,19 +710,36 @@ function AppContent() {
             />
           </SidebarContent>
         </div>
-        <SidebarFooter className="pb-[5.125rem]"> {/* Adjusted bottom padding for new page footer height */}
+        <SidebarFooter className=""> {/* Adjusted bottom padding for new page footer height */}
           <SidebarSeparator />
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem]">
+      <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem] scroll-mb-[5.125rem] h-[calc(99vh-2.875rem-5.125rem)] min-h-0">
         {!hasAcceptedTerms ? (
-          <div className="flex flex-col items-center h-full px-8 md:px-16 py-6 gap-6 initial-view-background bg-white/95 bg-blend-overlay"> {/* Adjusted padding: more on sides, less on top/bottom */}
-            <DisclaimerContent />
-            <Button onClick={handleAcceptTerms}>I Understand</Button>
+          <div className="flex flex-col items-center flex-1 min-h-0 px-6 py-6 gap-6 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
+            <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/85 bg-blend-overlay"> {/* Removed h-full, flex-1 is sufficient */}
+              <CardContent className="flex-1 flex flex-col justify-center items-center">
+                <div className="text-center text-[#008080]"> {/* Removed h-full as parent now handles centering */}
+                  <p className="mb-6 font-bold text-4xl">
+                    Accounts
+                  </p><p></p>
+                  <p className="mb-3 text-2xl">
+                    Brokerage
+                  </p>
+                  <p className="mb-3 text-2xl">
+                    IRA
+                  </p>
+                  <p className="mb-3 text-2xl">
+                    Roth
+                  </p>
+                </div>
+                <Button onClick={handleAcceptTerms}>Get Started</Button>
+                </CardContent>
+            </Card>
           </div>
         ) : loading ? (
-            <div className="flex items-center justify-center h-full initial-view-background bg-white/70 bg-blend-overlay">
+            <div className="flex items-center justify-center h-[calc(100vh-2.875rem-5.125rem)] initial-view-background bg-white/70 bg-blend-overlay">
             <Loader2 className="mr-2 h-8 w-8 animate-spin" />
             <span className="text-2xl font-bold">Calculating Drawdown Plan...</span>
           </div>
@@ -806,7 +817,7 @@ function AppContent() {
                                 The form on the left has many fields, but they are all necessary to calculate a drawdown plan.
                               </p>
                               <p className="mb-3">
-                                Most of the fields should be self explanitory.  Hover over the <b>information</b> icons <Info size={16} className="text-blue-600 inline-block" /> for additional information about selected fields.
+                                Most of the fields should be self-explanatory.  Hover over the <b>information</b> icons <Info size={16} className="text-blue-600 inline-block" /> for additional information about selected fields.
                               </p>
                               <p className="mb-3">
                                 For fields that may not be used in a straight-forward way, hovering over the <b>alert</b> icon <AlertTriangle size={16} className="text-yellow-700 inline-block"/> will give you more information.  For even more information about these fields click on the Fundamentals link at the top of the page.

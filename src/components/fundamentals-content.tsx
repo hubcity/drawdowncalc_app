@@ -4,22 +4,23 @@ export function FundamentalsContent() {
   return (
     <div className="text-left">
       <p className="mb-3">
-        I'd like to be as clear as I can be about what DrawdownCalc does and does not do.  This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc">source code at github</a>.
+        I'd like to be as clear as I can be about what DrawdownCalc does and does not do.  
       </p>
       <h2 className="text-xl font-semibold mb-3">Omissions</h2>
       <p className="mb-3">
         Let’s start by talking about what DrawdownCalc doesn’t do.
       </p>
       <p className="mb-3">
-        Here is a certainly incomplete list of current or future life situations not supported by DrawdownCalc (and thereby potentially making this website useless to you):
+        Here is a certainly incomplete list of current or future life situations not currently supported by DrawdownCalc:
       </p>
       <ul className="list-disc list-inside mb-3 space-y-1">
         <li>A spouse with their own retirement accounts</li>
         <li>The complexities of taking social security as a couple</li>
         <li>Moving to a different state during retirement</li>
+        <li>A mid-retirement change in tax status</li>
       </ul>
       <p className="mb-3">
-        Here is an incomplete list of financial concepts or concerns that are ignored or unimplemented by DrawdownCalc:
+        Here is an incomplete list of financial concepts or concerns that are currently ignored or unimplemented by DrawdownCalc:
       </p>
       <ul className="list-disc list-inside mb-3 space-y-1">
         <li>Medicaid</li>
@@ -58,13 +59,29 @@ export function FundamentalsContent() {
         DrawdownCalc assumes that 85% of all social security benefits are subject to tax. This will be inaccurate for users with a low AGI.
       </p>
 
-      <h2 className="text-xl font-semibold mb-3">Resulting Plan</h2>
+      <h2 className="text-xl font-semibold mb-3">Assumptions</h2>
       <p className="mb-3">
-        DrawdownCalc can produce plans with one of two goals in mind.  It can work to produce a plan that maximizes your spending (not counting taxes and ACA premiums) in the first year of retirement such that the plan can continue to produce that same amount of available spending (taking inflation into account) for every year of retirement. Or if you choose, it can work to produce a plan to maximize your end-of-plan assets based on a set spending level.
+        DrawdownCalc makes a number of assumptions about the user's behavior and the financial world when making its calculations.
+      </p>
+      <h3 className="text-base font-semibold mb-2">User</h3>
+      <p className="mb-3">
+        The user makes all withdrawals at the beginning of the year.  The exception to this is the year the user turns 59.5.  That year DrawdownCalc assumes that the user makes withdrawals at a time of the year when early withdrawal penalties will not apply.
       </p>
       <p className="mb-3">
-        In the best case the resulting plan will be within 99.99% of the optimal plan based on your form inputs, the numerous assumptions made by DrawdownCalc and the simplified model of the tax environment. If the solver hasn’t found a solution after one and a half minutes, it will return the best answer that it has found. Most users will see a solution within that time. In rare cases the solver may fail and will be run again in search of a solution. If the solver can find a solution that solution will be returned within five minutes.
+        Taxes are due on automatic brokerage distributions in the year they are received. These automatic brokerage distributions are determined by the "Distributions" value the user supplies in the form.  These are often year-end distributions.  Although they are taxed in the year they are received, DrawdownCalc assumes the user doesn't spend them until the following year.
+      </p>      
+      <h3 className="text-base font-semibold mb-2">Financial</h3>
+      <p className="mb-3">
+        The numbers that denote the beginning and end of each tax bracket are assumed to increase with inflation.  The start of the application of the NII tax does not change with inflation because the law that implements it is not indexed to inflation.
       </p>
+      <p className="mb-3">
+        Inflation is calculated as if it occurs at the stroke of midnight the night of New Year's Eve.
+      </p>
+      <h2 className="text-xl font-semibold mb-3">Summary</h2>
+      <p className="mb-3">
+        This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc">source code at github</a>.
+      </p>
+
     </div>
   );
 }
