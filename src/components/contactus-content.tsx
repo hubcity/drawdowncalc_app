@@ -47,7 +47,7 @@ export function ContactUsContent() {
               <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc_web/issues">DrawdownCalc_web</a> which draws the web pages</li>
       </ul>
       <p className="mb-3">
-        If you have found a bug it would be very helpful if you could email me the form data that you were using when you found the bug (because I don’t have a record of your form inputs).
+        If you have found a bug it would be very helpful if you could email me the form data that you were using when you found the bug.
       </p>
 
       <h2 className="text-xl font-semibold mb-3">Rambling Thoughts</h2>

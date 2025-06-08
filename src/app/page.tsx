@@ -717,13 +717,15 @@ function AppContent() {
 
       <SidebarInset ref={pageRef} className="scroll-mt-[2.875rem] scroll-mb-[5.125rem] min-h-0">
         {!hasAcceptedTerms ? (
-          <div className="h-[calc(100vh-2.875rem-5.125rem)] flex flex-col gap-4 px-4 pb-4 pt-4 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
-            <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/85 bg-blend-overlay"> {/* Removed h-full, flex-1 is sufficient */}
-              <CardContent className="flex-1 flex flex-col justify-center items-center">
-                <div className="text-center text-[#008080]"> {/* Removed h-full as parent now handles centering */}
-                  <p className="mb-6 font-bold text-4xl">
-                    Accounts
-                  </p><p></p>
+          <div className="h-[calc(100vh-2.875rem-5.125rem)] flex flex-col gap-4 p-4 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
+            <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col "> {/* Removed h-full, flex-1 is sufficient */}
+              <CardContent className="p-1 flex-1 flex flex-col justify-center items-center">
+                <div className="flex flex-1 flex-col justify-center items-center text-center text-white bg-primary w-full"> {/* Removed h-full as parent now handles centering */}
+                  <p className="mb-6 font-bold text-6xl">
+                    DrawdownCalc
+                  </p>
+                </div>
+                <div className="flex flex-col justify-center items-center flex-[5_1_0%] text-black bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/95 bg-blend-overlay w-full">
                   <p className="mb-3 text-2xl">
                     Brokerage
                   </p>
@@ -733,15 +735,36 @@ function AppContent() {
                   <p className="mb-3 text-2xl">
                     Roth
                   </p>
-                </div>
-                <Button onClick={handleAcceptTerms}>Get Started</Button>
+                  <Button onClick={handleAcceptTerms}>Get Started</Button>
+                  </div>
                 </CardContent>
             </Card>
           </div>
         ) : loading ? (
-            <div className="h-[calc(100vh-2.875rem-5.125rem)] flex items-center justify-center initial-view-background bg-white/70 bg-blend-overlay">
-            <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-            <span className="text-2xl font-bold">Calculating Drawdown Plan...</span>
+            <div className="h-[calc(100vh-2.875rem-5.125rem)] relative flex flex-col p-4 initial-view-background bg-white/100 bg-blend-overlay"> {/* Added relative positioning */}
+            <div className="grid grid-cols-4 grid-rows-4 gap-4 flex-1">
+              {Array.from({ length: 16 }).map((_, index) => {
+                const rowIndex = Math.floor(index / 4);
+                const colIndex = index % 4;
+                const isPrimaryBg = (rowIndex + colIndex) % 2 === 0;
+                return (
+                  <Card
+                    key={index}
+                    className={cn(
+                      "border-2 border-primary flex-1", // flex-1 to fill cell
+                      isPrimaryBg ? "bg-primary" : "bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat"
+                    )}
+                  >
+                    <CardContent className="h-full w-full" /> {/* Ensures card has dimensions */}
+                  </Card>
+                );
+              })}
+            </div>
+            {/* Spinner and text overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <Loader2 className="h-20 w-20 animate-spin text-[#00c0c0]" /> {/* Increased size and added color */}
+                <span className="mt-4 text-2xl font-bold text-primary bg-white/90 bg-blend-overlay">Calculating Drawdown Plan...</span> {/* Added color */}
+            </div>
           </div>
         ) : (
           // Content to display when not loading and terms accepted
