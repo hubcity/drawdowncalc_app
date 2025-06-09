@@ -565,7 +565,7 @@ function AppContent() {
   }, [drawdownPlan]);
 
   const handleSubmit = async (input: DrawdownPlanInput) => {
-    console.log(input);
+    // console.log(input);
     setErrorMessage(null); // Clear any previous error messages
     const apiPayload = {
       arguments: {
@@ -622,7 +622,7 @@ function AppContent() {
       }
     };
 
-    console.log("Submitting payload:", apiPayload); // For debugging
+    // console.log("Submitting payload:", apiPayload); // For debugging
     setLoading(true);
     try {
       // The 'input' to calculateDrawdownPlan should now be the apiPayload

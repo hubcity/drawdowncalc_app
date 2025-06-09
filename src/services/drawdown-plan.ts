@@ -299,8 +299,8 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
   const everything = await response.json();
   const rawData: { retire: { [key: string]: any }, federal: FederalTaxData, state: StateTaxData, spending_floor?: number, endofplan_assets?: number, status?: string } = everything;
 
-  console.log('Everything:', everything);
-  console.log('Raw data:', rawData);
+  // console.log('Everything:', everything);
+  // console.log('Raw data:', rawData);
 
   // Transform the rawData into DrawdownPlanYear[]
   const formattedPlan: DrawdownPlanYear[] = Object.keys(rawData.retire)
