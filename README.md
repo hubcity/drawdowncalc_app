@@ -1,5 +1,5 @@
-# Firebase Studio
+# DrawdownCalc_Web
 
-This is a NextJS starter in Firebase Studio.
+This project serves as the frontend at [DrawdownCalc](https://www.drawdowncalc.com)
 
-To get started, take a look at src/app/page.tsx.
+It started as a NextJS starter in Firebase Studio.  An embarrassing amount of this project has been written with the help of various AI agents.
