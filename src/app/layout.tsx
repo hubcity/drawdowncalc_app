@@ -36,7 +36,7 @@ function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
         >
           Close
         </button>
-        <h2 className="text-2xl font-bold mb-4 mt-0">Welcome to DrawdownCalc!</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-0">Overview</h2>
         <DisclaimerContent />
         {/* <p className="text-gray-700">
           This is a brief description of the application. You can include details about the

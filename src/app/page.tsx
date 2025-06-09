@@ -720,22 +720,24 @@ function AppContent() {
           <div className="h-[calc(100vh-2.875rem-5.125rem)] flex flex-col gap-4 p-4 initial-view-background bg-white/100 bg-blend-overlay"> {/* Ensure it's a flex container that grows */}
             <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col "> {/* Removed h-full, flex-1 is sufficient */}
               <CardContent className="p-1 flex-1 flex flex-col justify-center items-center">
-                <div className="flex flex-1 flex-col justify-center items-center text-center text-white bg-primary w-full"> {/* Removed h-full as parent now handles centering */}
-                  <p className="mb-6 font-bold text-6xl">
-                    DrawdownCalc
+                <div className="flex flex-col justify-center items-center flex-1 text-black bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/95 bg-blend-overlay w-full">
+                  <p className="mb-6 font-bold text-primary text-5xl pb-12">
+                    Welcome to DrawdownCalc
                   </p>
-                </div>
-                <div className="flex flex-col justify-center items-center flex-[5_1_0%] text-black bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/95 bg-blend-overlay w-full">
-                  <p className="mb-3 text-2xl">
-                    Brokerage
+                  <p className="mb-3 text-2xl pb-6">
+                    For retirees wondering how to approach withdrawing money from their retirement accounts
                   </p>
-                  <p className="mb-3 text-2xl">
-                    IRA
+                  <p className="mb-3 text-xl pb-3">
+                    DrawdownCalc attempts to answer common questions about retirement finances
                   </p>
-                  <p className="mb-3 text-2xl">
-                    Roth
-                  </p>
-                  <Button onClick={handleAcceptTerms}>Get Started</Button>
+                  <ul className="mb-3 text-xl list-none list-inside text-center max-w-md"> {/* Changed to ul and added styling */}
+                    <li>What is the most I could spend every year?</li>
+                    <li>Should I do Roth conversions?</li>
+                    <li>Which account do I withdraw from first?</li>
+                    <li>Could I minimize RMDs?</li>
+                    <li>How can I maximize what I leave behind?</li>
+                  </ul>
+                  <Button className="mt-8" onClick={handleAcceptTerms}>Get Started</Button>
                   </div>
                 </CardContent>
             </Card>
@@ -752,7 +754,7 @@ function AppContent() {
                     key={index}
                     className={cn(
                       "border-2 border-primary flex-1", // flex-1 to fill cell
-                      isPrimaryBg ? "bg-primary" : "bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat"
+                      isPrimaryBg ? "bg-primary" : "bg-[url('/calculator.svg')] bg-white/75 bg-blend-overlay bg-cover bg-center bg-no-repeat"
                     )}
                   >
                     <CardContent className="h-full w-full" /> {/* Ensures card has dimensions */}
