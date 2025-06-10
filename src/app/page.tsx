@@ -724,10 +724,10 @@ function AppContent() {
                   <p className="mb-6 font-bold text-primary text-5xl pb-12">
                     Welcome to DrawdownCalc
                   </p>
-                  <p className="mb-3 text-2xl pb-6">
+                  <p className="mb-3 text-2xl pb-8">
                     For retirees wondering how to approach withdrawing money from their retirement accounts
                   </p>
-                  <p className="mb-3 text-xl pb-3">
+                  <p className="mb-3 text-xl pb-4">
                     DrawdownCalc attempts to answer common questions about retirement finances
                   </p>
                   <ul className="mb-3 text-xl list-none list-inside text-center max-w-md"> {/* Changed to ul and added styling */}
