@@ -266,6 +266,10 @@ export interface DrawdownPlanResponse {
   state?: StateTaxData;
 }
 
+// At the top of your file, or in a central config file
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || process.env.API_BASE_URL || 'http://localhost:5001';
+// The fallbacks ensure it works in various setups and defaults to localhost if no env var is set.
+// Adjust NEXT_PUBLIC_API_URL or REACT_APP_API_URL based on your framework, or use a custom one.
 /**
  * Asynchronously calculates the drawdown plan based on user input.
  *
@@ -273,7 +277,9 @@ export interface DrawdownPlanResponse {
  * @returns A promise that resolves to a DrawdownPlanResponse.
  */
 export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanResponse> {
-  const response = await fetch('http://localhost:5001/calculate', {
+  const calculateUrl = `${API_BASE_URL}/calculate`; // Construct the URL
+
+  const response = await fetch(calculateUrl, { // Use the constructed URL
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -283,7 +289,7 @@ export async function calculateDrawdownPlan(payload: any): Promise<DrawdownPlanR
   // console.log(response);
   if (!response.ok) {
     // Attempt to parse error message from backend if available
-    let errorMessage = `HTTP error! status: ${response.status}`;
+    let errorMessage = `HTTP error! status: ${response.status} from ${calculateUrl}`; // Include URL in error
     try {
       const errorData = await response.json();
       if (errorData && errorData.error) {
