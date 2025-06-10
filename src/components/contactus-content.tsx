@@ -22,8 +22,8 @@ export function ContactUsContent() {
           </thead>
           <tbody>
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>1 June 2025</strong></td>
-              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Initial Version (calc, web)<br/>Everything is new!</td>
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>10 June 2025</strong></td>
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Initial Version<br/>Everything is new!</td>
             </tr>
             {/* You can add more rows here for future versions */}
           </tbody>
