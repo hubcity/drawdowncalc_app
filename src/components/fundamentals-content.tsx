@@ -41,7 +41,7 @@ export function FundamentalsContent() {
 
       <h3 className="text-base font-semibold mb-2">Capital Gains Taxes</h3>
       <p className="mb-3">
-        How much tax is owed on the sale of stocks or mutual funds seems like a fairly straight-forward calculation. There are different ways to compute the taxes owed on a sale. All of them require the calculation of a cost basis. Many mutual funds use an average cost basis. That’s what DrawdownCalc would prefer to use (especially since other methods, like specific lot basis, would require collecting a lot more information from the user). Unfortunately, computing the average cost basis is not a calculation that fits into a linear programming model. As an alternative, DrawdownCalc calculates the cost basis as if the sale associated with a brokerage withdrawal is the first sale that has ever happened in that account. This will be inaccurate for every withdrawal except the first one. So it’s wrong, but it’s the least wrong calculation that DrawdownCalc has found.
+        How much tax is owed on the sale of stocks or mutual funds seems like a fairly straightforward calculation. There are different ways to compute the taxes owed on a sale. All of them require the calculation of a cost basis. Many mutual funds use an average cost basis. That’s what DrawdownCalc would prefer to use (especially since other methods, like specific lot basis, would require collecting a lot more information from the user). Unfortunately, computing the average cost basis is not a calculation that fits into a linear programming model. As an alternative, DrawdownCalc calculates the cost basis as if the sale associated with a brokerage withdrawal is the first sale that has ever happened in that account. This will be inaccurate for every withdrawal except the first one. So it’s wrong, but it’s the least wrong calculation that DrawdownCalc has found.
       </p>
 
       <h3 className="text-base font-semibold mb-2">ACA Premium Subsidies</h3>
@@ -79,7 +79,7 @@ export function FundamentalsContent() {
       </p>
       <h2 className="text-xl font-semibold mb-3">Summary</h2>
       <p className="mb-3">
-        This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc">source code at github</a>.
+        This page highlights some issues, but for all of the details you can check the <a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc">source code at GitHub</a>.
       </p>
 
     </div>

@@ -40,7 +40,7 @@ export function ContactUsContent() {
 
       <h2 className="text-xl font-semibold mb-3">Bug Reports</h2>
       <p className="mb-3">
-        If you have found a general issue, send me an email or submit an issue to the corresponding project on github:
+        If you have found a general issue, send me an email or submit an issue to the corresponding project on GitHub:
       </p>
       <ul className="list-disc list-inside mb-3 space-y-1">
               <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/hubcity/drawdowncalc/issues">DrawdownCalc</a> which deals with the math problem</li>
