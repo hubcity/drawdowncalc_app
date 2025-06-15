@@ -384,41 +384,89 @@ function AppContent() {
           .text(""); // Remove the x-axis label
 
         // Add horizontal lines for tax bracket thresholds
-        if (yLabel === "Federal AGI") { // Only add lines to the Federal AGI chart
-          const taxBrackets = federalTaxData?.taxtable || [];
-          const standardDeduction = federalTaxData?.standard_deduction || 0;
+        if (yLabel === "Federal AGI" && federalTaxData) {
+          const baseStandardDeduction = federalTaxData.standard_deduction || 0;
+          const filingStatus = federalTaxData.status;
+          const agePivot = "65";
 
-          // Add horizontal lines for capital gains tax bracket thresholds
-          const cgTaxBrackets = federalTaxData?.cg_taxtable || [];
+          const stdDedUnderPivot = baseStandardDeduction;
+          const stdDedAtOrOverPivot = baseStandardDeduction + federalTaxData.standard_deduction_extra65;
 
-          cgTaxBrackets.forEach((bracket, index) => {
-            const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
-            if (threshold < y.domain()[1]) { // Only draw if within chart's actual y-axis range
-              svg.append("line")
-                .attr("x1", 0)
-                .attr("x2", width)
-                .attr("y1", y(threshold))
-                .attr("y2", y(threshold))
-                .attr("stroke", "darkgray") // Use a slightly different color or style
-                .attr("stroke-dasharray", "2 4") // Solid line for distinction
-                .attr("stroke-width", 1);
-            }
-          });
+          const minPlanAge = x.domain()[0];
+          const maxPlanAge = x.domain()[x.domain().length - 1];
 
-          taxBrackets.forEach((bracket, index) => {
-            const threshold = bracket[1] + standardDeduction; // Start of bracket + standard deduction
-            if (threshold < y.domain()[1]) { // Only draw if within chart's actual y-axis range
-              svg.append("line")
-                .attr("x1", 0)
-                .attr("x2", width)
-                .attr("y1", y(threshold))
-                .attr("y2", y(threshold))
-                .attr("stroke", "gray")
-                .attr("stroke-dasharray", "4 2") // Dashed line
-                .attr("stroke-width", 1);
-            }
-          });
+          const drawBracketLines = (brackets: TaxBracketTuple[], strokeColor: string, strokeDasharray: string) => {
+            brackets.forEach((bracket) => {
+              const bracketStartIncome = bracket[1];
 
+              const thresholdUnderPivot = bracketStartIncome + stdDedUnderPivot;
+              const thresholdAtOrOverPivot = bracketStartIncome + stdDedAtOrOverPivot;
+
+              const yValueUnderPivot = y(thresholdUnderPivot);
+              const yValueAtOrOverPivot = y(thresholdAtOrOverPivot);
+
+              const xAtPivot = x(agePivot);
+
+              // console.log(bracketStartIncome, thresholdUnderPivot, thresholdAtOrOverPivot, minPlanAge, maxPlanAge, 0, width, xAtPivot); // Debug log, if needed
+
+              if (+maxPlanAge < +agePivot) { // Entire plan is under pivot age
+                if (thresholdUnderPivot < y.domain()[1] && thresholdUnderPivot > y.domain()[0]) {
+                  svg.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", width)
+                    .attr("y1", yValueUnderPivot)
+                    .attr("y2", yValueUnderPivot)
+                    .attr("stroke", strokeColor)
+                    .attr("stroke-dasharray", strokeDasharray)
+                    .attr("stroke-width", 1);
+                }
+              } else if (+minPlanAge >= +agePivot) { // Entire plan is at or over pivot age
+                if (thresholdAtOrOverPivot < y.domain()[1] && thresholdAtOrOverPivot > y.domain()[0]) {
+                  svg.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", width)
+                    .attr("y1", yValueAtOrOverPivot)
+                    .attr("y2", yValueAtOrOverPivot)
+                    .attr("stroke", strokeColor)
+                    .attr("stroke-dasharray", strokeDasharray)
+                    .attr("stroke-width", 1);
+                }
+              } else { // Plan spans the pivot age
+                // Segment before pivot age
+                if (thresholdUnderPivot < y.domain()[1] && thresholdUnderPivot > y.domain()[0]) {
+                  svg.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", xAtPivot)
+                    .attr("y1", yValueUnderPivot)
+                    .attr("y2", yValueUnderPivot)
+                    .attr("stroke", strokeColor)
+                    .attr("stroke-dasharray", strokeDasharray)
+                    .attr("stroke-width", 1);
+                }
+                // Segment at or after pivot age
+                if (thresholdAtOrOverPivot < y.domain()[1] && thresholdAtOrOverPivot > y.domain()[0]) {
+                  svg.append("line")
+                    .attr("x1", xAtPivot)
+                    .attr("x2", width)
+                    .attr("y1", yValueAtOrOverPivot)
+                    .attr("y2", yValueAtOrOverPivot)
+                    .attr("stroke", strokeColor)
+                    .attr("stroke-dasharray", strokeDasharray)
+                    .attr("stroke-width", 1);
+                }
+              }
+            });
+          };
+
+          const cgTaxBrackets = federalTaxData.cg_taxtable || [];
+          if (cgTaxBrackets.length > 0) {
+            drawBracketLines(cgTaxBrackets, "darkgray", "2 6");
+          }
+
+          const taxBrackets = federalTaxData.taxtable || [];
+          if (taxBrackets.length > 0) {
+            drawBracketLines(taxBrackets, "gray", "0 2 6 0");
+          }
         } else if (yLabel === "State AGI") { // Add lines for the State AGI chart
           const taxBrackets = stateTaxData?.taxtable || [];
           const standardDeduction = stateTaxData?.standard_deduction || 0;
@@ -1041,6 +1089,7 @@ function AppContent() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                               <div>
                                 <p><strong>Standard Deduction:</strong> {formatCurrency(federalTaxData.standard_deduction)}</p>
+                                <p><strong>Standard Deduction Extra (65+):</strong> {formatCurrency(federalTaxData.standard_deduction_extra65)}</p>
                                 <p><strong>Net Investment Income Tax Threshold (AGI):</strong> {formatCurrency(federalTaxData.nii)}</p>
                               </div>
                               <div> {/* Placeholder for potential second column general info or keep it for tables */} </div>

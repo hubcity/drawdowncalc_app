@@ -246,6 +246,7 @@ export interface FederalTaxData {
   cg_taxtable: TaxBracketTuple[];
   nii: number; // Net Investment Income tax threshold
   standard_deduction: number;
+  standard_deduction_extra65: number;
   status: string; // e.g., "Single", "MFJ"
   taxtable: TaxBracketTuple[]; // Ordinary income tax brackets
 }
