@@ -721,13 +721,13 @@ function AppContent() {
             <Card className="border-2 border-primary md:w-full min-h-0 flex flex-1 flex-col "> {/* Removed h-full, flex-1 is sufficient */}
               <CardContent className="p-1 flex-1 flex flex-col justify-center items-center">
                 <div className="flex flex-col justify-center items-center flex-1 text-black bg-[url('/calculator.svg')] bg-cover bg-center bg-no-repeat bg-white/95 bg-blend-overlay w-full">
-                  <p className="mb-6 font-bold text-primary text-5xl pb-12">
+                  <p className="mb-6 font-bold text-primary text-5xl pb-12 text-center">
                     Welcome to DrawdownCalc
                   </p>
-                  <p className="mb-3 text-2xl pb-8">
+                  <p className="mb-3 text-2xl pb-8 text-center">
                     For retirees wondering how to approach withdrawing money from their retirement accounts
                   </p>
-                  <p className="mb-3 text-xl pb-4">
+                  <p className="mb-3 text-xl pb-4 text-center">
                     DrawdownCalc attempts to answer common questions about retirement finances
                   </p>
                   <ul className="mb-3 text-xl list-none list-inside text-center max-w-md"> {/* Changed to ul and added styling */}
