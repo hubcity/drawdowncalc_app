@@ -23,6 +23,27 @@ const geistMono = Geist_Mono({
 
 const inter = Inter({ subsets: ['latin'] })
 
+// New component for the small screen message
+function SmallScreenMessage() {
+  return (
+    <div
+      id="small-screen-message"
+      style={{ display: 'none' }} // Initially hidden, CSS media query will show it
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white p-8 text-center text-gray-800"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" />
+      </svg>
+      <h1 className="text-3xl font-bold mb-4">Optimal Viewing Experience</h1>
+      <p className="text-xl mb-3">
+        DrawdownCalc is designed for larger screens.
+      </p>
+      <p className="text-lg">
+        For the best user experience, please access this site using a tablet, laptop, or desktop computer.
+      </p>
+    </div>
+  );
+}
 
 function OverviewModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
@@ -116,9 +137,24 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        {/* Styles for the small screen message.
+            Alternatively, these could be added to your globals.css file. */}
+        <style jsx global>{`
+          @media (max-width: 767px) { /* Targets phones and small tablets in portrait */
+            #small-screen-message {
+              display: flex !important; /* Show the message */
+            }
+            .main-app-container {
+              display: none !important; /* Hide the main application content */
+            }
+          }
+        `}</style>
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}> {/* `${inter.className} ${geistMono.variable} antialiased` */}
-        <div className="relative flex size-full min-h-screen flex-col bg-[#f8fcfc] group/design-root"> {/* Removed overflow-x-hidden for simplicity, can be re-added if necessary elsewhere */}
-          <div className="layout-container flex flex-col min-h-screen">
+        <SmallScreenMessage />
+        <div className="main-app-container relative flex size-full min-h-screen flex-col bg-[#f8fcfc] group/design-root"> {/* Added main-app-container class */}
+          <div className="layout-container flex flex-col min-h-screen"> {/* This div remains for layout structure within the app */}
             <header className="z-50 flex items-center justify-between whitespace-nowrap border-b border-[#dfdfe2] px-10 py-3 bg-[#fafafa] fixed top-0 w-full">
               <div className="flex items-center gap-4 text-[#008080]">
                 {/* Wrap the icon and title in a Link */}
@@ -184,12 +220,12 @@ export default function RootLayout({
                 </p>
               </div>
             </footer>
+          </div> {/* Corresponds to layout-container */}
         <OverviewModal isOpen={isOverviewOpen} onClose={() => setIsOverviewOpen(false)} />
         <MathematicsModal isOpen={isMathematicsOpen} onClose={() => setIsMathematicsOpen(false)} />
         <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
         <ContactUsModal isOpen={isContactUsOpen} onClose={() => setIsContactUsOpen(false)} />
-      </div>
-      </div>
+        </div> {/* Corresponds to main-app-container */}
     </body>
     </html>
   );

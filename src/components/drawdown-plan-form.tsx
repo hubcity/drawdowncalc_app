@@ -275,7 +275,19 @@ const months = [
             name="about.age"
             render={({ field }) => (
               <FormItem>
+                <div className="flex items-center gap-1">
                 <FormLabel>{`Age (end of ${currentYear})`}</FormLabel>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      type="button"
+                      onClick={(e) => e.stopPropagation()} // Prevent form submission
+                    ><AlertTriangle size={16} className="text-yellow-700" onClick={(e) => e.stopPropagation()} // Prevent form submission
+                      /></TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs break-words">Support for couples is in progress.  Currently individuals in couples are assumed to be the same age.</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                </div>
                 <FormControl>
                   <Input placeholder="Age" type="number" {...field} onChange={handleInputChange(field.onChange)} onWheel={numberInputOnWheelPreventChange} />
                 </FormControl>
