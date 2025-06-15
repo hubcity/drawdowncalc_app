@@ -25,6 +25,10 @@ export function ContactUsContent() {
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>10 June 2025</strong></td>
               <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Initial Version<br/>Everything is new!</td>
             </tr>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600 align-top"><strong>15 June 2025</strong></td>
+              <td className="px-4 py-2 border border-gray-300 dark:border-gray-600">Added standard deduction extra for ages 65+</td>
+            </tr>
             {/* You can add more rows here for future versions */}
           </tbody>
         </table>
@@ -33,9 +37,6 @@ export function ContactUsContent() {
       <h2 className="text-xl font-semibold mb-3">Contact</h2>
       <p className="mb-3">
               Email me at <a target="_blank" rel="noopener noreferrer" href="mailto:hubcity@drawdowncalc.com">hubcity@drawdowncalc.com</a>
-      </p>
-      <p className="mb-3">
-              Find me, hubcity, on <a target="_blank" rel="noopener noreferrer" href="http://Early-Retirement.org">Early-Retirement.org</a>
       </p>
 
       <h2 className="text-xl font-semibold mb-3">Bug Reports</h2>
